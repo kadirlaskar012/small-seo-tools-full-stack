@@ -673,6 +673,15 @@ export const NEW_TOOLS_DATA: Record<string, any[]> = {
           </Card>
         </div>
       `
+    },
+    {
+      title: "Smart Modern Notepad",
+      slug: "notepad",
+      description: "Modern online notepad with rich text editing, auto-save, themes, and file operations",
+      metaTitle: "Online Smart Notepad - Write & Save Instantly",
+      metaDescription: "Write, edit, save, and share your notes instantly with this modern and elegant online notepad tool with rich text features.",
+      keywords: "online notepad, text editor, rich text editor, note taking, auto save notepad, modern notepad",
+      code: `<div>Smart Modern Notepad Tool</div>`
     }
   ],
   "pdf-tools": [

@@ -113,6 +113,7 @@ export default function Tool() {
       case "schema-markup-tester":
         return <SchemaMarkupTester />;
       case "smart-modern-notepad":
+      case "notepad":
         return <SmartModernNotepad />;
       default:
         return (
