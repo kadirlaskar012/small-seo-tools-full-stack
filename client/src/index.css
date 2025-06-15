@@ -64,7 +64,7 @@
 
 @layer components {
   .tool-card {
-    @apply bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 border border-border group;
+    @apply bg-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 border border-border;
   }
 
   .tool-card-mobile {

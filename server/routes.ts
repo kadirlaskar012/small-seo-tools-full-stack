@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertCategorySchema, insertToolSchema, insertBlogPostSchema } from "@shared/schema";
+import { insertCategorySchema, insertToolSchema, insertBlogPostSchema, type ToolWithCategory } from "@shared/schema";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -33,7 +33,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/tools", async (req, res) => {
     try {
       const { category } = req.query;
-      let tools;
+      let tools: ToolWithCategory[];
       
       if (category && typeof category === 'string') {
         const categoryRecord = await storage.getCategoryBySlug(category);
