@@ -10,6 +10,7 @@ import { Search, ArrowRight, Combine, ChevronRight } from "lucide-react";
 import type { Category, ToolWithCategory, BlogPost } from "@shared/schema";
 import SEOHead from "@/components/seo-head";
 import { ToolLogo } from "@/components/ui/tool-logo";
+import { generateUniqueIcon, getCategoryIcon, getToolIcon } from "@/lib/ai-generated-icons";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -39,14 +40,8 @@ export default function Home() {
     return matchesSearch && matchesCategory && tool.isActive;
   });
 
-  const getIconForCategory = (icon: string) => {
-    const iconMap: Record<string, string> = {
-      text_fields: "📝",
-      image: "🖼️",
-      picture_as_pdf: "📄",
-      search: "🔍",
-    };
-    return iconMap[icon] || "🛠️";
+  const getIconForCategory = (categoryName: string) => {
+    return getCategoryIcon(categoryName);
   };
 
   const getColorForCategory = (color: string) => {
@@ -214,7 +209,10 @@ export default function Home() {
                           onClick={() => setSelectedCategory(category.slug)}
                           className="w-full justify-start"
                         >
-                          <span className="mr-2">{getIconForCategory(category.icon)}</span>
+                          <div 
+                            className="mr-2 w-5 h-5 flex-shrink-0" 
+                            dangerouslySetInnerHTML={{ __html: getIconForCategory(category.name) }}
+                          />
                           {category.name}
                         </Button>
                       ))}
