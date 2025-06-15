@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { analyzeSEO, analyzeMetaTags, analyzeKeywordDensity } from "./seo-analyzer";
+import crypto from "crypto";
 import { insertCategorySchema, insertToolSchema, insertBlogPostSchema, insertSiteSettingSchema, type ToolWithCategory } from "@shared/schema";
 import { z } from "zod";
 import multer from "multer";
@@ -774,7 +775,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Text is required" });
       }
 
-      const crypto = require('crypto');
       let result = "";
 
       try {
