@@ -113,7 +113,7 @@ export default function Home() {
                 if (categoryTools.length === 0) return null;
 
                 return (
-                  <div key={category.id} className="bg-white dark:bg-gray-800 rounded-2xl p-6 mb-8 shadow-sm border border-gray-200 dark:border-gray-700">
+                  <div key={category.id} className="category-box p-6 mb-8">
                     <div className="flex items-center gap-4 mb-6">
                       <div className={`w-16 h-16 ${getColorForCategory(category.color)} rounded-2xl flex items-center justify-center text-3xl`}>
                         {getIconForCategory(category.icon)}
@@ -185,7 +185,7 @@ export default function Home() {
             {/* Sidebar - 25% width */}
             <aside className="w-full lg:w-1/4 space-y-6">
               {/* Search and Filter Box */}
-              <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+              <div className="sidebar-box p-6">
                 <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white flex items-center gap-2">
                   <Search className="h-5 w-5" />
                   Search & Filter
@@ -232,7 +232,7 @@ export default function Home() {
 
               {/* Latest Blog Posts */}
               {blogPosts.length > 0 && (
-                <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+                <div className="sidebar-box p-6">
                   <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
                     Latest Articles
                   </h3>
@@ -259,7 +259,7 @@ export default function Home() {
               )}
 
               {/* Tool Statistics */}
-              <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+              <div className="sidebar-box p-6">
                 <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
                   Quick Stats
                 </h3>

@@ -195,6 +195,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Site Settings API
+  app.get("/api/settings", async (req, res) => {
+    try {
+      const settings = await storage.getSiteSettings();
+      res.json(settings);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch settings" });
+    }
+  });
+
+  app.post("/api/settings", async (req, res) => {
+    try {
+      const { key, value } = req.body;
+      if (!key) {
+        return res.status(400).json({ message: "Key is required" });
+      }
+      const setting = await storage.setSiteSetting({ key, value });
+      res.json(setting);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to save setting" });
+    }
+  });
+
+  // File Upload API (for logos, images, etc.)
+  app.post("/api/upload", async (req, res) => {
+    try {
+      // For now, return a placeholder URL
+      // In production, this would handle actual file uploads to cloud storage
+      const mockUrl = `/uploads/${Date.now()}-${Math.random().toString(36).substr(2, 9)}.jpg`;
+      res.json({ url: mockUrl });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to upload file" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

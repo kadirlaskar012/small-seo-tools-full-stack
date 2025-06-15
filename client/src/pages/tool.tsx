@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams, Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
 import WordCounter from "@/components/tools/word-counter";
 import ImageCompressor from "@/components/tools/image-compressor";
 import PDFToWord from "@/components/tools/pdf-to-word";
@@ -80,21 +80,13 @@ export default function Tool() {
       
       <div className="bg-muted/30 border-b">
         <div className="container mx-auto px-4 py-8">
-          <Breadcrumb className="mb-4">
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/">Home</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink href={`/?category=${tool.category.slug}`}>
-                  {tool.category.name}
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbPage>{tool.title}</BreadcrumbPage>
-            </BreadcrumbList>
-          </Breadcrumb>
+          <Breadcrumb 
+            className="mb-4"
+            items={[
+              { label: tool.category.name, href: `/?category=${tool.category.slug}` },
+              { label: tool.title }
+            ]}
+          />
           
           <div className="flex items-center gap-4 mb-4">
             <div className="flex items-center gap-3">
