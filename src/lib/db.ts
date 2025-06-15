@@ -19,38 +19,44 @@ export const db = drizzle({ client: pool, schema });
 // Initialize database with tools data
 export async function initializeDatabase() {
   try {
-    // Check if categories exist
-    const existingCategories = await db.select().from(schema.categories);
+    console.log('Initializing comprehensive tools database...');
     
-    if (existingCategories.length === 0) {
-      // Insert categories
-      for (const category of TOOL_CATEGORIES) {
-        await db.insert(schema.categories).values({
-          name: category.name,
-          slug: category.slug,
-          description: category.description,
-          icon: category.icon,
-          color: category.color
-        });
-      }
-      
-      // Insert tools
-      const allTools = getAllTools();
-      for (const tool of allTools) {
-        await db.insert(schema.tools).values({
-          title: tool.title,
-          slug: tool.slug,
-          description: tool.description,
-          categoryId: tool.categoryId,
-          code: `// ${tool.title} implementation\nexport default function ${tool.title.replace(/\s+/g, '')}() {\n  return <div>Tool implementation</div>;\n}`,
-          metaTitle: tool.metaTitle,
-          metaDescription: tool.metaDescription,
-          metaTags: tool.metaTags,
-          isActive: true
-        });
-      }
-      
-      // Insert default site settings
+    // Clear existing data for fresh initialization
+    await db.delete(schema.tools);
+    await db.delete(schema.categories);
+    
+    // Insert all 10 categories
+    for (const category of TOOL_CATEGORIES) {
+      await db.insert(schema.categories).values({
+        name: category.name,
+        slug: category.slug,
+        description: category.description,
+        icon: category.icon,
+        color: category.color
+      });
+    }
+    
+    // Insert all 320+ tools
+    const allTools = getAllTools();
+    console.log(`Inserting ${allTools.length} tools...`);
+    
+    for (const tool of allTools) {
+      await db.insert(schema.tools).values({
+        title: tool.title,
+        slug: tool.slug,
+        description: tool.description,
+        categoryId: tool.categoryId,
+        code: tool.slug,
+        metaTitle: tool.metaTitle,
+        metaDescription: tool.metaDescription,
+        metaTags: tool.metaTags,
+        isActive: true
+      });
+    }
+    
+    // Check if site settings exist
+    const existingSettings = await db.select().from(schema.siteSettings);
+    if (existingSettings.length === 0) {
       const defaultSettings = [
         { key: 'site_name', value: 'SEO Tools Pro' },
         { key: 'site_description', value: 'Free online SEO tools for webmasters and digital marketers' },
@@ -65,6 +71,8 @@ export async function initializeDatabase() {
         await db.insert(schema.siteSettings).values(setting);
       }
     }
+    
+    console.log(`Database initialized with ${allTools.length} tools across ${TOOL_CATEGORIES.length} categories`);
   } catch (error) {
     console.error('Error initializing database:', error);
   }
