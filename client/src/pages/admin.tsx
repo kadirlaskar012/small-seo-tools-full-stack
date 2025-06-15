@@ -9,6 +9,7 @@ import BlogForm from "@/components/admin/blog-form";
 import SiteSettings from "@/components/admin/site-settings";
 import GoogleTools from "@/components/admin/google-tools";
 import FileManager from "@/components/admin/file-manager";
+import SchemaManager from "@/components/admin/schema-manager";
 import type { Category, ToolWithCategory, BlogPost } from "@shared/schema";
 import SEOHead from "@/components/seo-head";
 import { Combine, FileText, Settings, TrendingUp, Globe, FolderOpen } from "lucide-react";
@@ -45,7 +46,7 @@ export default function Admin() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid grid-cols-6 w-full">
+          <TabsList className="grid grid-cols-7 w-full">
             <TabsTrigger value="tools" className="flex items-center gap-2">
               <Combine className="h-4 w-4" />
               Tools
@@ -53,6 +54,10 @@ export default function Admin() {
             <TabsTrigger value="blog" className="flex items-center gap-2">
               <FileText className="h-4 w-4" />
               Blog
+            </TabsTrigger>
+            <TabsTrigger value="schema" className="flex items-center gap-2">
+              <Database className="h-4 w-4" />
+              Schema
             </TabsTrigger>
             <TabsTrigger value="stats" className="flex items-center gap-2">
               <TrendingUp className="h-4 w-4" />
@@ -96,6 +101,10 @@ export default function Admin() {
                 <BlogForm />
               </div>
             </div>
+          </TabsContent>
+
+          <TabsContent value="schema" className="space-y-6">
+            <SchemaManager />
           </TabsContent>
 
           <TabsContent value="stats" className="space-y-6">
