@@ -159,6 +159,14 @@ export default function Admin() {
             </Card>
           </TabsContent>
 
+          <TabsContent value="google" className="space-y-6">
+            <GoogleTools />
+          </TabsContent>
+
+          <TabsContent value="files" className="space-y-6">
+            <FileManager />
+          </TabsContent>
+
           <TabsContent value="settings" className="space-y-6">
             <SiteSettings />
           </TabsContent>

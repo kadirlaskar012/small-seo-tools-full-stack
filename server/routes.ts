@@ -1,8 +1,11 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertCategorySchema, insertToolSchema, insertBlogPostSchema, type ToolWithCategory } from "@shared/schema";
+import { insertCategorySchema, insertToolSchema, insertBlogPostSchema, insertSiteSettingSchema, type ToolWithCategory } from "@shared/schema";
 import { z } from "zod";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Initialize database with default data
