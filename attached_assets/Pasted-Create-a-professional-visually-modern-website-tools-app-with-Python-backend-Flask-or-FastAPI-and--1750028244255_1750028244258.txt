@@ -1,0 +1,57 @@
+Create a professional, visually modern website tools app with Python backend (Flask or FastAPI) and beautiful frontend (HTML/CSS/Tailwind). Build the following 3 fully working tools with real-time result output and clean UI. Include animations, icons, colorful cards, and copy buttons.
+
+📂 TOOL 1: Safe Browsing Checker
+- Input: Website URL
+- Backend: Use Google's Safe Browsing API (or mock API for demo)
+- Python logic checks if the site is blacklisted/malicious/phishing
+- Output: Color-coded result (Green = Safe, Red = Unsafe, Orange = Suspicious)
+- Show threat type, checked URL, threat source
+- Optional: Tooltip on threat types (phishing, malware, etc.)
+- Copy Result button
+- Clean card layout with status badge (Safe/Unsafe)
+
+📂 TOOL 2: IP Geolocation Finder
+- Input: Any IP address or domain
+- Backend: Use free API like ipinfo.io or ip-api.com (or simulate)
+- Python fetches: country, city, ISP, timezone, coordinates, org
+- Output: Map preview (optional iframe), info table with icons
+- "Get My IP" shortcut button
+- Copy all result option
+- Colorful location card with flag and IP details
+
+📂 TOOL 3: Domain Age Checker
+- Input: Domain name (e.g., example.com)
+- Python uses `whois` module or API to fetch:
+  - Creation date, update date, expiry date, total age in years/months
+- Output: Beautiful timeline card with creation to expiry line
+- Show domain registrar + status (active, expired, soon to expire)
+- Copy result or export to PDF button
+- Show age visually like: “🕒 7 Years, 2 Months old”
+
+🎨 UI REQUIREMENTS:
+- Use Tailwind CSS or beautiful custom CSS
+- Each tool in its own colorful card with rounded corners, icons, shadows
+- Mobile-first layout
+- Include dark mode toggle
+- Add animated loader while data is being fetched
+- Smooth transitions and hover effects
+
+⚙️ TECH STACK:
+- Frontend: HTML/CSS/JS or Tailwind (optional React if needed)
+- Backend: Python (Flask or FastAPI)
+- Modular folder structure, separate Python script per tool
+- Fully working Replit-compatible code
+
+📈 SEO & UX:
+- Each tool should be SSR-rendered
+- Include meta title, meta description in the HTML head
+- Tool output must be clean, copyable, and crawlable
+- Breadcrumbs at top of each tool page
+- Add sitemap-friendly URLs for each tool
+
+✅ OUTPUT:
+- A fully working, mobile-responsive, fast-loading website tools app with:
+  - Safe Browsing Checker
+  - IP Geolocation Finder
+  - Domain Age Checker
+- Beautiful design, real API or simulated API connection, ready for live deployment
