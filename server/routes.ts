@@ -505,6 +505,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post("/api/seo/keyword-density", async (req, res) => {
+    try {
+      const { text, targetKeyword } = req.body;
+      
+      if (!text) {
+        return res.status(400).json({ message: "Text content is required" });
+      }
+
+      const keywordAnalysis = analyzeKeywordDensity(text, targetKeyword);
+      
+      res.json(keywordAnalysis);
+    } catch (error) {
+      console.error("Keyword density analysis error:", error);
+      res.status(500).json({ message: "Failed to analyze keyword density" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
