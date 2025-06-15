@@ -55,6 +55,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get("/api/tools/popular", async (req, res) => {
+    try {
+      const limit = parseInt(req.query.limit as string) || 10;
+      const popularTools = await storage.getPopularTools(limit);
+      res.json(popularTools);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch popular tools" });
+    }
+  });
+
   app.get("/api/tools/:slug", async (req, res) => {
     try {
       const tool = await storage.getToolBySlug(req.params.slug);
@@ -64,6 +74,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(tool);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch tool" });
+    }
+  });
+
+  app.get("/api/tools/:id/similar", async (req, res) => {
+    try {
+      const toolId = parseInt(req.params.id);
+      const similarTools = await storage.getSimilarTools(toolId);
+      res.json(similarTools);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch similar tools" });
+    }
+  });
+
+  app.post("/api/tools/:id/usage", async (req, res) => {
+    try {
+      const toolId = parseInt(req.params.id);
+      await storage.incrementToolUsage(toolId);
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to track usage" });
     }
   });
 

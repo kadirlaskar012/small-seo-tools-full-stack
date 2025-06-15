@@ -7,9 +7,11 @@ import ToolForm from "@/components/admin/tool-form";
 import BlogList from "@/components/admin/blog-list";
 import BlogForm from "@/components/admin/blog-form";
 import SiteSettings from "@/components/admin/site-settings";
+import GoogleTools from "@/components/admin/google-tools";
+import FileManager from "@/components/admin/file-manager";
 import type { Category, ToolWithCategory, BlogPost } from "@shared/schema";
 import SEOHead from "@/components/seo-head";
-import { Combine, FileText, Settings, TrendingUp } from "lucide-react";
+import { Combine, FileText, Settings, TrendingUp, Globe, FolderOpen } from "lucide-react";
 
 export default function Admin() {
   const [activeTab, setActiveTab] = useState("tools");
@@ -43,7 +45,7 @@ export default function Admin() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid grid-cols-4 w-full max-w-lg">
+          <TabsList className="grid grid-cols-6 w-full">
             <TabsTrigger value="tools" className="flex items-center gap-2">
               <Combine className="h-4 w-4" />
               Tools
@@ -55,6 +57,14 @@ export default function Admin() {
             <TabsTrigger value="stats" className="flex items-center gap-2">
               <TrendingUp className="h-4 w-4" />
               Stats
+            </TabsTrigger>
+            <TabsTrigger value="google" className="flex items-center gap-2">
+              <Globe className="h-4 w-4" />
+              Google
+            </TabsTrigger>
+            <TabsTrigger value="files" className="flex items-center gap-2">
+              <FolderOpen className="h-4 w-4" />
+              Files
             </TabsTrigger>
             <TabsTrigger value="settings" className="flex items-center gap-2">
               <Settings className="h-4 w-4" />
