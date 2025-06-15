@@ -151,7 +151,7 @@ export const TOOLS_DATA = {
     { title: "Text Highlighter", slug: "text-highlighter", description: "Highlight specific words or phrases" },
     { title: "Text Cleaner", slug: "text-cleaner", description: "Clean and normalize text content" },
     { title: "Text Analyzer", slug: "text-analyzer", description: "Comprehensive text analysis tool" },
-    { title: "Reading Level Calculator", slug: "reading-level-calculator", description: "Calculate text reading level and difficulty" }
+    { title: "Reading Level Calculator", slug: "reading-level-calculator-text", description: "Calculate text reading level and difficulty" }
   ],
 
   // PDF Tools (30+ tools)
@@ -339,7 +339,7 @@ export const TOOLS_DATA = {
     { title: "Grammar Checker", slug: "grammar-checker", description: "Check grammar and spelling errors" },
     { title: "Spell Checker", slug: "spell-checker", description: "Check spelling in text" },
     { title: "Plagiarism Checker", slug: "plagiarism-checker", description: "Check for plagiarized content" },
-    { title: "Reading Level Calculator", slug: "reading-level-calculator", description: "Calculate text reading level" },
+    { title: "Reading Level Calculator", slug: "reading-level-calculator-writing", description: "Calculate text reading level" },
     { title: "Text Readability Analyzer", slug: "text-readability-analyzer", description: "Analyze text readability" },
     { title: "Word Frequency Counter", slug: "word-frequency-counter", description: "Count word frequency in text" },
     { title: "Sentence Length Analyzer", slug: "sentence-length-analyzer", description: "Analyze sentence lengths" },

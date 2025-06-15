@@ -92,63 +92,50 @@ export interface IStorage {
 
 export class DatabaseStorage implements IStorage {
   async initializeDefaultData() {
-    // Check if data already exists
-    const existingCategories = await db.select().from(categories);
-    if (existingCategories.length > 0) {
-      return; // Data already exists
+    // Clear existing data for fresh initialization
+    await db.delete(tools);
+    await db.delete(categories);
+    console.log('Cleared existing data, initializing comprehensive tools database...');
+
+    // Import comprehensive tools data
+    const { TOOL_CATEGORIES, getAllTools } = await import('../src/data/tools-data');
+    
+    // Insert all 10 categories first
+    for (const category of TOOL_CATEGORIES) {
+      await db.insert(categories).values({
+        id: category.id,
+        name: category.name,
+        slug: category.slug,
+        description: category.description,
+        icon: category.icon,
+        color: category.color
+      });
     }
 
-    // Default categories
-    const defaultCategories = [
-      { name: "Text Tools", slug: "text-tools", description: "Tools for text manipulation and analysis", icon: "text_fields", color: "blue" },
-      { name: "Image Tools", slug: "image-tools", description: "Tools for image processing and optimization", icon: "image", color: "purple" },
-      { name: "PDF Tools", slug: "pdf-tools", description: "Tools for PDF manipulation and conversion", icon: "picture_as_pdf", color: "red" },
-      { name: "SEO Tools", slug: "seo-tools", description: "Tools for SEO analysis and optimization", icon: "search", color: "cyan" },
-    ];
+    // Get all 320+ tools
+    const allTools = getAllTools();
+    console.log(`Inserting ${allTools.length} tools across ${TOOL_CATEGORIES.length} categories...`);
 
-    const insertedCategories = await db.insert(categories).values(defaultCategories).returning();
-
-    // Default tools
-    const defaultTools = [
-      {
-        title: "Word Counter",
-        slug: "word-counter",
-        description: "Count words, characters, paragraphs, and reading time instantly",
-        categoryId: insertedCategories[0].id,
-        code: "word-counter",
-        metaTitle: "Word Counter Tool - Count Words and Characters Online",
-        metaDescription: "Free online word counter tool. Count words, characters, paragraphs, and sentences. Perfect for writers, students, and content creators.",
-        metaTags: "word count, character count, text analysis, writing tools",
+    // Insert tools in batches to avoid memory issues
+    const batchSize = 50;
+    for (let i = 0; i < allTools.length; i += batchSize) {
+      const batch = allTools.slice(i, i + batchSize);
+      const toolsData = batch.map(tool => ({
+        title: tool.title,
+        slug: tool.slug,
+        description: tool.description,
+        categoryId: tool.categoryId,
+        code: tool.slug,
+        metaTitle: tool.metaTitle,
+        metaDescription: tool.metaDescription,
+        metaTags: tool.metaTags,
         image: null,
         isActive: true,
-      },
-      {
-        title: "Image Compressor",
-        slug: "image-compressor",
-        description: "Compress images without losing quality",
-        categoryId: insertedCategories[1].id,
-        code: "image-compressor",
-        metaTitle: "Image Compressor - Compress Images Online Free",
-        metaDescription: "Free online image compression tool. Reduce image file size without losing quality. Supports JPEG, PNG, WebP formats.",
-        metaTags: "image compression, optimize images, reduce file size, image tools",
-        image: null,
-        isActive: true,
-      },
-      {
-        title: "PDF to Word",
-        slug: "pdf-to-word",
-        description: "Convert PDF files to editable Word documents",
-        categoryId: insertedCategories[2].id,
-        code: "pdf-to-word",
-        metaTitle: "PDF to Word Converter - Convert PDF to DOC Online",
-        metaDescription: "Free online PDF to Word converter. Convert PDF files to editable Word documents quickly and easily.",
-        metaTags: "pdf to word, pdf converter, document conversion, pdf tools",
-        image: null,
-        isActive: true,
-      },
-    ];
-
-    await db.insert(tools).values(defaultTools);
+      }));
+      
+      await db.insert(tools).values(toolsData);
+      console.log(`Inserted batch ${Math.floor(i/batchSize) + 1}/${Math.ceil(allTools.length/batchSize)}`);
+    }
 
     // Default blog posts
     const defaultBlogPosts = [
