@@ -1156,8 +1156,12 @@ Provide a comprehensive analysis with specific optimization recommendations in J
         const params = new URLSearchParams({
           url: url,
           key: apiKey,
-          strategy: strategy,
-          category: categories.join(',')
+          strategy: strategy.toUpperCase()
+        });
+        
+        // Add categories separately
+        categories.forEach(category => {
+          params.append('category', category);
         });
 
         const response = await fetch(`${pagespeedUrl}?${params}`, {
@@ -1168,6 +1172,8 @@ Provide a comprehensive analysis with specific optimization recommendations in J
         });
 
         if (!response.ok) {
+          const errorBody = await response.text();
+          console.error(`PageSpeed API error details:`, errorBody);
           throw new Error(`PageSpeed API error: ${response.status} ${response.statusText}`);
         }
 
