@@ -1,0 +1,71 @@
+Build a powerful and fully dynamic tools website like smallseotools.com with features like WordPress CMS.
+
+🧩 GENERAL REQUIREMENTS:
+- Fully responsive, user-friendly, and fast-loading website.
+- Home page should display tools **category-wise**, shown in card/grid format on desktop.
+- Mobile layout should be lightweight: tools displayed as a simple text list (no logos).
+- Clean and modern design with clear typography.
+- Website heading: “The Ultimate Online Tools”
+
+📁 PAGES:
+- Each tool will have a separate dynamic page with:
+  - Tool title
+  - Functional UI for the tool (JS or Python/API if needed)
+  - Meta title, meta description, meta tags (SEO optimized)
+  - Clean permalink (e.g. /word-counter, /image-compressor)
+
+🛠 TOOL LOGIC:
+- Tool can be built using:
+  - JavaScript/HTML/CSS
+  - Python (if tool requires backend logic like PDF handling or advanced calculations)
+- If API is required, allow integration via admin panel or config file.
+
+🔧 ADMIN PANEL (WordPress-style):
+- Add/Edit/Delete Tools
+  - Title
+  - Category
+  - Permalink (auto-generated)
+  - Tool logic (select code file or editor)
+- Add/Edit Blog Posts with:
+  - Title
+  - Content (rich text)
+  - Meta title, meta description, meta tags
+  - Posts must appear on a separate blog section and inject into live site like WordPress.
+- Upload custom tool files or APIs from admin if needed.
+
+📂 DATABASE (Basic Setup):
+- Use JSON or simple DB (e.g., lowdb or SQLite) to store:
+  - Tools list
+  - Categories
+  - Blog posts
+  - SEO meta info
+- System should allow easy switching to MongoDB or Firebase if needed later.
+
+📈 SEO OPTIMIZATION:
+- Each tool and blog post should include:
+  - Custom meta title
+  - Meta description
+  - Meta tags
+  - Canonical URLs
+  - Schema markup support (if possible)
+- Auto sitemap generation (optional)
+
+🔗 SYSTEM DESIGN:
+- Homepage auto-updates when a new tool or post is added
+- Category filter system for tools
+- Routing system (React Router or any routing library if using JS/React)
+- Fast dynamic loading (no full page reloads)
+
+💡 EXAMPLES TO INCLUDE:
+- Word Counter Tool (JS-based)
+- PDF to Word Converter (Python or API-based)
+- Image Compressor (JS or Python)
+- At least 2 blog posts with SEO meta injected live
+
+✅ ADDITIONAL:
+- Code must be modular, clean, and editable in Replit
+- Allow custom code snippets per tool
+- Add comments for future tool insertion
+- Fully compatible with Replit frontend and backend execution
+
+Output: A complete working tools website with blog, admin panel, tool editor, and SEO control.
