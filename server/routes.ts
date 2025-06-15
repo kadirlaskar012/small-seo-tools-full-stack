@@ -1858,6 +1858,252 @@ except Exception as e:
     }
   });
 
+  // Python-powered coding tools endpoints
+  app.post("/api/tools/jwt-decoder", async (req, res) => {
+    try {
+      const { token } = req.body;
+      
+      if (!token) {
+        return res.status(400).json({ error: "JWT token is required" });
+      }
+
+      const { spawn } = await import("child_process");
+      const python = spawn("python3", ["-c", `
+import json
+import jwt
+import base64
+import sys
+
+def decode_jwt(token):
+    try:
+        # Decode header
+        header = jwt.get_unverified_header(token)
+        
+        # Decode payload (without verification)
+        payload = jwt.decode(token, options={"verify_signature": False})
+        
+        return {
+            "success": True,
+            "header": header,
+            "payload": payload
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e)
+        }
+
+token = "${token.replace(/"/g, '\\"')}"
+result = decode_jwt(token)
+print(json.dumps(result))
+`]);
+
+      let output = "";
+      let error = "";
+
+      python.stdout.on("data", (data) => {
+        output += data.toString();
+      });
+
+      python.stderr.on("data", (data) => {
+        error += data.toString();
+      });
+
+      python.on("close", (code) => {
+        if (code !== 0) {
+          return res.status(500).json({ error: "Python execution failed", details: error });
+        }
+
+        try {
+          const result = JSON.parse(output);
+          res.json(result);
+        } catch (e) {
+          res.status(500).json({ error: "Failed to parse result", details: output });
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error", details: error.message });
+    }
+  });
+
+  app.post("/api/tools/regex-generator", async (req, res) => {
+    try {
+      const { pattern, options, testString } = req.body;
+      
+      const { spawn } = await import("child_process");
+      const python = spawn("python3", ["-c", `
+import json
+import re
+
+def generate_regex(pattern, options, test_string=""):
+    try:
+        regex_map = {
+            "email": r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}",
+            "phone": r"\\+?1?\\d{9,15}",
+            "url": r"https?://(?:[-\\w.])+(?:\\.[a-zA-Z]{2,5})+/?.*",
+            "ipv4": r"\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b",
+            "date": r"\\d{4}-\\d{2}-\\d{2}",
+            "time": r"\\d{2}:\\d{2}(?::\\d{2})?",
+            "number": r"\\d+",
+            "word": r"\\w+",
+            "custom": pattern
+        }
+        
+        regex_pattern = regex_map.get(pattern, pattern)
+        
+        # Apply options
+        flags = 0
+        if options.get("case_insensitive", False):
+            flags |= re.IGNORECASE
+        if options.get("multiline", False):
+            flags |= re.MULTILINE
+        
+        # Test the regex if test string provided
+        matches = []
+        if test_string:
+            try:
+                compiled_regex = re.compile(regex_pattern, flags)
+                matches = compiled_regex.findall(test_string)
+            except:
+                pass
+        
+        return {
+            "success": True,
+            "regex": regex_pattern,
+            "matches": matches,
+            "test_string": test_string
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e)
+        }
+
+pattern = "${pattern || ''}"
+options = ${JSON.stringify(options || {})}
+test_string = "${(testString || '').replace(/"/g, '\\"')}"
+result = generate_regex(pattern, options, test_string)
+print(json.dumps(result))
+`]);
+
+      let output = "";
+      let error = "";
+
+      python.stdout.on("data", (data) => {
+        output += data.toString();
+      });
+
+      python.stderr.on("data", (data) => {
+        error += data.toString();
+      });
+
+      python.on("close", (code) => {
+        if (code !== 0) {
+          return res.status(500).json({ error: "Python execution failed", details: error });
+        }
+
+        try {
+          const result = JSON.parse(output);
+          res.json(result);
+        } catch (e) {
+          res.status(500).json({ error: "Failed to parse result", details: output });
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error", details: error.message });
+    }
+  });
+
+  app.post("/api/tools/js-obfuscator", async (req, res) => {
+    try {
+      const { code, level } = req.body;
+      
+      if (!code) {
+        return res.status(400).json({ error: "JavaScript code is required" });
+      }
+
+      const { spawn } = await import("child_process");
+      const python = spawn("python3", ["-c", `
+import json
+import base64
+import re
+
+def obfuscate_js(code, level="basic"):
+    try:
+        if level == "basic":
+            # Simple variable name obfuscation
+            var_names = re.findall(r'\\bvar\\s+(\\w+)', code)
+            func_names = re.findall(r'\\bfunction\\s+(\\w+)', code)
+            
+            obfuscated = code
+            counter = 0
+            for var in set(var_names + func_names):
+                if var not in ['console', 'document', 'window', 'alert']:
+                    obfuscated = re.sub(r'\\b' + var + r'\\b', f'_{hex(counter)[2:]}', obfuscated)
+                    counter += 1
+            
+            return obfuscated
+            
+        elif level == "medium":
+            # Variable obfuscation + string encoding
+            obfuscated = obfuscate_js(code, "basic")
+            
+            # Encode strings
+            strings = re.findall(r'"([^"]*)"', obfuscated)
+            for s in strings:
+                if s:
+                    encoded = base64.b64encode(s.encode()).decode()
+                    obfuscated = obfuscated.replace(f'"{s}"', f'atob("{encoded}")')
+            
+            return obfuscated
+            
+        elif level == "advanced":
+            # Full obfuscation with encoding
+            obfuscated = obfuscate_js(code, "medium")
+            
+            # Add extra layer of base64 encoding for the entire code
+            encoded_full = base64.b64encode(obfuscated.encode()).decode()
+            return f'eval(atob("{encoded_full}"))'
+            
+        return code
+        
+    except Exception as e:
+        return f"Error: {str(e)}"
+
+code = """${code.replace(/"/g, '\\"').replace(/\n/g, '\\n')}"""
+level = "${level || 'basic'}"
+result = obfuscate_js(code, level)
+print(json.dumps({"success": True, "obfuscated": result}))
+`]);
+
+      let output = "";
+      let error = "";
+
+      python.stdout.on("data", (data) => {
+        output += data.toString();
+      });
+
+      python.stderr.on("data", (data) => {
+        error += data.toString();
+      });
+
+      python.on("close", (code) => {
+        if (code !== 0) {
+          return res.status(500).json({ error: "Python execution failed", details: error });
+        }
+
+        try {
+          const result = JSON.parse(output);
+          res.json(result);
+        } catch (e) {
+          res.status(500).json({ error: "Failed to parse result", details: output });
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error", details: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
