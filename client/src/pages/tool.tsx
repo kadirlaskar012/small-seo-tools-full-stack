@@ -198,7 +198,7 @@ export default function Tool() {
                       <ToolLogo 
                         toolSlug={similarTool.slug} 
                         categorySlug={similarTool.category.slug} 
-                        size={40}
+                        size={24}
                         className="transition-transform hover:scale-105"
                       />
                     </div>

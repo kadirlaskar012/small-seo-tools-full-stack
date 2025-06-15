@@ -296,4 +296,12 @@ def test_redirect_checker():
 
 
 if __name__ == "__main__":
-    test_redirect_checker()
+    import sys
+    
+    if len(sys.argv) >= 3 and sys.argv[1] == "check-url":
+        url = sys.argv[2]
+        checker = RedirectChainChecker()
+        result = checker.check_redirect_chain(url)
+        print(json.dumps(result))
+    else:
+        test_redirect_checker()

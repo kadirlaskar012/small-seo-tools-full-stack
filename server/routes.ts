@@ -1534,21 +1534,7 @@ except Exception as e:
 
       const { spawn } = await import("child_process");
       
-      const pythonProcess = spawn("python3", ["-c", `
-import sys
-import json
-sys.path.append('server')
-
-try:
-    from redirect_checker import RedirectChainChecker
-    
-    checker = RedirectChainChecker()
-    result_data = json.loads('${JSON.stringify(result).replace(/'/g, "\\'")}')
-    report = checker.generate_report(result_data, '${format || 'text'}')
-    print(report)
-except Exception as e:
-    print(f"Error generating report: {str(e)}")
-`]);
+      const pythonProcess = spawn("python3", ["server/redirect-checker.py", "check-url", url]);
 
       let stdout = "";
       let stderr = "";
