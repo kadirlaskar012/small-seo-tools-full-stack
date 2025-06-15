@@ -88,6 +88,26 @@ export interface IStorage {
   getUploadedFileByName(filename: string): Promise<UploadedFile | undefined>;
   createUploadedFile(file: InsertUploadedFile): Promise<UploadedFile>;
   deleteUploadedFile(id: number): Promise<boolean>;
+
+  // Schema Templates
+  getSchemaTemplates(): Promise<SchemaTemplate[]>;
+  getSchemaTemplate(id: number): Promise<SchemaTemplate | undefined>;
+  createSchemaTemplate(template: InsertSchemaTemplate): Promise<SchemaTemplate>;
+  updateSchemaTemplate(id: number, template: Partial<InsertSchemaTemplate>): Promise<SchemaTemplate | undefined>;
+  deleteSchemaTemplate(id: number): Promise<boolean>;
+
+  // Page Schemas
+  getPageSchemas(): Promise<PageSchema[]>;
+  getPageSchema(pageType: string, pageId?: number): Promise<PageSchema | undefined>;
+  createPageSchema(schema: InsertPageSchema): Promise<PageSchema>;
+  updatePageSchema(id: number, schema: Partial<InsertPageSchema>): Promise<PageSchema | undefined>;
+  deletePageSchema(id: number): Promise<boolean>;
+
+  // Tool Icons
+  getToolIcon(toolId: number): Promise<ToolIcon | undefined>;
+  createToolIcon(icon: InsertToolIcon): Promise<ToolIcon>;
+  updateToolIcon(toolId: number, icon: Partial<InsertToolIcon>): Promise<ToolIcon | undefined>;
+  deleteToolIcon(toolId: number): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -534,6 +554,104 @@ export class DatabaseStorage implements IStorage {
 
   async deleteUploadedFile(id: number): Promise<boolean> {
     const result = await db.delete(uploadedFiles).where(eq(uploadedFiles.id, id));
+    return (result.rowCount || 0) > 0;
+  }
+
+  // Schema Templates
+  async getSchemaTemplates(): Promise<SchemaTemplate[]> {
+    return await db.select().from(schemaTemplates).orderBy(desc(schemaTemplates.createdAt));
+  }
+
+  async getSchemaTemplate(id: number): Promise<SchemaTemplate | undefined> {
+    const [template] = await db.select().from(schemaTemplates).where(eq(schemaTemplates.id, id));
+    return template || undefined;
+  }
+
+  async createSchemaTemplate(template: InsertSchemaTemplate): Promise<SchemaTemplate> {
+    const [result] = await db
+      .insert(schemaTemplates)
+      .values(template)
+      .returning();
+    return result;
+  }
+
+  async updateSchemaTemplate(id: number, updateData: Partial<InsertSchemaTemplate>): Promise<SchemaTemplate | undefined> {
+    const [result] = await db
+      .update(schemaTemplates)
+      .set({ ...updateData, updatedAt: new Date() })
+      .where(eq(schemaTemplates.id, id))
+      .returning();
+    return result || undefined;
+  }
+
+  async deleteSchemaTemplate(id: number): Promise<boolean> {
+    const result = await db.delete(schemaTemplates).where(eq(schemaTemplates.id, id));
+    return (result.rowCount || 0) > 0;
+  }
+
+  // Page Schemas
+  async getPageSchemas(): Promise<PageSchema[]> {
+    return await db.select().from(pageSchemas).orderBy(desc(pageSchemas.createdAt));
+  }
+
+  async getPageSchema(pageType: string, pageId?: number): Promise<PageSchema | undefined> {
+    let query = db.select().from(pageSchemas).where(eq(pageSchemas.pageType, pageType));
+    
+    if (pageId !== undefined) {
+      query = query.where(eq(pageSchemas.pageId, pageId));
+    }
+    
+    const [schema] = await query;
+    return schema || undefined;
+  }
+
+  async createPageSchema(schema: InsertPageSchema): Promise<PageSchema> {
+    const [result] = await db
+      .insert(pageSchemas)
+      .values(schema)
+      .returning();
+    return result;
+  }
+
+  async updatePageSchema(id: number, updateData: Partial<InsertPageSchema>): Promise<PageSchema | undefined> {
+    const [result] = await db
+      .update(pageSchemas)
+      .set({ ...updateData, updatedAt: new Date() })
+      .where(eq(pageSchemas.id, id))
+      .returning();
+    return result || undefined;
+  }
+
+  async deletePageSchema(id: number): Promise<boolean> {
+    const result = await db.delete(pageSchemas).where(eq(pageSchemas.id, id));
+    return (result.rowCount || 0) > 0;
+  }
+
+  // Tool Icons
+  async getToolIcon(toolId: number): Promise<ToolIcon | undefined> {
+    const [icon] = await db.select().from(toolIcons).where(eq(toolIcons.toolId, toolId));
+    return icon || undefined;
+  }
+
+  async createToolIcon(icon: InsertToolIcon): Promise<ToolIcon> {
+    const [result] = await db
+      .insert(toolIcons)
+      .values(icon)
+      .returning();
+    return result;
+  }
+
+  async updateToolIcon(toolId: number, updateData: Partial<InsertToolIcon>): Promise<ToolIcon | undefined> {
+    const [result] = await db
+      .update(toolIcons)
+      .set(updateData)
+      .where(eq(toolIcons.toolId, toolId))
+      .returning();
+    return result || undefined;
+  }
+
+  async deleteToolIcon(toolId: number): Promise<boolean> {
+    const result = await db.delete(toolIcons).where(eq(toolIcons.toolId, toolId));
     return (result.rowCount || 0) > 0;
   }
 }

@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp, varchar } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, varchar, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -91,6 +91,38 @@ export const uploadedFiles = pgTable("uploaded_files", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Schema Markup System
+export const schemaTemplates = pgTable("schema_templates", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 100 }).notNull(),
+  schemaType: varchar("schema_type", { length: 50 }).notNull(), // Article, WebPage, Tool, FAQ, Product, LocalBusiness
+  isGlobal: boolean("is_global").default(false),
+  isActive: boolean("is_active").default(true),
+  schemaData: jsonb("schema_data").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const pageSchemas = pgTable("page_schemas", {
+  id: serial("id").primaryKey(),
+  pageType: varchar("page_type", { length: 50 }).notNull(), // tool, blog, category, home
+  pageId: integer("page_id"), // references tool.id, blogPost.id, category.id, etc.
+  schemaTemplateId: integer("schema_template_id").references(() => schemaTemplates.id),
+  customSchemaData: jsonb("custom_schema_data"), // override template data
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Tool Icons System
+export const toolIcons = pgTable("tool_icons", {
+  id: serial("id").primaryKey(),
+  toolId: integer("tool_id").references(() => tools.id).notNull(),
+  iconType: varchar("icon_type", { length: 20 }).default("emoji"), // emoji, lucide, custom
+  iconValue: varchar("icon_value", { length: 100 }).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
@@ -136,6 +168,23 @@ export const insertUploadedFileSchema = createInsertSchema(uploadedFiles).omit({
   createdAt: true,
 });
 
+export const insertSchemaTemplateSchema = createInsertSchema(schemaTemplates).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertPageSchemaSchema = createInsertSchema(pageSchemas).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertToolIconSchema = createInsertSchema(toolIcons).omit({
+  id: true,
+  createdAt: true,
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 
@@ -163,5 +212,15 @@ export type InsertSimilarTool = z.infer<typeof insertSimilarToolSchema>;
 export type UploadedFile = typeof uploadedFiles.$inferSelect;
 export type InsertUploadedFile = z.infer<typeof insertUploadedFileSchema>;
 
+export type SchemaTemplate = typeof schemaTemplates.$inferSelect;
+export type InsertSchemaTemplate = z.infer<typeof insertSchemaTemplateSchema>;
+
+export type PageSchema = typeof pageSchemas.$inferSelect;
+export type InsertPageSchema = z.infer<typeof insertPageSchemaSchema>;
+
+export type ToolIcon = typeof toolIcons.$inferSelect;
+export type InsertToolIcon = z.infer<typeof insertToolIconSchema>;
+
 export type ToolWithCategory = Tool & { category: Category };
 export type ToolWithUsage = Tool & { category: Category; usageCount?: number };
+export type ToolWithIcon = Tool & { category: Category; icon?: ToolIcon };
