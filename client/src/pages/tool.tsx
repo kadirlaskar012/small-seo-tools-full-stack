@@ -10,6 +10,7 @@ import BacklinkChecker from "@/components/tools/backlink-checker";
 import TextCaseConverter from "@/components/tools/text-case-converter";
 import WordCounter from "@/components/tools/word-counter";
 import { PageSpeedChecker } from "@/components/tools/page-speed-checker";
+import { AdvancedPageSpeedChecker } from "@/components/tools/advanced-page-speed-checker";
 import type { ToolWithCategory } from "@shared/schema";
 import SEOHead from "@/components/seo-head";
 import { AlertCircle, Home, ChevronRight } from "lucide-react";
@@ -86,7 +87,8 @@ export default function Tool() {
       case "backlink-checker":
         return <BacklinkChecker />;
       case "page-speed-checker":
-        return <PageSpeedChecker />;
+      case "page-speed-test":
+        return <AdvancedPageSpeedChecker />;
       case "text-case-converter":
         return <TextCaseConverter />;
       case "word-counter":

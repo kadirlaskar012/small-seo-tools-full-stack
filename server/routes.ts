@@ -1119,6 +1119,146 @@ Provide a comprehensive analysis with specific optimization recommendations in J
     }
   });
 
+  // Advanced Page Speed Analysis with Google PageSpeed Insights
+  app.post("/api/pagespeed/analyze", async (req, res) => {
+    try {
+      const { url, strategy = 'desktop', categories = ['PERFORMANCE'] } = req.body;
+      
+      if (!url) {
+        return res.status(400).json({ 
+          success: false, 
+          error: "URL is required" 
+        });
+      }
+
+      // Validate URL format
+      try {
+        new URL(url);
+      } catch {
+        return res.status(400).json({ 
+          success: false, 
+          error: "Invalid URL format. Please include http:// or https://" 
+        });
+      }
+
+      // Check if Google PageSpeed Insights API key is available
+      const apiKey = process.env.GOOGLE_PAGESPEED_API_KEY;
+      if (!apiKey) {
+        return res.status(500).json({
+          success: false,
+          error: "Google PageSpeed Insights API key not configured"
+        });
+      }
+
+      try {
+        // Call Google PageSpeed Insights API
+        const pagespeedUrl = 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed';
+        const params = new URLSearchParams({
+          url: url,
+          key: apiKey,
+          strategy: strategy,
+          category: categories.join(',')
+        });
+
+        const response = await fetch(`${pagespeedUrl}?${params}`, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`PageSpeed API error: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        const lighthouse = data.lighthouseResult;
+
+        // Extract Core Web Vitals
+        const audits = lighthouse.audits;
+        const coreWebVitals = {
+          fcp: (audits['first-contentful-paint']?.numericValue || 0) / 1000,
+          lcp: (audits['largest-contentful-paint']?.numericValue || 0) / 1000,
+          fid: audits['max-potential-fid']?.numericValue || 0,
+          cls: audits['cumulative-layout-shift']?.numericValue || 0,
+          tti: (audits['interactive']?.numericValue || 0) / 1000,
+          tbt: audits['total-blocking-time']?.numericValue || 0
+        };
+
+        // Extract page metrics
+        const networkRequests = audits['network-requests']?.details?.items || [];
+        const totalSize = networkRequests.reduce((sum: number, item: any) => sum + (item.transferSize || 0), 0);
+        
+        const metrics = {
+          page_title: lighthouse.finalUrl || url,
+          load_time: lighthouse.timing?.total || 0,
+          page_size: totalSize,
+          num_requests: networkRequests.length,
+          performance_score: Math.round((lighthouse.categories?.performance?.score || 0) * 100),
+          accessibility_score: Math.round((lighthouse.categories?.accessibility?.score || 0) * 100),
+          best_practices_score: Math.round((lighthouse.categories?.['best-practices']?.score || 0) * 100),
+          seo_score: Math.round((lighthouse.categories?.seo?.score || 0) * 100)
+        };
+
+        // Extract issues and suggestions
+        const issues: any[] = [];
+        const suggestions: any[] = [];
+
+        for (const [auditId, audit] of Object.entries(audits)) {
+          const auditData = audit as any;
+          if (auditData.score !== null && auditData.score < 0.9) {
+            const severity = auditData.score < 0.5 ? 'high' : auditData.score < 0.75 ? 'medium' : 'low';
+            
+            if (['largest-contentful-paint', 'first-contentful-paint', 'speed-index', 'interactive'].includes(auditId)) {
+              issues.push({
+                title: auditData.title,
+                description: auditData.description,
+                severity
+              });
+            }
+
+            if (['unused-css-rules', 'unused-javascript', 'render-blocking-resources', 'unminified-css'].includes(auditId)) {
+              const impact = auditData.score < 0.5 ? 'high' : auditData.score < 0.75 ? 'medium' : 'low';
+              suggestions.push({
+                title: `Optimize: ${auditData.title}`,
+                description: auditData.description,
+                impact
+              });
+            }
+          }
+        }
+
+        const result = {
+          success: true,
+          url: url,
+          timestamp: new Date().toISOString(),
+          core_web_vitals: coreWebVitals,
+          metrics: metrics,
+          issues: issues.slice(0, 10),
+          suggestions: suggestions.slice(0, 10),
+          test_id: `test_${Date.now()}`
+        };
+
+        res.json(result);
+        
+      } catch (apiError: any) {
+        console.error("PageSpeed API error:", apiError);
+        return res.status(500).json({
+          success: false,
+          error: "Failed to analyze page speed. The website might be unreachable or the API service is temporarily unavailable.",
+          details: apiError.message
+        });
+      }
+      
+    } catch (error: any) {
+      console.error("Page speed analysis error:", error);
+      res.status(500).json({ 
+        success: false, 
+        error: "Internal server error during speed analysis" 
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
