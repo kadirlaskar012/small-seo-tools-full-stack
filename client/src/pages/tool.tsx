@@ -31,10 +31,11 @@ export default function Tool() {
   const queryClient = useQueryClient();
   
   // State for collapsible sections
-  const [categoriesExpanded, setCategoriesExpanded] = useState(false);
+  const [categoriesExpanded, setCategoriesExpanded] = useState(true); // Categories expanded by default
   const [popularExpanded, setPopularExpanded] = useState(false);
   const [latestExpanded, setLatestExpanded] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [expandedCategories, setExpandedCategories] = useState<Record<number, boolean>>({}); // Track individual category expansions
 
   const { data: tool, isLoading, error } = useQuery<ToolWithCategory>({
     queryKey: [`/api/tools/${slug}`],
@@ -240,30 +241,44 @@ export default function Tool() {
                       const categoryTools = allTools.filter(t => t.category.id === category.id);
                       if (categoryTools.length === 0) return null;
                       
+                      const isCategoryExpanded = expandedCategories[category.id] || false;
+                      
                       return (
-                        <div key={category.id}>
-                          <h4 className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2 flex items-center">
-                            <span className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: category.color }}></span>
-                            {category.name}
-                          </h4>
-                          <div className="space-y-1">
-                            {categoryTools.slice(0, 5).map((categoryTool) => (
-                              <Link key={categoryTool.id} href={`/tools/${categoryTool.slug}`} className="block">
-                                <div className="border border-gray-200 dark:border-gray-600 rounded p-2 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                                  <h5 className="font-medium text-xs text-gray-900 dark:text-white truncate">
-                                    {categoryTool.title}
-                                  </h5>
-                                </div>
-                              </Link>
-                            ))}
-                            {categoryTools.length > 5 && (
-                              <Link href={`/?category=${category.slug}`} className="block">
-                                <div className="text-xs text-blue-600 dark:text-blue-400 hover:underline p-2">
-                                  View all {categoryTools.length} tools →
-                                </div>
-                              </Link>
-                            )}
-                          </div>
+                        <div key={category.id} className="mb-3">
+                          <button
+                            onClick={() => setExpandedCategories(prev => ({
+                              ...prev,
+                              [category.id]: !prev[category.id]
+                            }))}
+                            className="w-full flex items-center justify-between text-left p-2 hover:bg-gray-50 dark:hover:bg-gray-700 rounded transition-colors"
+                          >
+                            <h4 className="text-xs font-semibold text-gray-700 dark:text-gray-300 flex items-center">
+                              <span className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: category.color }}></span>
+                              {category.name} ({categoryTools.length})
+                            </h4>
+                            {isCategoryExpanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                          </button>
+                          
+                          {isCategoryExpanded && (
+                            <div className="mt-2 space-y-1 pl-4">
+                              {categoryTools.slice(0, 5).map((categoryTool) => (
+                                <Link key={categoryTool.id} href={`/tools/${categoryTool.slug}`} className="block">
+                                  <div className="border border-gray-200 dark:border-gray-600 rounded p-2 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                    <h5 className="font-medium text-xs text-gray-900 dark:text-white truncate">
+                                      {categoryTool.title}
+                                    </h5>
+                                  </div>
+                                </Link>
+                              ))}
+                              {categoryTools.length > 5 && (
+                                <Link href={`/?category=${category.slug}`} className="block">
+                                  <div className="text-xs text-blue-600 dark:text-blue-400 hover:underline p-2">
+                                    View all {categoryTools.length} tools →
+                                  </div>
+                                </Link>
+                              )}
+                            </div>
+                          )}
                         </div>
                       );
                     })}
