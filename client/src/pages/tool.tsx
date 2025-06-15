@@ -16,6 +16,7 @@ import { DateDifferenceCalculator } from "@/components/tools/date-difference-cal
 import { AgeInMonthsCalculator } from "@/components/tools/age-in-months-calculator";
 import { PercentageCalculator } from "@/components/tools/percentage-calculator";
 import { SmartRedirectChainChecker } from "@/components/tools/smart-redirect-chain-checker";
+import { SchemaMarkupTester } from "@/components/tools/schema-markup-tester";
 import type { ToolWithCategory } from "@shared/schema";
 import SEOHead from "@/components/seo-head";
 import { AlertCircle, Home, ChevronRight } from "lucide-react";
@@ -108,6 +109,8 @@ export default function Tool() {
         return <PercentageCalculator />;
       case "redirect-chain-checker":
         return <SmartRedirectChainChecker />;
+      case "schema-markup-tester":
+        return <SchemaMarkupTester />;
       default:
         return (
           <Card>

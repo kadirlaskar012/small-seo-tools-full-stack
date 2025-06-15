@@ -1571,6 +1571,273 @@ except Exception as e:
     }
   });
 
+  // Schema Markup Tester API
+  app.post("/api/tools/schema-tester/validate-url", async (req, res) => {
+    try {
+      const { url } = req.body;
+      
+      if (!url) {
+        return res.status(400).json({ error: "URL is required" });
+      }
+
+      const { spawn } = await import("child_process");
+      
+      const pythonProcess = spawn("python3", ["-c", `
+import sys
+import json
+sys.path.append('server')
+
+try:
+    from schema_validator import SchemaMarkupTester
+    
+    tester = SchemaMarkupTester()
+    result = tester.validate_from_url('${url.replace(/'/g, "\\'")}')
+    
+    # Convert result to JSON-serializable format
+    result_data = {
+        'success': result.success,
+        'url': result.url,
+        'page_title': result.page_title,
+        'total_schemas': result.total_schemas,
+        'total_errors': result.total_errors,
+        'total_warnings': result.total_warnings,
+        'processing_time': result.processing_time,
+        'schemas': []
+    }
+    
+    for schema in result.schemas_found:
+        schema_data = {
+            'type': schema.type,
+            'schema_type': schema.schema_type.value,
+            'content': schema.content,
+            'errors': schema.errors,
+            'warnings': schema.warnings
+        }
+        result_data['schemas'].append(schema_data)
+    
+    print(json.dumps(result_data))
+    
+except Exception as e:
+    error_result = {
+        'success': False,
+        'error': str(e),
+        'schemas': [],
+        'total_schemas': 0,
+        'total_errors': 1,
+        'total_warnings': 0
+    }
+    print(json.dumps(error_result))
+`]);
+
+      let stdout = "";
+      let stderr = "";
+
+      pythonProcess.stdout.on("data", (data) => {
+        stdout += data.toString();
+      });
+
+      pythonProcess.stderr.on("data", (data) => {
+        stderr += data.toString();
+      });
+
+      pythonProcess.on("close", (code) => {
+        try {
+          const result = JSON.parse(stdout);
+          res.json(result);
+        } catch (e) {
+          res.status(500).json({ 
+            success: false,
+            error: "Failed to parse validation result",
+            schemas: [],
+            total_schemas: 0,
+            total_errors: 1,
+            total_warnings: 0
+          });
+        }
+      });
+
+    } catch (error) {
+      console.error("Schema validation error:", error);
+      res.status(500).json({ 
+        success: false,
+        error: "Internal server error",
+        schemas: [],
+        total_schemas: 0,
+        total_errors: 1,
+        total_warnings: 0
+      });
+    }
+  });
+
+  // Validate HTML content
+  app.post("/api/tools/schema-tester/validate-html", async (req, res) => {
+    try {
+      const { html } = req.body;
+      
+      if (!html) {
+        return res.status(400).json({ error: "HTML content is required" });
+      }
+
+      const { spawn } = await import("child_process");
+      
+      const pythonProcess = spawn("python3", ["-c", `
+import sys
+import json
+sys.path.append('server')
+
+try:
+    from schema_validator import SchemaMarkupTester
+    
+    tester = SchemaMarkupTester()
+    result = tester.process_html_content('''${html.replace(/'/g, "\\'")}''')
+    
+    # Convert result to JSON-serializable format
+    result_data = {
+        'success': result.success,
+        'url': result.url,
+        'page_title': result.page_title,
+        'total_schemas': result.total_schemas,
+        'total_errors': result.total_errors,
+        'total_warnings': result.total_warnings,
+        'processing_time': result.processing_time,
+        'schemas': []
+    }
+    
+    for schema in result.schemas_found:
+        schema_data = {
+            'type': schema.type,
+            'schema_type': schema.schema_type.value,
+            'content': schema.content,
+            'errors': schema.errors,
+            'warnings': schema.warnings
+        }
+        result_data['schemas'].append(schema_data)
+    
+    print(json.dumps(result_data))
+    
+except Exception as e:
+    error_result = {
+        'success': False,
+        'error': str(e),
+        'schemas': [],
+        'total_schemas': 0,
+        'total_errors': 1,
+        'total_warnings': 0
+    }
+    print(json.dumps(error_result))
+`]);
+
+      let stdout = "";
+      let stderr = "";
+
+      pythonProcess.stdout.on("data", (data) => {
+        stdout += data.toString();
+      });
+
+      pythonProcess.stderr.on("data", (data) => {
+        stderr += data.toString();
+      });
+
+      pythonProcess.on("close", (code) => {
+        try {
+          const result = JSON.parse(stdout);
+          res.json(result);
+        } catch (e) {
+          res.status(500).json({ 
+            success: false,
+            error: "Failed to parse validation result",
+            schemas: [],
+            total_schemas: 0,
+            total_errors: 1,
+            total_warnings: 0
+          });
+        }
+      });
+
+    } catch (error) {
+      console.error("Schema validation error:", error);
+      res.status(500).json({ 
+        success: false,
+        error: "Internal server error",
+        schemas: [],
+        total_schemas: 0,
+        total_errors: 1,
+        total_warnings: 0
+      });
+    }
+  });
+
+  // Generate schema report
+  app.post("/api/tools/schema-tester/report", async (req, res) => {
+    try {
+      const { result, format } = req.body;
+      
+      if (!result) {
+        return res.status(400).json({ error: "Result data is required" });
+      }
+
+      const { spawn } = await import("child_process");
+      
+      const pythonProcess = spawn("python3", ["-c", `
+import sys
+import json
+sys.path.append('server')
+
+try:
+    from schema_validator import SchemaMarkupTester, ValidationResult, SchemaItem, SchemaType
+    
+    # Reconstruct ValidationResult object
+    schemas_found = []
+    for schema_data in ${JSON.stringify(result.schemas || [])}:
+        schema_item = SchemaItem(
+            type=schema_data['type'],
+            schema_type=SchemaType(schema_data['schema_type']),
+            content=schema_data['content'],
+            errors=schema_data['errors'],
+            warnings=schema_data['warnings']
+        )
+        schemas_found.append(schema_item)
+    
+    validation_result = ValidationResult(
+        success=${result.success || false},
+        schemas_found=schemas_found,
+        total_schemas=${result.total_schemas || 0},
+        total_errors=${result.total_errors || 0},
+        total_warnings=${result.total_warnings || 0},
+        page_title='${(result.page_title || '').replace(/'/g, "\\'")}',
+        url='${(result.url || '').replace(/'/g, "\\'")}',
+        processing_time=${result.processing_time || 0.0}
+    )
+    
+    tester = SchemaMarkupTester()
+    report = tester.generate_report(validation_result, '${format || 'text'}')
+    print(report)
+    
+except Exception as e:
+    print(f"Error generating report: {str(e)}")
+`]);
+
+      let stdout = "";
+      let stderr = "";
+
+      pythonProcess.stdout.on("data", (data) => {
+        stdout += data.toString();
+      });
+
+      pythonProcess.stderr.on("data", (data) => {
+        stderr += data.toString();
+      });
+
+      pythonProcess.on("close", (code) => {
+        res.json({ report: stdout });
+      });
+
+    } catch (error) {
+      console.error("Report generation error:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

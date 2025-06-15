@@ -1,0 +1,59 @@
+Build a fully working **Schema Markup Tester Tool** using Python with a modern, colorful, and responsive UI. The tool should allow users to paste or input a webpage URL or raw HTML/JSON-LD content and validate all structured data according to Schema.org standards.
+
+### ✅ Tool Name:
+Smart Schema Markup Tester
+
+### ✅ Core Features:
+
+1. **Input Options:**
+   - URL input (fetches HTML content and extracts schema)
+   - Paste raw HTML or JSON-LD manually
+
+2. **Schema Extraction & Display:**
+   - Parse the page or input and extract:
+     - JSON-LD structured data
+     - Microdata (if any)
+   - Show extracted schema blocks with:
+     - Type (e.g., Article, Product, Organization)
+     - Properties and values
+     - Color-coded format with collapsible JSON viewer
+
+3. **Error & Warning Detection:**
+   - Highlight missing required fields or syntax errors
+   - Use colored status badges (✅ Valid / ⚠️ Warning / ❌ Error)
+
+4. **Visual Schema Tree:**
+   - Optional JS-powered visual tree structure of schema relationships (optional use of D3.js or Mermaid.js)
+
+5. **Validation Status Summary:**
+   - Total schemas found
+   - Count of errors and warnings
+   - Validation result (pass/fail)
+
+6. **Download & Copy:**
+   - Download extracted schema as JSON file
+   - One-click copy to clipboard
+
+7. **Dark Mode Toggle:**
+   - Clean light/dark switch
+
+### ✅ UI/UX Requirements:
+
+- Use Tailwind CSS or Bootstrap 5 for colorful, clean, modern interface
+- Show schemas inside expandable cards with icons and labels
+- Responsive layout – suitable for mobile and desktop
+- Add floating status badges like “100% Schema Valid” or “Error Found”
+
+### ✅ Tech Stack:
+
+- Backend: Python (FastAPI or Flask)
+- HTML Parser: BeautifulSoup or lxml
+- JSON Validator: `jsonschema` or manual logic for Schema.org formats
+- Frontend: HTML + Tailwind CSS + JS (Alpine.js/Vanilla)
+- SSR Friendly and Iframe embeddable (WordPress support)
+- Output should be deployable to Vercel or Replit
+
+### ✅ Meta Info:
+
+- Page title: “Free Schema Markup Tester – Smart SEO Validator”
+- Meta Description: “Test your website's structured data and schema markup instantly with our smart and visual Schema Markup Tester tool.”
