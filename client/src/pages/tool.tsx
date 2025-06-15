@@ -47,6 +47,15 @@ export default function Tool() {
     queryKey: ["/api/tools"],
   });
 
+  const { data: popularTools = [] } = useQuery<ToolWithCategory[]>({
+    queryKey: ["/api/tools/popular"],
+    queryFn: async () => {
+      const response = await fetch("/api/tools/popular?limit=8");
+      if (!response.ok) throw new Error('Failed to fetch popular tools');
+      return response.json();
+    },
+  });
+
   // Track tool usage
   const trackUsageMutation = useMutation({
     mutationFn: async (toolId: number) => {
@@ -184,43 +193,131 @@ export default function Tool() {
       </div>
 
       <div className="container mx-auto px-4 py-8">
-        {renderToolComponent()}
-        
-        {/* All Tools by Category */}
-        <div className="mt-16 border-t pt-12">
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-              All Tools by Category
-            </h2>
-            <p className="text-gray-600 dark:text-gray-400">
-              Browse all available tools organized by category
-            </p>
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Main Tool Content - 75% */}
+          <div className="flex-1 min-w-0 lg:w-3/4">
+            {renderToolComponent()}
           </div>
-          
-          {categories.map((category) => {
-            const categoryTools = allTools.filter(t => t.category.id === category.id);
-            if (categoryTools.length === 0) return null;
-            
-            return (
-              <div key={category.id} className="mb-8">
-                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4 flex items-center">
-                  <span className="w-3 h-3 rounded-full mr-3" style={{ backgroundColor: category.color }}></span>
-                  {category.name}
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
-                  {categoryTools.map((categoryTool) => (
-                    <Link key={categoryTool.id} href={`/tools/${categoryTool.slug}`} className="block">
-                      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-3 hover:shadow-sm transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-600">
-                        <h4 className="font-medium text-sm text-gray-900 dark:text-white truncate">
-                          {categoryTool.title}
-                        </h4>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
+
+          {/* Right Sidebar - 25% */}
+          <div className="lg:w-1/4 lg:flex-shrink-0 space-y-8">
+            {/* All Tools by Category */}
+            <div>
+              <div className="mb-6">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                  Browse by Category
+                </h2>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Explore tools organized by category
+                </p>
               </div>
-            );
-          })}
+              
+              <div className="space-y-6">
+                {categories.map((category) => {
+                  const categoryTools = allTools.filter(t => t.category.id === category.id);
+                  if (categoryTools.length === 0) return null;
+                  
+                  return (
+                    <div key={category.id}>
+                      <h3 className="text-sm font-semibold text-gray-800 dark:text-gray-200 mb-3 flex items-center">
+                        <span className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: category.color }}></span>
+                        {category.name}
+                      </h3>
+                      <div className="space-y-1">
+                        {categoryTools.slice(0, 5).map((categoryTool) => (
+                          <Link key={categoryTool.id} href={`/tools/${categoryTool.slug}`} className="block">
+                            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded p-2 hover:shadow-sm transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-600 hover:bg-gray-50 dark:hover:bg-gray-700">
+                              <h4 className="font-medium text-xs text-gray-900 dark:text-white truncate">
+                                {categoryTool.title}
+                              </h4>
+                            </div>
+                          </Link>
+                        ))}
+                        {categoryTools.length > 5 && (
+                          <Link href={`/?category=${category.slug}`} className="block">
+                            <div className="text-xs text-blue-600 dark:text-blue-400 hover:underline p-2">
+                              View all {categoryTools.length} tools →
+                            </div>
+                          </Link>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Popular Tools */}
+            <div>
+              <div className="mb-4">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                  Popular Tools
+                </h2>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Most used tools by our users
+                </p>
+              </div>
+              
+              <div className="space-y-2">
+                {popularTools.map((popularTool, index) => (
+                  <Link key={popularTool.id} href={`/tools/${popularTool.slug}`} className="block">
+                    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded p-3 hover:shadow-sm transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-600 hover:bg-gray-50 dark:hover:bg-gray-700">
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs font-bold text-gray-500 dark:text-gray-400 w-4">
+                          {index + 1}
+                        </span>
+                        <div className="min-w-0 flex-1">
+                          <h4 className="font-medium text-sm text-gray-900 dark:text-white truncate">
+                            {popularTool.title}
+                          </h4>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                            {popularTool.category.name}
+                            {popularTool.usageCount && popularTool.usageCount > 0 && (
+                              <span className="ml-2 text-blue-600 dark:text-blue-400">
+                                • {popularTool.usageCount} uses
+                              </span>
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* Latest Added Tools */}
+            <div>
+              <div className="mb-4">
+                <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                  Latest Tools
+                </h2>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Recently added to our collection
+                </p>
+              </div>
+              
+              <div className="space-y-2">
+                {allTools.slice(-6).reverse().map((latestTool) => (
+                  <Link key={latestTool.id} href={`/tools/${latestTool.slug}`} className="block">
+                    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded p-3 hover:shadow-sm transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-600 hover:bg-gray-50 dark:hover:bg-gray-700">
+                      <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
+                        <div className="min-w-0 flex-1">
+                          <h4 className="font-medium text-sm text-gray-900 dark:text-white truncate">
+                            {latestTool.title}
+                          </h4>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                            {latestTool.category.name}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Similar Tools Section */}

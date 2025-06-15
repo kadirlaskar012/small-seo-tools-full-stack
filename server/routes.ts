@@ -151,6 +151,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Popular Tools API
+  app.get("/api/tools/popular", async (req, res) => {
+    try {
+      const limit = parseInt(req.query.limit as string) || 10;
+      const popularTools = await storage.getPopularTools(limit);
+      res.json(popularTools);
+    } catch (error) {
+      console.error("Error fetching popular tools:", error);
+      res.status(500).json({ message: "Failed to fetch popular tools" });
+    }
+  });
+
   // Blog Posts
   app.get("/api/blog", async (req, res) => {
     try {
