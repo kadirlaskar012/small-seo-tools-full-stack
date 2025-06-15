@@ -39,6 +39,14 @@ export default function Tool() {
     enabled: !!tool?.id,
   });
 
+  const { data: categories = [] } = useQuery({
+    queryKey: ["/api/categories"],
+  });
+
+  const { data: allTools = [] } = useQuery<ToolWithCategory[]>({
+    queryKey: ["/api/tools"],
+  });
+
   // Track tool usage
   const trackUsageMutation = useMutation({
     mutationFn: async (toolId: number) => {
@@ -178,6 +186,43 @@ export default function Tool() {
       <div className="container mx-auto px-4 py-8">
         {renderToolComponent()}
         
+        {/* All Tools by Category */}
+        <div className="mt-16 border-t pt-12">
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+              All Tools by Category
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400">
+              Browse all available tools organized by category
+            </p>
+          </div>
+          
+          {categories.map((category) => {
+            const categoryTools = allTools.filter(t => t.category.id === category.id);
+            if (categoryTools.length === 0) return null;
+            
+            return (
+              <div key={category.id} className="mb-8">
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4 flex items-center">
+                  <span className="w-3 h-3 rounded-full mr-3" style={{ backgroundColor: category.color }}></span>
+                  {category.name}
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+                  {categoryTools.map((categoryTool) => (
+                    <Link key={categoryTool.id} href={`/tools/${categoryTool.slug}`} className="block">
+                      <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-3 hover:shadow-sm transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-600">
+                        <h4 className="font-medium text-sm text-gray-900 dark:text-white truncate">
+                          {categoryTool.title}
+                        </h4>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
         {/* Similar Tools Section */}
         {similarTools.length > 0 && (
           <div className="mt-16 border-t pt-12">
@@ -192,7 +237,7 @@ export default function Tool() {
             
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {similarTools.slice(0, 6).map((similarTool) => (
-                <Link key={similarTool.id} href={`/${similarTool.slug}`}>
+                <Link key={similarTool.id} href={`/tools/${similarTool.slug}`}>
                   <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-600 cursor-pointer h-full text-center">
                     <div className="flex items-center justify-center mx-auto mb-3">
                       <ToolLogo 

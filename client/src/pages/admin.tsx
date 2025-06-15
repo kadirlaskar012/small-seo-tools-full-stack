@@ -11,9 +11,10 @@ import GoogleTools from "@/components/admin/google-tools";
 import FileManager from "@/components/admin/file-manager";
 import SchemaManager from "@/components/admin/schema-manager";
 import { LogoUpload } from "@/components/admin/logo-upload";
+import { HomepageIconManager } from "@/components/admin/homepage-icon-manager";
 import type { Category, ToolWithCategory, BlogPost } from "@shared/schema";
 import SEOHead from "@/components/seo-head";
-import { Combine, FileText, Settings, TrendingUp, Globe, FolderOpen, Database, Image } from "lucide-react";
+import { Combine, FileText, Settings, TrendingUp, Globe, FolderOpen, Database, Image, Eye } from "lucide-react";
 
 export default function Admin() {
   const [activeTab, setActiveTab] = useState("tools");
@@ -47,7 +48,7 @@ export default function Admin() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid grid-cols-8 w-full">
+          <TabsList className="grid grid-cols-9 w-full">
             <TabsTrigger value="tools" className="flex items-center gap-2">
               <Combine className="h-4 w-4" />
               Tools
@@ -55,6 +56,10 @@ export default function Admin() {
             <TabsTrigger value="blog" className="flex items-center gap-2">
               <FileText className="h-4 w-4" />
               Blog
+            </TabsTrigger>
+            <TabsTrigger value="icons" className="flex items-center gap-2">
+              <Eye className="h-4 w-4" />
+              Icons
             </TabsTrigger>
             <TabsTrigger value="branding" className="flex items-center gap-2">
               <Image className="h-4 w-4" />
