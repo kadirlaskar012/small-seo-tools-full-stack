@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams, Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,14 +9,37 @@ import PDFToWord from "@/components/tools/pdf-to-word";
 import type { ToolWithCategory } from "@shared/schema";
 import SEOHead from "@/components/seo-head";
 import { AlertCircle, Home, ChevronRight } from "lucide-react";
+import { apiRequest } from "@/lib/queryClient";
+import { useEffect } from "react";
 
 export default function Tool() {
   const { slug } = useParams();
+  const queryClient = useQueryClient();
 
   const { data: tool, isLoading, error } = useQuery<ToolWithCategory>({
     queryKey: [`/api/tools/${slug}`],
     enabled: !!slug,
   });
+
+  const { data: similarTools = [] } = useQuery<ToolWithCategory[]>({
+    queryKey: [`/api/tools/${tool?.id}/similar`],
+    enabled: !!tool?.id,
+  });
+
+  // Track tool usage
+  const trackUsageMutation = useMutation({
+    mutationFn: async (toolId: number) => {
+      await apiRequest(`/api/tools/${toolId}/usage`, {
+        method: "POST",
+      });
+    },
+  });
+
+  useEffect(() => {
+    if (tool?.id && !trackUsageMutation.isPending) {
+      trackUsageMutation.mutate(tool.id);
+    }
+  }, [tool?.id]);
 
   if (isLoading) {
     return (
@@ -116,6 +139,38 @@ export default function Tool() {
 
       <div className="container mx-auto px-4 py-8">
         {renderToolComponent()}
+        
+        {/* Similar Tools Section */}
+        {similarTools.length > 0 && (
+          <div className="mt-16 border-t pt-12">
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                Similar Tools
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400">
+                Explore more tools from the {tool.category.name} category
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {similarTools.slice(0, 6).map((similarTool) => (
+                <Link key={similarTool.id} href={`/${similarTool.slug}`}>
+                  <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-600 cursor-pointer h-full text-center">
+                    <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 rounded-lg flex items-center justify-center mx-auto mb-3 text-xl">
+                      📝
+                    </div>
+                    <h3 className="font-medium text-sm text-gray-900 dark:text-white leading-tight mb-2">
+                      {similarTool.title}
+                    </h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">
+                      {similarTool.description}
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </>
   );

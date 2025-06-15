@@ -30,7 +30,7 @@ import {
   type InsertUploadedFile,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq } from "drizzle-orm";
+import { eq, desc, sql } from "drizzle-orm";
 
 export interface IStorage {
   // Users
@@ -72,6 +72,22 @@ export interface IStorage {
   // Admins
   getAdminByUsername(username: string): Promise<Admin | undefined>;
   createAdmin(admin: InsertAdmin): Promise<Admin>;
+
+  // Tool Usage Analytics
+  getToolUsage(toolId: number): Promise<ToolUsage | undefined>;
+  incrementToolUsage(toolId: number): Promise<void>;
+  getPopularTools(limit?: number): Promise<ToolWithUsage[]>;
+
+  // Similar Tools
+  getSimilarTools(toolId: number): Promise<ToolWithCategory[]>;
+  setSimilarTools(toolId: number, similarToolIds: number[]): Promise<void>;
+
+  // File Uploads
+  getUploadedFiles(): Promise<UploadedFile[]>;
+  getUploadedFile(id: number): Promise<UploadedFile | undefined>;
+  getUploadedFileByName(filename: string): Promise<UploadedFile | undefined>;
+  createUploadedFile(file: InsertUploadedFile): Promise<UploadedFile>;
+  deleteUploadedFile(id: number): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -379,6 +395,156 @@ export class DatabaseStorage implements IStorage {
       .values(admin)
       .returning();
     return result;
+  }
+
+  // Tool Usage Analytics
+  async getToolUsage(toolId: number): Promise<ToolUsage | undefined> {
+    const [usage] = await db.select().from(toolUsage).where(eq(toolUsage.toolId, toolId));
+    return usage || undefined;
+  }
+
+  async incrementToolUsage(toolId: number): Promise<void> {
+    await db
+      .insert(toolUsage)
+      .values({ toolId, usageCount: 1, lastUsed: new Date() })
+      .onConflictDoUpdate({
+        target: toolUsage.toolId,
+        set: {
+          usageCount: sql`${toolUsage.usageCount} + 1`,
+          lastUsed: new Date(),
+        },
+      });
+  }
+
+  async getPopularTools(limit: number = 10): Promise<ToolWithUsage[]> {
+    const results = await db
+      .select({
+        id: tools.id,
+        title: tools.title,
+        slug: tools.slug,
+        description: tools.description,
+        content: tools.content,
+        metaTitle: tools.metaTitle,
+        metaDescription: tools.metaDescription,
+        metaTags: tools.metaTags,
+        categoryId: tools.categoryId,
+        isActive: tools.isActive,
+        createdAt: tools.createdAt,
+        category: {
+          id: categories.id,
+          name: categories.name,
+          slug: categories.slug,
+          description: categories.description,
+          color: categories.color,
+          icon: categories.icon,
+          isActive: categories.isActive,
+          createdAt: categories.createdAt,
+        },
+        usageCount: toolUsage.usageCount,
+      })
+      .from(tools)
+      .leftJoin(categories, eq(tools.categoryId, categories.id))
+      .leftJoin(toolUsage, eq(tools.id, toolUsage.toolId))
+      .where(eq(tools.isActive, true))
+      .orderBy(desc(toolUsage.usageCount))
+      .limit(limit);
+    
+    return results.map(result => ({
+      ...result,
+      category: result.category!,
+      usageCount: result.usageCount || 0,
+    }));
+  }
+
+  // Similar Tools
+  async getSimilarTools(toolId: number): Promise<ToolWithCategory[]> {
+    const results = await db
+      .select({
+        id: tools.id,
+        title: tools.title,
+        slug: tools.slug,
+        description: tools.description,
+        content: tools.content,
+        metaTitle: tools.metaTitle,
+        metaDescription: tools.metaDescription,
+        metaTags: tools.metaTags,
+        categoryId: tools.categoryId,
+        isActive: tools.isActive,
+        createdAt: tools.createdAt,
+        category: {
+          id: categories.id,
+          name: categories.name,
+          slug: categories.slug,
+          description: categories.description,
+          color: categories.color,
+          icon: categories.icon,
+          isActive: categories.isActive,
+          createdAt: categories.createdAt,
+        },
+      })
+      .from(similarTools)
+      .innerJoin(tools, eq(similarTools.similarToolId, tools.id))
+      .innerJoin(categories, eq(tools.categoryId, categories.id))
+      .where(eq(similarTools.toolId, toolId))
+      .orderBy(desc(similarTools.priority));
+
+    // If no manually set similar tools, get tools from same category
+    if (results.length === 0) {
+      const tool = await this.getTool(toolId);
+      if (tool) {
+        const categoryTools = await this.getToolsByCategory(tool.categoryId);
+        return categoryTools.filter(t => t.id !== toolId).slice(0, 6);
+      }
+    }
+
+    return results.map(result => ({
+      ...result,
+      category: result.category!,
+    }));
+  }
+
+  async setSimilarTools(toolId: number, similarToolIds: number[]): Promise<void> {
+    // Delete existing similar tools
+    await db.delete(similarTools).where(eq(similarTools.toolId, toolId));
+    
+    // Insert new similar tools
+    if (similarToolIds.length > 0) {
+      await db.insert(similarTools).values(
+        similarToolIds.map((similarToolId, index) => ({
+          toolId,
+          similarToolId,
+          priority: similarToolIds.length - index, // Higher priority for earlier items
+        }))
+      );
+    }
+  }
+
+  // File Uploads
+  async getUploadedFiles(): Promise<UploadedFile[]> {
+    return await db.select().from(uploadedFiles).orderBy(desc(uploadedFiles.createdAt));
+  }
+
+  async getUploadedFile(id: number): Promise<UploadedFile | undefined> {
+    const [file] = await db.select().from(uploadedFiles).where(eq(uploadedFiles.id, id));
+    return file || undefined;
+  }
+
+  async getUploadedFileByName(filename: string): Promise<UploadedFile | undefined> {
+    const [file] = await db.select().from(uploadedFiles).where(eq(uploadedFiles.filename, filename));
+    return file || undefined;
+  }
+
+  async createUploadedFile(file: InsertUploadedFile): Promise<UploadedFile> {
+    const [result] = await db
+      .insert(uploadedFiles)
+      .values(file)
+      .returning();
+    return result;
+  }
+
+  async deleteUploadedFile(id: number): Promise<boolean> {
+    const result = await db.delete(uploadedFiles).where(eq(uploadedFiles.id, id));
+    return (result.rowCount || 0) > 0;
   }
 }
 
