@@ -1779,6 +1779,73 @@ except Exception as e:
     }
   });
 
+  // Tool Icons Management API for Admin Panel
+  app.get("/api/admin/tool-icons", async (req, res) => {
+    try {
+      const toolIcons = await storage.getToolIcons();
+      res.json(toolIcons);
+    } catch (error) {
+      console.error("Error fetching tool icons:", error);
+      res.status(500).json({ message: "Failed to fetch tool icons" });
+    }
+  });
+
+  app.post("/api/admin/tool-icons", async (req, res) => {
+    try {
+      const { toolId, iconType, iconData } = req.body;
+      
+      if (!toolId || !iconType || !iconData) {
+        return res.status(400).json({ message: "toolId, iconType, and iconData are required" });
+      }
+
+      // Check if icon already exists for this tool
+      const existingIcon = await storage.getToolIcon(toolId);
+      
+      if (existingIcon) {
+        // Update existing icon
+        const updatedIcon = await storage.updateToolIcon(toolId, {
+          iconType,
+          iconData,
+          isActive: true
+        });
+        res.json(updatedIcon);
+      } else {
+        // Create new icon
+        const newIcon = await storage.createToolIcon({
+          toolId,
+          iconType,
+          iconData,
+          isActive: true
+        });
+        res.json(newIcon);
+      }
+    } catch (error) {
+      console.error("Error creating/updating tool icon:", error);
+      res.status(500).json({ message: "Failed to create/update tool icon" });
+    }
+  });
+
+  app.delete("/api/admin/tool-icons/:toolId", async (req, res) => {
+    try {
+      const toolId = parseInt(req.params.toolId);
+      
+      if (isNaN(toolId)) {
+        return res.status(400).json({ message: "Invalid tool ID" });
+      }
+
+      const success = await storage.deleteToolIcon(toolId);
+      
+      if (!success) {
+        return res.status(404).json({ message: "Tool icon not found" });
+      }
+
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting tool icon:", error);
+      res.status(500).json({ message: "Failed to delete tool icon" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

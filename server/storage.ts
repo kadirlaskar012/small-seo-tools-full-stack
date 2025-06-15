@@ -116,6 +116,7 @@ export interface IStorage {
   deletePageSchema(id: number): Promise<boolean>;
 
   // Tool Icons
+  getToolIcons(): Promise<ToolIcon[]>;
   getToolIcon(toolId: number): Promise<ToolIcon | undefined>;
   createToolIcon(icon: InsertToolIcon): Promise<ToolIcon>;
   updateToolIcon(toolId: number, icon: Partial<InsertToolIcon>): Promise<ToolIcon | undefined>;
@@ -641,6 +642,10 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Tool Icons
+  async getToolIcons(): Promise<ToolIcon[]> {
+    return await db.select().from(toolIcons).orderBy(toolIcons.createdAt);
+  }
+
   async getToolIcon(toolId: number): Promise<ToolIcon | undefined> {
     const [icon] = await db.select().from(toolIcons).where(eq(toolIcons.toolId, toolId));
     return icon || undefined;

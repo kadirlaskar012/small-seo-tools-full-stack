@@ -113,6 +113,10 @@ export default function Admin() {
             </div>
           </TabsContent>
 
+          <TabsContent value="icons" className="space-y-6">
+            <HomepageIconManager />
+          </TabsContent>
+
           <TabsContent value="branding" className="space-y-6">
             <div>
               <h2 className="text-2xl font-semibold mb-6">Site Branding</h2>
