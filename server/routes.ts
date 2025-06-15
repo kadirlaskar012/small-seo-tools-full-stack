@@ -507,18 +507,385 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/seo/keyword-density", async (req, res) => {
     try {
-      const { text, targetKeyword } = req.body;
+      const { text, url, targetKeyword } = req.body;
       
-      if (!text) {
-        return res.status(400).json({ message: "Text content is required" });
+      let contentToAnalyze = text;
+      
+      // If URL is provided, fetch content from the webpage
+      if (url && !text) {
+        const response = await fetch(url, {
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        const html = await response.text();
+        // Extract text content from HTML
+        contentToAnalyze = html
+          .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+          .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+          .replace(/<[^>]*>/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+      }
+      
+      if (!contentToAnalyze) {
+        return res.status(400).json({ message: "Text content or URL is required" });
       }
 
-      const keywordAnalysis = analyzeKeywordDensity(text, targetKeyword);
+      const keywordAnalysis = analyzeKeywordDensity(contentToAnalyze, targetKeyword);
       
       res.json(keywordAnalysis);
     } catch (error) {
       console.error("Keyword density analysis error:", error);
       res.status(500).json({ message: "Failed to analyze keyword density" });
+    }
+  });
+
+  // Text Tools API
+  app.post("/api/tools/text-case-converter", async (req, res) => {
+    try {
+      const { text, conversion } = req.body;
+      
+      if (!text) {
+        return res.status(400).json({ message: "Text is required" });
+      }
+
+      let result = "";
+      switch (conversion) {
+        case "uppercase":
+          result = text.toUpperCase();
+          break;
+        case "lowercase":
+          result = text.toLowerCase();
+          break;
+        case "title":
+          result = text.replace(/\w\S*/g, (txt) => 
+            txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+          );
+          break;
+        case "sentence":
+          result = text.toLowerCase().replace(/(^\w|\.\s+\w)/g, (letter) => 
+            letter.toUpperCase()
+          );
+          break;
+        case "camel":
+          result = text.replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => 
+            index === 0 ? word.toLowerCase() : word.toUpperCase()
+          ).replace(/\s+/g, '');
+          break;
+        case "pascal":
+          result = text.replace(/(?:^\w|[A-Z]|\b\w)/g, (word) => 
+            word.toUpperCase()
+          ).replace(/\s+/g, '');
+          break;
+        case "snake":
+          result = text.toLowerCase().replace(/\s+/g, '_');
+          break;
+        case "kebab":
+          result = text.toLowerCase().replace(/\s+/g, '-');
+          break;
+        default:
+          return res.status(400).json({ message: "Invalid conversion type" });
+      }
+
+      res.json({ 
+        original: text, 
+        converted: result, 
+        conversion,
+        length: result.length,
+        wordCount: result.split(/\s+/).filter(word => word.length > 0).length
+      });
+    } catch (error) {
+      console.error("Text case conversion error:", error);
+      res.status(500).json({ message: "Failed to convert text case" });
+    }
+  });
+
+  app.post("/api/tools/word-counter", async (req, res) => {
+    try {
+      const { text } = req.body;
+      
+      if (!text) {
+        return res.status(400).json({ message: "Text is required" });
+      }
+
+      const characters = text.length;
+      const charactersNoSpaces = text.replace(/\s/g, '').length;
+      const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+      const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0).length;
+      const paragraphs = text.split(/\n\s*\n/).filter(p => p.trim().length > 0).length;
+      const readingTime = Math.ceil(words / 200); // Average reading speed
+      const speakingTime = Math.ceil(words / 150); // Average speaking speed
+
+      res.json({
+        characters,
+        charactersNoSpaces,
+        words,
+        sentences,
+        paragraphs,
+        readingTime,
+        speakingTime,
+        averageWordsPerSentence: sentences > 0 ? Math.round(words / sentences) : 0
+      });
+    } catch (error) {
+      console.error("Word counter error:", error);
+      res.status(500).json({ message: "Failed to count words" });
+    }
+  });
+
+  app.post("/api/tools/text-sorter", async (req, res) => {
+    try {
+      const { text, sortType, order } = req.body;
+      
+      if (!text) {
+        return res.status(400).json({ message: "Text is required" });
+      }
+
+      let lines = text.split('\n').filter(line => line.trim().length > 0);
+      
+      switch (sortType) {
+        case "alphabetical":
+          lines.sort((a, b) => a.localeCompare(b));
+          break;
+        case "length":
+          lines.sort((a, b) => a.length - b.length);
+          break;
+        case "numerical":
+          lines.sort((a, b) => {
+            const numA = parseFloat(a);
+            const numB = parseFloat(b);
+            if (isNaN(numA) && isNaN(numB)) return a.localeCompare(b);
+            if (isNaN(numA)) return 1;
+            if (isNaN(numB)) return -1;
+            return numA - numB;
+          });
+          break;
+        case "random":
+          for (let i = lines.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [lines[i], lines[j]] = [lines[j], lines[i]];
+          }
+          break;
+        default:
+          return res.status(400).json({ message: "Invalid sort type" });
+      }
+
+      if (order === "desc" && sortType !== "random") {
+        lines.reverse();
+      }
+
+      res.json({
+        original: text,
+        sorted: lines.join('\n'),
+        lineCount: lines.length,
+        sortType,
+        order
+      });
+    } catch (error) {
+      console.error("Text sorter error:", error);
+      res.status(500).json({ message: "Failed to sort text" });
+    }
+  });
+
+  // URL Tools API
+  app.post("/api/tools/url-encoder-decoder", async (req, res) => {
+    try {
+      const { text, operation } = req.body;
+      
+      if (!text) {
+        return res.status(400).json({ message: "Text is required" });
+      }
+
+      let result = "";
+      try {
+        switch (operation) {
+          case "encode":
+            result = encodeURIComponent(text);
+            break;
+          case "decode":
+            result = decodeURIComponent(text);
+            break;
+          default:
+            return res.status(400).json({ message: "Invalid operation" });
+        }
+      } catch (error) {
+        return res.status(400).json({ message: "Invalid input for URL encoding/decoding" });
+      }
+
+      res.json({
+        original: text,
+        result,
+        operation,
+        length: result.length
+      });
+    } catch (error) {
+      console.error("URL encoder/decoder error:", error);
+      res.status(500).json({ message: "Failed to encode/decode URL" });
+    }
+  });
+
+  app.post("/api/tools/base64-encoder-decoder", async (req, res) => {
+    try {
+      const { text, operation } = req.body;
+      
+      if (!text) {
+        return res.status(400).json({ message: "Text is required" });
+      }
+
+      let result = "";
+      try {
+        switch (operation) {
+          case "encode":
+            result = Buffer.from(text, 'utf8').toString('base64');
+            break;
+          case "decode":
+            result = Buffer.from(text, 'base64').toString('utf8');
+            break;
+          default:
+            return res.status(400).json({ message: "Invalid operation" });
+        }
+      } catch (error) {
+        return res.status(400).json({ message: "Invalid input for Base64 encoding/decoding" });
+      }
+
+      res.json({
+        original: text,
+        result,
+        operation,
+        originalLength: text.length,
+        resultLength: result.length
+      });
+    } catch (error) {
+      console.error("Base64 encoder/decoder error:", error);
+      res.status(500).json({ message: "Failed to encode/decode Base64" });
+    }
+  });
+
+  app.post("/api/tools/hash-generator", async (req, res) => {
+    try {
+      const { text, algorithm } = req.body;
+      
+      if (!text) {
+        return res.status(400).json({ message: "Text is required" });
+      }
+
+      const crypto = require('crypto');
+      let result = "";
+
+      try {
+        switch (algorithm) {
+          case "md5":
+            result = crypto.createHash('md5').update(text).digest('hex');
+            break;
+          case "sha1":
+            result = crypto.createHash('sha1').update(text).digest('hex');
+            break;
+          case "sha256":
+            result = crypto.createHash('sha256').update(text).digest('hex');
+            break;
+          case "sha512":
+            result = crypto.createHash('sha512').update(text).digest('hex');
+            break;
+          default:
+            return res.status(400).json({ message: "Invalid algorithm" });
+        }
+      } catch (error) {
+        return res.status(400).json({ message: "Failed to generate hash" });
+      }
+
+      res.json({
+        original: text,
+        hash: result,
+        algorithm,
+        length: result.length
+      });
+    } catch (error) {
+      console.error("Hash generator error:", error);
+      res.status(500).json({ message: "Failed to generate hash" });
+    }
+  });
+
+  // Color Tools API
+  app.post("/api/tools/color-converter", async (req, res) => {
+    try {
+      const { color, fromFormat, toFormat } = req.body;
+      
+      if (!color) {
+        return res.status(400).json({ message: "Color value is required" });
+      }
+
+      // Color conversion functions
+      const hexToRgb = (hex: string) => {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+          r: parseInt(result[1], 16),
+          g: parseInt(result[2], 16),
+          b: parseInt(result[3], 16)
+        } : null;
+      };
+
+      const rgbToHex = (r: number, g: number, b: number) => {
+        return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+      };
+
+      const rgbToHsl = (r: number, g: number, b: number) => {
+        r /= 255; g /= 255; b /= 255;
+        const max = Math.max(r, g, b), min = Math.min(r, g, b);
+        let h = 0, s = 0, l = (max + min) / 2;
+
+        if (max === min) {
+          h = s = 0;
+        } else {
+          const d = max - min;
+          s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+          switch (max) {
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+          }
+          h /= 6;
+        }
+        return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
+      };
+
+      let result: any = {};
+
+      try {
+        if (fromFormat === "hex") {
+          const rgb = hexToRgb(color);
+          if (!rgb) throw new Error("Invalid hex color");
+          
+          result.hex = color;
+          result.rgb = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+          const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+          result.hsl = `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
+        } else if (fromFormat === "rgb") {
+          const match = color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+          if (!match) throw new Error("Invalid RGB color");
+          
+          const [, r, g, b] = match.map(Number);
+          result.rgb = color;
+          result.hex = rgbToHex(r, g, b);
+          const hsl = rgbToHsl(r, g, b);
+          result.hsl = `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
+        }
+
+        res.json({
+          original: color,
+          fromFormat,
+          conversions: result
+        });
+      } catch (error) {
+        return res.status(400).json({ message: "Invalid color format" });
+      }
+    } catch (error) {
+      console.error("Color converter error:", error);
+      res.status(500).json({ message: "Failed to convert color" });
     }
   });
 
