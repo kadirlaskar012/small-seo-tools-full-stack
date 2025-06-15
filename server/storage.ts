@@ -8,6 +8,9 @@ import {
   toolUsage,
   similarTools,
   uploadedFiles,
+  schemaTemplates,
+  pageSchemas,
+  toolIcons,
   type User,
   type InsertUser,
   type Category,
@@ -28,6 +31,12 @@ import {
   type InsertSimilarTool,
   type UploadedFile,
   type InsertUploadedFile,
+  type SchemaTemplate,
+  type InsertSchemaTemplate,
+  type PageSchema,
+  type InsertPageSchema,
+  type ToolIcon,
+  type InsertToolIcon,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, sql } from "drizzle-orm";

@@ -263,6 +263,189 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Schema Template routes
+  app.get("/api/schema-templates", async (req, res) => {
+    try {
+      const templates = await storage.getSchemaTemplates();
+      res.json(templates);
+    } catch (error) {
+      console.error("Error fetching schema templates:", error);
+      res.status(500).json({ message: "Failed to fetch schema templates" });
+    }
+  });
+
+  app.get("/api/schema-templates/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const template = await storage.getSchemaTemplate(id);
+      if (!template) {
+        return res.status(404).json({ message: "Schema template not found" });
+      }
+      res.json(template);
+    } catch (error) {
+      console.error("Error fetching schema template:", error);
+      res.status(500).json({ message: "Failed to fetch schema template" });
+    }
+  });
+
+  app.post("/api/schema-templates", async (req, res) => {
+    try {
+      const template = await storage.createSchemaTemplate(req.body);
+      res.json(template);
+    } catch (error) {
+      console.error("Error creating schema template:", error);
+      res.status(500).json({ message: "Failed to create schema template" });
+    }
+  });
+
+  app.put("/api/schema-templates/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const template = await storage.updateSchemaTemplate(id, req.body);
+      if (!template) {
+        return res.status(404).json({ message: "Schema template not found" });
+      }
+      res.json(template);
+    } catch (error) {
+      console.error("Error updating schema template:", error);
+      res.status(500).json({ message: "Failed to update schema template" });
+    }
+  });
+
+  app.delete("/api/schema-templates/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const success = await storage.deleteSchemaTemplate(id);
+      if (!success) {
+        return res.status(404).json({ message: "Schema template not found" });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting schema template:", error);
+      res.status(500).json({ message: "Failed to delete schema template" });
+    }
+  });
+
+  // Page Schema routes
+  app.get("/api/page-schemas", async (req, res) => {
+    try {
+      const schemas = await storage.getPageSchemas();
+      res.json(schemas);
+    } catch (error) {
+      console.error("Error fetching page schemas:", error);
+      res.status(500).json({ message: "Failed to fetch page schemas" });
+    }
+  });
+
+  app.get("/api/page-schemas/:pageType/:pageId?", async (req, res) => {
+    try {
+      const { pageType, pageId } = req.params;
+      const schema = await storage.getPageSchema(pageType, pageId ? parseInt(pageId) : undefined);
+      if (!schema) {
+        return res.status(404).json({ message: "Page schema not found" });
+      }
+      res.json(schema);
+    } catch (error) {
+      console.error("Error fetching page schema:", error);
+      res.status(500).json({ message: "Failed to fetch page schema" });
+    }
+  });
+
+  app.post("/api/page-schemas", async (req, res) => {
+    try {
+      const schema = await storage.createPageSchema(req.body);
+      res.json(schema);
+    } catch (error) {
+      console.error("Error creating page schema:", error);
+      res.status(500).json({ message: "Failed to create page schema" });
+    }
+  });
+
+  app.put("/api/page-schemas/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const schema = await storage.updatePageSchema(id, req.body);
+      if (!schema) {
+        return res.status(404).json({ message: "Page schema not found" });
+      }
+      res.json(schema);
+    } catch (error) {
+      console.error("Error updating page schema:", error);
+      res.status(500).json({ message: "Failed to update page schema" });
+    }
+  });
+
+  app.delete("/api/page-schemas/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const success = await storage.deletePageSchema(id);
+      if (!success) {
+        return res.status(404).json({ message: "Page schema not found" });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting page schema:", error);
+      res.status(500).json({ message: "Failed to delete page schema" });
+    }
+  });
+
+  // Tool Icon routes
+  app.get("/api/tools/:toolId/icon", async (req, res) => {
+    try {
+      const toolId = parseInt(req.params.toolId);
+      const icon = await storage.getToolIcon(toolId);
+      if (!icon) {
+        return res.status(404).json({ message: "Tool icon not found" });
+      }
+      res.json(icon);
+    } catch (error) {
+      console.error("Error fetching tool icon:", error);
+      res.status(500).json({ message: "Failed to fetch tool icon" });
+    }
+  });
+
+  app.post("/api/tools/:toolId/icon", async (req, res) => {
+    try {
+      const toolId = parseInt(req.params.toolId);
+      const icon = await storage.createToolIcon({
+        toolId,
+        ...req.body,
+      });
+      res.json(icon);
+    } catch (error) {
+      console.error("Error creating tool icon:", error);
+      res.status(500).json({ message: "Failed to create tool icon" });
+    }
+  });
+
+  app.put("/api/tools/:toolId/icon", async (req, res) => {
+    try {
+      const toolId = parseInt(req.params.toolId);
+      const icon = await storage.updateToolIcon(toolId, req.body);
+      if (!icon) {
+        return res.status(404).json({ message: "Tool icon not found" });
+      }
+      res.json(icon);
+    } catch (error) {
+      console.error("Error updating tool icon:", error);
+      res.status(500).json({ message: "Failed to update tool icon" });
+    }
+  });
+
+  app.delete("/api/tools/:toolId/icon", async (req, res) => {
+    try {
+      const toolId = parseInt(req.params.toolId);
+      const success = await storage.deleteToolIcon(toolId);
+      if (!success) {
+        return res.status(404).json({ message: "Tool icon not found" });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting tool icon:", error);
+      res.status(500).json({ message: "Failed to delete tool icon" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
