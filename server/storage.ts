@@ -11,6 +11,7 @@ import {
   schemaTemplates,
   pageSchemas,
   toolIcons,
+  siteBranding,
   type User,
   type InsertUser,
   type Category,
@@ -37,6 +38,8 @@ import {
   type InsertPageSchema,
   type ToolIcon,
   type InsertToolIcon,
+  type SiteBranding,
+  type InsertSiteBranding,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, sql } from "drizzle-orm";

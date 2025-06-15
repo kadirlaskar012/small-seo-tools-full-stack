@@ -448,6 +448,68 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Site Branding API Routes
+  app.get("/api/site-branding", async (req, res) => {
+    try {
+      const branding = await storage.getSiteBranding();
+      res.json(branding);
+    } catch (error) {
+      console.error("Error fetching site branding:", error);
+      res.status(500).json({ message: "Failed to fetch site branding" });
+    }
+  });
+
+  app.get("/api/site-branding/:type", async (req, res) => {
+    try {
+      const type = req.params.type;
+      const branding = await storage.getSiteBrandingByType(type);
+      res.json(branding);
+    } catch (error) {
+      console.error("Error fetching site branding by type:", error);
+      res.status(500).json({ message: "Failed to fetch site branding" });
+    }
+  });
+
+  app.post("/api/site-branding", async (req, res) => {
+    try {
+      const brandingData = req.body;
+      const branding = await storage.createSiteBranding(brandingData);
+      res.json(branding);
+    } catch (error) {
+      console.error("Error creating site branding:", error);
+      res.status(500).json({ message: "Failed to create site branding" });
+    }
+  });
+
+  app.put("/api/site-branding/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const brandingData = req.body;
+      const branding = await storage.updateSiteBranding(id, brandingData);
+      if (!branding) {
+        return res.status(404).json({ message: "Site branding not found" });
+      }
+      res.json(branding);
+    } catch (error) {
+      console.error("Error updating site branding:", error);
+      res.status(500).json({ message: "Failed to update site branding" });
+    }
+  });
+
+  app.delete("/api/site-branding/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const success = await storage.deleteSiteBranding(id);
+      if (!success) {
+        return res.status(404).json({ message: "Site branding not found" });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Error deleting site branding:", error);
+      res.status(500).json({ message: "Failed to delete site branding" });
+    }
+  });
+
   // SEO Analysis API
   app.post("/api/seo/analyze", async (req, res) => {
     try {
