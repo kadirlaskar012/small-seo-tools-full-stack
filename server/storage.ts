@@ -124,13 +124,13 @@ export class DatabaseStorage implements IStorage {
     // Clear existing data for fresh initialization
     await db.delete(tools);
     await db.delete(categories);
-    console.log('Cleared existing data, initializing comprehensive tools database...');
+    console.log('Cleared existing data, initializing new 30-tool database...');
 
-    // Import comprehensive tools data
-    const { TOOL_CATEGORIES, getAllTools } = await import('../src/data/tools-data');
+    // Import new curated tools data
+    const { NEW_TOOL_CATEGORIES, getAllNewTools } = await import('../src/data/new-tools-data');
     
     // Insert all 10 categories first
-    for (const category of TOOL_CATEGORIES) {
+    for (const category of NEW_TOOL_CATEGORIES) {
       await db.insert(categories).values({
         id: category.id,
         name: category.name,
@@ -141,30 +141,26 @@ export class DatabaseStorage implements IStorage {
       });
     }
 
-    // Get all 320+ tools
-    const allTools = getAllTools();
-    console.log(`Inserting ${allTools.length} tools across ${TOOL_CATEGORIES.length} categories...`);
+    // Get all 30 curated tools
+    const allTools = getAllNewTools();
+    console.log(`Inserting ${allTools.length} curated tools across ${NEW_TOOL_CATEGORIES.length} categories...`);
 
-    // Insert tools in batches to avoid memory issues
-    const batchSize = 50;
-    for (let i = 0; i < allTools.length; i += batchSize) {
-      const batch = allTools.slice(i, i + batchSize);
-      const toolsData = batch.map(tool => ({
-        title: tool.title,
-        slug: tool.slug,
-        description: tool.description,
-        categoryId: tool.categoryId,
-        code: tool.slug,
-        metaTitle: tool.metaTitle,
-        metaDescription: tool.metaDescription,
-        metaTags: tool.metaTags,
-        image: null,
-        isActive: true,
-      }));
-      
-      await db.insert(tools).values(toolsData);
-      console.log(`Inserted batch ${Math.floor(i/batchSize) + 1}/${Math.ceil(allTools.length/batchSize)}`);
-    }
+    // Insert all tools at once since there are only 30
+    const toolsData = allTools.map(tool => ({
+      title: tool.title,
+      slug: tool.slug,
+      description: tool.description,
+      categoryId: tool.categoryId,
+      code: tool.code,
+      metaTitle: tool.metaTitle,
+      metaDescription: tool.metaDescription,
+      metaTags: tool.keywords,
+      image: null,
+      isActive: true,
+    }));
+    
+    await db.insert(tools).values(toolsData);
+    console.log('Successfully inserted all 30 curated tools!');
 
     // Check if blog posts already exist to avoid duplicates
     const existingBlogPosts = await db.select().from(blogPosts);
