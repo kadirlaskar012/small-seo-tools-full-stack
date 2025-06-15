@@ -99,92 +99,187 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Tools Section */}
+      {/* Main Content Area with 75%/25% Split */}
       <section id="tools-section" className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Category Filter */}
-          <div className="mb-8">
-            <h2 className="text-3xl font-bold mb-6">Popular Tools</h2>
-            <div className="flex flex-wrap gap-2 mb-8">
-              <Button
-                variant={selectedCategory === "all" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedCategory("all")}
-                className="rounded-full"
-              >
-                All
-              </Button>
-              {categories.map((category) => (
-                <Button
-                  key={category.id}
-                  variant={selectedCategory === category.slug ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedCategory(category.slug)}
-                  className="rounded-full"
-                >
-                  {category.name}
-                </Button>
-              ))}
-            </div>
-          </div>
+          <div className="flex flex-col lg:flex-row gap-8">
+            {/* Main Content - 75% width */}
+            <main className="flex-1 lg:w-3/4">
+              <h2 className="text-3xl font-bold mb-8">Tool Categories</h2>
+              
+              {/* Group tools by category */}
+              {categories.map((category) => {
+                const categoryTools = filteredTools.filter(tool => tool.category.id === category.id);
+                if (categoryTools.length === 0) return null;
 
-          {/* Desktop Grid Layout */}
-          {!isMobile ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredTools.map((tool) => (
-                <Link key={tool.id} href={`/${tool.slug}`}>
-                  <Card className="tool-card h-full cursor-pointer">
-                    <CardContent className="p-6">
-                      <div className="flex items-center mb-4">
-                        <div className={`w-12 h-12 ${getColorForCategory(tool.category.color)} rounded-lg flex items-center justify-center mr-4 text-2xl`}>
-                          {getIconForCategory(tool.category.icon)}
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="text-lg font-semibold group-hover:text-primary transition-colors">
-                            {tool.title}
-                          </h3>
-                          <p className="text-sm text-muted-foreground">{tool.category.name}</p>
-                        </div>
+                return (
+                  <div key={category.id} className="bg-white dark:bg-gray-800 rounded-2xl p-6 mb-8 shadow-sm border border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center gap-4 mb-6">
+                      <div className={`w-16 h-16 ${getColorForCategory(category.color)} rounded-2xl flex items-center justify-center text-3xl`}>
+                        {getIconForCategory(category.icon)}
                       </div>
-                      <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-                        {tool.description}
-                      </p>
-                      <div className="flex items-center justify-between">
-                        <Badge variant="secondary">Free</Badge>
-                        <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
-            </div>
-          ) : (
-            /* Mobile List Layout */
-            <div className="space-y-3">
-              {filteredTools.map((tool) => (
-                <Link key={tool.id} href={`/${tool.slug}`}>
-                  <div className="tool-card-mobile">
-                    <div className="flex items-center">
-                      <span className="text-2xl mr-3">{getIconForCategory(tool.category.icon)}</span>
                       <div>
-                        <h3 className="text-sm font-semibold">{tool.title}</h3>
-                        <p className="text-xs text-muted-foreground">{tool.category.name}</p>
+                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                          {category.name}
+                        </h3>
+                        <p className="text-gray-600 dark:text-gray-400">
+                          {category.description}
+                        </p>
                       </div>
                     </div>
-                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                    
+                    {/* Tools Grid - Mobile shows names only */}
+                    {!isMobile ? (
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {categoryTools.map((tool) => (
+                          <Link key={tool.id} href={`/${tool.slug}`}>
+                            <Card className="hover:shadow-md transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-600 cursor-pointer h-full">
+                              <CardContent className="p-4">
+                                <div className="flex items-center mb-3">
+                                  <div className={`w-10 h-10 ${getColorForCategory(tool.category.color)} rounded-lg flex items-center justify-center mr-3 text-lg`}>
+                                    {getIconForCategory(tool.category.icon)}
+                                  </div>
+                                  <div className="flex-1">
+                                    <h4 className="font-semibold text-sm leading-tight line-clamp-1">
+                                      {tool.title}
+                                    </h4>
+                                  </div>
+                                </div>
+                                <p className="text-xs text-muted-foreground mb-3 line-clamp-2">
+                                  {tool.description}
+                                </p>
+                                <Button size="sm" className="w-full">
+                                  Use Tool
+                                </Button>
+                              </CardContent>
+                            </Card>
+                          </Link>
+                        ))}
+                      </div>
+                    ) : (
+                      /* Mobile List Layout - Tool names only */
+                      <div className="space-y-2">
+                        {categoryTools.map((tool) => (
+                          <Link key={tool.id} href={`/${tool.slug}`}>
+                            <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                              <span className="font-medium text-sm">{tool.title}</span>
+                              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                </Link>
-              ))}
-            </div>
-          )}
+                );
+              })}
+              
+              {filteredTools.length === 0 && (
+                <div className="text-center py-12 bg-white dark:bg-gray-800 rounded-2xl">
+                  <p className="text-lg text-muted-foreground">
+                    {searchQuery ? "No tools found matching your search." : "No tools available."}
+                  </p>
+                </div>
+              )}
+            </main>
 
-          {filteredTools.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-lg text-muted-foreground">
-                {searchQuery ? "No tools found matching your search." : "No tools available."}
-              </p>
-            </div>
-          )}
+            {/* Sidebar - 25% width */}
+            <aside className="w-full lg:w-1/4 space-y-6">
+              {/* Search and Filter Box */}
+              <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+                <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white flex items-center gap-2">
+                  <Search className="h-5 w-5" />
+                  Search & Filter
+                </h3>
+                <div className="space-y-4">
+                  <div>
+                    <Input
+                      type="text"
+                      placeholder="Search tools..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                      Category
+                    </label>
+                    <div className="space-y-2">
+                      <Button
+                        variant={selectedCategory === "all" ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setSelectedCategory("all")}
+                        className="w-full justify-start"
+                      >
+                        All Categories
+                      </Button>
+                      {categories.map((category) => (
+                        <Button
+                          key={category.id}
+                          variant={selectedCategory === category.slug ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setSelectedCategory(category.slug)}
+                          className="w-full justify-start"
+                        >
+                          <span className="mr-2">{getIconForCategory(category.icon)}</span>
+                          {category.name}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Latest Blog Posts */}
+              {blogPosts.length > 0 && (
+                <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+                  <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
+                    Latest Articles
+                  </h3>
+                  <div className="space-y-4">
+                    {blogPosts.slice(0, 3).map((post) => (
+                      <Link key={post.id} href={`/blog/${post.slug}`}>
+                        <div className="group cursor-pointer">
+                          <h4 className="text-sm font-medium text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2 mb-1">
+                            {post.title}
+                          </h4>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                            {new Date(post.createdAt).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                  <Button variant="outline" size="sm" asChild className="w-full mt-4">
+                    <Link href="/blog">
+                      View All Articles
+                    </Link>
+                  </Button>
+                </div>
+              )}
+
+              {/* Tool Statistics */}
+              <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700">
+                <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
+                  Quick Stats
+                </h3>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Total Tools</span>
+                    <Badge variant="secondary">{tools.length}</Badge>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Categories</span>
+                    <Badge variant="secondary">{categories.length}</Badge>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Blog Posts</span>
+                    <Badge variant="secondary">{blogPosts.length}</Badge>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
         </div>
       </section>
 

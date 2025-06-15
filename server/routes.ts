@@ -5,6 +5,9 @@ import { insertCategorySchema, insertToolSchema, insertBlogPostSchema, type Tool
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Initialize database with default data
+  await storage.initializeDefaultData();
+  
   // Categories
   app.get("/api/categories", async (req, res) => {
     try {
