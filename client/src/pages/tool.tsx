@@ -378,19 +378,19 @@ export default function Tool() {
               </p>
             </div>
             
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
               {similarTools.slice(0, 6).map((similarTool) => (
                 <Link key={similarTool.id} href={`/tools/${similarTool.slug}`}>
-                  <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-600 cursor-pointer h-full text-center">
-                    <div className="flex items-center justify-center mx-auto mb-3">
+                  <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-3 hover:shadow-md transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-600 cursor-pointer text-center">
+                    <div className="flex items-center justify-center mx-auto mb-2">
                       <ToolLogo 
                         toolSlug={similarTool.slug} 
                         categorySlug={similarTool.category.slug} 
-                        size={24}
+                        size={32}
                         className="transition-transform hover:scale-105"
                       />
                     </div>
-                    <h3 className="font-medium text-sm text-gray-900 dark:text-white leading-tight">
+                    <h3 className="font-medium text-xs text-gray-900 dark:text-white leading-tight">
                       {similarTool.title}
                     </h3>
                   </div>
