@@ -143,6 +143,13 @@ export default function Tool() {
       case "smart-modern-notepad":
       case "notepad":
         return <SmartModernNotepad />;
+      case "jwt-decoder":
+        return <JWTDecoder />;
+      case "regex-generator":
+        return <RegexGenerator />;
+      case "js-obfuscator":
+      case "javascript-obfuscator":
+        return <JSObfuscator />;
       default:
         return (
           <Card>
