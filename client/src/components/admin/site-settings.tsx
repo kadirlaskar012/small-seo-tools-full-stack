@@ -25,20 +25,17 @@ export default function SiteSettings() {
     mutationFn: async (file: File) => {
       const formData = new FormData();
       formData.append("file", file);
-      return apiRequest("/api/upload", {
+      const response = await fetch("/api/upload", {
         method: "POST",
         body: formData,
       });
+      return response.json();
     },
   });
 
   const settingMutation = useMutation({
     mutationFn: async (data: { key: string; value: string }) => {
-      return apiRequest("/api/settings", {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: { "Content-Type": "application/json" },
-      });
+      return apiRequest("/api/settings", "POST", data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/settings"] });

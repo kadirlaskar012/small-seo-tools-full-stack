@@ -6,6 +6,7 @@ import ToolList from "@/components/admin/tool-list";
 import ToolForm from "@/components/admin/tool-form";
 import BlogList from "@/components/admin/blog-list";
 import BlogForm from "@/components/admin/blog-form";
+import SiteSettings from "@/components/admin/site-settings";
 import type { Category, ToolWithCategory, BlogPost } from "@shared/schema";
 import SEOHead from "@/components/seo-head";
 import { Combine, FileText, Settings, TrendingUp } from "lucide-react";
@@ -42,7 +43,7 @@ export default function Admin() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid grid-cols-4 w-full max-w-md">
+          <TabsList className="grid grid-cols-4 w-full max-w-lg">
             <TabsTrigger value="tools" className="flex items-center gap-2">
               <Combine className="h-4 w-4" />
               Tools
@@ -51,13 +52,13 @@ export default function Admin() {
               <FileText className="h-4 w-4" />
               Blog
             </TabsTrigger>
-            <TabsTrigger value="categories" className="flex items-center gap-2">
-              <Settings className="h-4 w-4" />
-              Categories
-            </TabsTrigger>
-            <TabsTrigger value="seo" className="flex items-center gap-2">
+            <TabsTrigger value="stats" className="flex items-center gap-2">
               <TrendingUp className="h-4 w-4" />
-              SEO
+              Stats
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="flex items-center gap-2">
+              <Settings className="h-4 w-4" />
+              Settings
             </TabsTrigger>
           </TabsList>
 
@@ -87,10 +88,40 @@ export default function Admin() {
             </div>
           </TabsContent>
 
-          <TabsContent value="categories" className="space-y-6">
+          <TabsContent value="stats" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Total Tools</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold">{tools.length}</div>
+                  <p className="text-muted-foreground">Active tools</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Blog Posts</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold">{blogPosts.length}</div>
+                  <p className="text-muted-foreground">Published posts</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Categories</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold">{categories.length}</div>
+                  <p className="text-muted-foreground">Tool categories</p>
+                </CardContent>
+              </Card>
+            </div>
+            
             <Card>
               <CardHeader>
-                <CardTitle>Categories</CardTitle>
+                <CardTitle>Tool Categories Overview</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -108,6 +139,9 @@ export default function Admin() {
                           <p className="text-sm text-muted-foreground">{category.description}</p>
                         </div>
                       </div>
+                      <div className="text-sm text-muted-foreground">
+                        {tools.filter(tool => tool.category.id === category.id).length} tools
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -115,17 +149,8 @@ export default function Admin() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="seo" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>SEO Settings</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  SEO settings and analytics will be available in a future update.
-                </p>
-              </CardContent>
-            </Card>
+          <TabsContent value="settings" className="space-y-6">
+            <SiteSettings />
           </TabsContent>
         </Tabs>
       </div>
