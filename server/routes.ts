@@ -1249,9 +1249,27 @@ Provide a comprehensive analysis with specific optimization recommendations in J
         
       } catch (apiError: any) {
         console.error("PageSpeed API error:", apiError);
+        
+        // Handle specific Lighthouse errors
+        if (apiError.message.includes('PAGE_HUNG') || apiError.message.includes('500')) {
+          return res.status(400).json({
+            success: false,
+            error: "The website took too long to respond or is temporarily unavailable. Please try a different URL or check if the website is accessible.",
+            lighthouse_error: true
+          });
+        }
+        
+        if (apiError.message.includes('404') || apiError.message.includes('403')) {
+          return res.status(400).json({
+            success: false,
+            error: "The website could not be found or access was denied. Please check the URL and try again.",
+            lighthouse_error: true
+          });
+        }
+        
         return res.status(500).json({
           success: false,
-          error: "Failed to analyze page speed. The website might be unreachable or the API service is temporarily unavailable.",
+          error: "Failed to analyze page speed. Please try again with a different website.",
           details: apiError.message
         });
       }

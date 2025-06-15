@@ -94,11 +94,27 @@ export function AdvancedPageSpeedChecker() {
       });
     },
     onError: (error: any) => {
-      toast({
-        title: "Speed Test Failed",
-        description: error.message || "Unable to analyze the website. Please check the URL and try again.",
-        variant: "destructive",
-      });
+      const errorMessage = error.message || "Unable to analyze the website. Please check the URL and try again.";
+      
+      if (errorMessage.includes("took too long to respond") || errorMessage.includes("temporarily unavailable")) {
+        toast({
+          title: "Website Unavailable",
+          description: "The website took too long to respond. Try testing a different website or check if this one is accessible.",
+          variant: "destructive",
+        });
+      } else if (errorMessage.includes("could not be found") || errorMessage.includes("access was denied")) {
+        toast({
+          title: "Website Not Found",
+          description: "The website could not be accessed. Please verify the URL is correct and publicly accessible.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Analysis Failed",
+          description: "Unable to analyze this website. Please try a different URL or check your internet connection.",
+          variant: "destructive",
+        });
+      }
     }
   });
 
