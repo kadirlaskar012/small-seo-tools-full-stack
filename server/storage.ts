@@ -5,6 +5,9 @@ import {
   blogPosts,
   siteSettings,
   admins,
+  toolUsage,
+  similarTools,
+  uploadedFiles,
   type User,
   type InsertUser,
   type Category,
@@ -18,6 +21,13 @@ import {
   type Admin,
   type InsertAdmin,
   type ToolWithCategory,
+  type ToolWithUsage,
+  type ToolUsage,
+  type InsertToolUsage,
+  type SimilarTool,
+  type InsertSimilarTool,
+  type UploadedFile,
+  type InsertUploadedFile,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";

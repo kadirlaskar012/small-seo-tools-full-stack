@@ -113,57 +113,39 @@ export default function Home() {
                 if (categoryTools.length === 0) return null;
 
                 return (
-                  <div key={category.id} className="category-box p-6 mb-8">
-                    <div className="flex items-center gap-4 mb-6">
-                      <div className={`w-16 h-16 ${getColorForCategory(category.color)} rounded-2xl flex items-center justify-center text-3xl`}>
-                        {getIconForCategory(category.icon)}
-                      </div>
-                      <div>
-                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
-                          {category.name}
-                        </h3>
-                        <p className="text-gray-600 dark:text-gray-400">
-                          {category.description}
-                        </p>
-                      </div>
+                  <div key={category.id} className="mb-12">
+                    <div className="mb-6">
+                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                        {category.name}
+                      </h2>
+                      <p className="text-gray-600 dark:text-gray-400 text-sm mb-6">
+                        {category.description}
+                      </p>
                     </div>
                     
-                    {/* Tools Grid - Mobile shows names only */}
+                    {/* Tools Grid - Clean card layout matching reference */}
                     {!isMobile ? (
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                         {categoryTools.map((tool) => (
                           <Link key={tool.id} href={`/${tool.slug}`}>
-                            <Card className="hover:shadow-md transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-600 cursor-pointer h-full">
-                              <CardContent className="p-4">
-                                <div className="flex items-center mb-3">
-                                  <div className={`w-10 h-10 ${getColorForCategory(tool.category.color)} rounded-lg flex items-center justify-center mr-3 text-lg`}>
-                                    {getIconForCategory(tool.category.icon)}
-                                  </div>
-                                  <div className="flex-1">
-                                    <h4 className="font-semibold text-sm leading-tight line-clamp-1">
-                                      {tool.title}
-                                    </h4>
-                                  </div>
-                                </div>
-                                <p className="text-xs text-muted-foreground mb-3 line-clamp-2">
-                                  {tool.description}
-                                </p>
-                                <Button size="sm" className="w-full">
-                                  Use Tool
-                                </Button>
-                              </CardContent>
-                            </Card>
+                            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-600 cursor-pointer h-full text-center">
+                              <div className={`w-12 h-12 ${getColorForCategory(tool.category.color)} rounded-lg flex items-center justify-center mx-auto mb-3 text-2xl`}>
+                                {getIconForCategory(tool.category.icon)}
+                              </div>
+                              <h3 className="font-medium text-sm text-gray-900 dark:text-white leading-tight">
+                                {tool.title}
+                              </h3>
+                            </div>
                           </Link>
                         ))}
                       </div>
                     ) : (
-                      /* Mobile List Layout - Tool names only */
+                      /* Mobile List Layout - Lightweight text boxes */
                       <div className="space-y-2">
                         {categoryTools.map((tool) => (
                           <Link key={tool.id} href={`/${tool.slug}`}>
-                            <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
-                              <span className="font-medium text-sm">{tool.title}</span>
-                              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md p-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                              <span className="text-sm text-gray-900 dark:text-white">{tool.title}</span>
                             </div>
                           </Link>
                         ))}
@@ -228,6 +210,43 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
+              </div>
+
+              {/* Popular Tools */}
+              <div className="sidebar-box p-6">
+                <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
+                  Popular Tools
+                </h3>
+                <div className="space-y-3">
+                  {tools.slice(0, 8).map((tool) => (
+                    <Link key={tool.id} href={`/${tool.slug}`}>
+                      <div className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors group cursor-pointer">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                        <span className="text-sm text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                          {tool.title}
+                        </span>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              {/* Advertise With Us */}
+              <div className="sidebar-box p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
+                    <span className="text-white text-sm font-bold">Ad</span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    Advertise With Us
+                  </h3>
+                </div>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                  Reach thousands of users daily with your products and services.
+                </p>
+                <Button variant="outline" size="sm" className="w-full">
+                  Learn More
+                </Button>
               </div>
 
               {/* Latest Blog Posts */}

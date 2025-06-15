@@ -61,6 +61,36 @@ export const admins = pgTable("admins", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// Tool usage analytics
+export const toolUsage = pgTable("tool_usage", {
+  id: serial("id").primaryKey(),
+  toolId: integer("tool_id").references(() => tools.id, { onDelete: "cascade" }),
+  usageCount: integer("usage_count").default(0),
+  lastUsed: timestamp("last_used").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Similar tools relationships
+export const similarTools = pgTable("similar_tools", {
+  id: serial("id").primaryKey(),
+  toolId: integer("tool_id").references(() => tools.id, { onDelete: "cascade" }),
+  similarToolId: integer("similar_tool_id").references(() => tools.id, { onDelete: "cascade" }),
+  priority: integer("priority").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// File uploads for static files
+export const uploadedFiles = pgTable("uploaded_files", {
+  id: serial("id").primaryKey(),
+  filename: varchar("filename", { length: 255 }).notNull(),
+  originalName: varchar("original_name", { length: 255 }).notNull(),
+  mimeType: varchar("mime_type", { length: 100 }),
+  size: integer("size"),
+  path: varchar("path", { length: 500 }).notNull(),
+  isPublic: boolean("is_public").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
@@ -91,6 +121,21 @@ export const insertAdminSchema = createInsertSchema(admins).omit({
   createdAt: true,
 });
 
+export const insertToolUsageSchema = createInsertSchema(toolUsage).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertSimilarToolSchema = createInsertSchema(similarTools).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertUploadedFileSchema = createInsertSchema(uploadedFiles).omit({
+  id: true,
+  createdAt: true,
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 
@@ -109,4 +154,14 @@ export type InsertSiteSetting = z.infer<typeof insertSiteSettingSchema>;
 export type Admin = typeof admins.$inferSelect;
 export type InsertAdmin = z.infer<typeof insertAdminSchema>;
 
+export type ToolUsage = typeof toolUsage.$inferSelect;
+export type InsertToolUsage = z.infer<typeof insertToolUsageSchema>;
+
+export type SimilarTool = typeof similarTools.$inferSelect;
+export type InsertSimilarTool = z.infer<typeof insertSimilarToolSchema>;
+
+export type UploadedFile = typeof uploadedFiles.$inferSelect;
+export type InsertUploadedFile = z.infer<typeof insertUploadedFileSchema>;
+
 export type ToolWithCategory = Tool & { category: Category };
+export type ToolWithUsage = Tool & { category: Category; usageCount?: number };
