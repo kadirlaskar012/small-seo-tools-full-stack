@@ -8,6 +8,26 @@ import { z } from "zod";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import { promisify } from "util";
+import { exec as execCallback } from "child_process";
+
+const exec = promisify(execCallback);
+
+// Configure multer for file uploads
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    // Allow image files
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed'), false);
+    }
+  }
+});
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Initialize database with default data
@@ -2750,6 +2770,203 @@ print(json.dumps(result))
       });
     } catch (error) {
       res.status(500).json({ error: "Internal server error", details: error.message });
+    }
+  });
+
+  // Image to Text OCR
+  app.post('/api/tools/image-to-text-ocr', upload.single('image'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ 
+          success: false, 
+          error: "Image file is required" 
+        });
+      }
+
+      // Save uploaded file temporarily
+      const tempFilePath = path.join(__dirname, `temp_${Date.now()}_${req.file.originalname}`);
+      fs.writeFileSync(tempFilePath, req.file.buffer);
+
+      try {
+        const result = await exec(`python3 ${path.join(__dirname, 'image-to-text-ocr.py')} "${tempFilePath}"`);
+        const data = JSON.parse(result.stdout);
+        res.json(data);
+      } finally {
+        // Clean up temp file
+        if (fs.existsSync(tempFilePath)) {
+          fs.unlinkSync(tempFilePath);
+        }
+      }
+    } catch (error) {
+      console.error("Image to Text OCR error:", error);
+      res.status(500).json({ 
+        success: false, 
+        error: "Failed to process OCR" 
+      });
+    }
+  });
+
+  // Background Remover
+  app.post('/api/tools/background-remover', upload.single('image'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ 
+          success: false, 
+          error: "Image file is required" 
+        });
+      }
+
+      const { smooth_edges = 'true', hd_mode = 'false' } = req.body;
+
+      // Save uploaded file temporarily
+      const tempFilePath = path.join(__dirname, `temp_${Date.now()}_${req.file.originalname}`);
+      fs.writeFileSync(tempFilePath, req.file.buffer);
+
+      try {
+        const result = await exec(`python3 ${path.join(__dirname, 'background-remover.py')} "${tempFilePath}" "${smooth_edges}" "${hd_mode}"`);
+        const data = JSON.parse(result.stdout);
+        res.json(data);
+      } finally {
+        // Clean up temp file
+        if (fs.existsSync(tempFilePath)) {
+          fs.unlinkSync(tempFilePath);
+        }
+      }
+    } catch (error) {
+      console.error("Background Remover error:", error);
+      res.status(500).json({ 
+        success: false, 
+        error: "Failed to remove background" 
+      });
+    }
+  });
+
+  // Image DPI Converter
+  app.post('/api/tools/image-dpi-converter', upload.single('image'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ 
+          success: false, 
+          error: "Image file is required" 
+        });
+      }
+
+      const { target_dpi } = req.body;
+      
+      if (!target_dpi) {
+        return res.status(400).json({ 
+          success: false, 
+          error: "Target DPI is required" 
+        });
+      }
+
+      // Save uploaded file temporarily
+      const tempFilePath = path.join(__dirname, `temp_${Date.now()}_${req.file.originalname}`);
+      fs.writeFileSync(tempFilePath, req.file.buffer);
+
+      try {
+        const result = await exec(`python3 ${path.join(__dirname, 'image-dpi-converter.py')} "${tempFilePath}" "${target_dpi}"`);
+        const data = JSON.parse(result.stdout);
+        res.json(data);
+      } finally {
+        // Clean up temp file
+        if (fs.existsSync(tempFilePath)) {
+          fs.unlinkSync(tempFilePath);
+        }
+      }
+    } catch (error) {
+      console.error("Image DPI Converter error:", error);
+      res.status(500).json({ 
+        success: false, 
+        error: "Failed to convert DPI" 
+      });
+    }
+  });
+
+  // HTML to Markdown Converter
+  app.post('/api/tools/html-to-markdown', async (req, res) => {
+    try {
+      const { html } = req.body;
+      
+      if (!html) {
+        return res.status(400).json({ 
+          success: false, 
+          error: "HTML content is required" 
+        });
+      }
+
+      // Escape quotes for shell command
+      const escapedHtml = html.replace(/"/g, '\\"');
+      const result = await exec(`python3 ${path.join(__dirname, 'html-to-markdown-converter.py')} "${escapedHtml}"`);
+      const data = JSON.parse(result.stdout);
+      res.json(data);
+    } catch (error) {
+      console.error("HTML to Markdown Converter error:", error);
+      res.status(500).json({ 
+        success: false, 
+        error: "Failed to convert HTML to Markdown" 
+      });
+    }
+  });
+
+  // WebP to JPG Converter
+  app.post('/api/tools/webp-to-jpg-converter', upload.single('image'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ 
+          success: false, 
+          error: "Image file is required" 
+        });
+      }
+
+      const { compression_level = 'medium', quality = '85' } = req.body;
+
+      // Save uploaded file temporarily
+      const tempFilePath = path.join(__dirname, `temp_${Date.now()}_${req.file.originalname}`);
+      fs.writeFileSync(tempFilePath, req.file.buffer);
+
+      try {
+        const result = await exec(`python3 ${path.join(__dirname, 'webp-to-jpg-converter.py')} "${tempFilePath}" "${compression_level}" "${quality}"`);
+        const data = JSON.parse(result.stdout);
+        res.json(data);
+      } finally {
+        // Clean up temp file
+        if (fs.existsSync(tempFilePath)) {
+          fs.unlinkSync(tempFilePath);
+        }
+      }
+    } catch (error) {
+      console.error("WebP to JPG Converter error:", error);
+      res.status(500).json({ 
+        success: false, 
+        error: "Failed to convert WebP to JPG" 
+      });
+    }
+  });
+
+  // CSV to JSON Converter
+  app.post('/api/tools/csv-to-json-converter', async (req, res) => {
+    try {
+      const { csv_content, prettify = true } = req.body;
+      
+      if (!csv_content) {
+        return res.status(400).json({ 
+          success: false, 
+          error: "CSV content is required" 
+        });
+      }
+
+      // Escape quotes for shell command
+      const escapedCsv = csv_content.replace(/"/g, '\\"');
+      const result = await exec(`python3 ${path.join(__dirname, 'csv-to-json-converter.py')} "${escapedCsv}" "${prettify}"`);
+      const data = JSON.parse(result.stdout);
+      res.json(data);
+    } catch (error) {
+      console.error("CSV to JSON Converter error:", error);
+      res.status(500).json({ 
+        success: false, 
+        error: "Failed to convert CSV to JSON" 
+      });
     }
   });
 
