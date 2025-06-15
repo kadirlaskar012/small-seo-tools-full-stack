@@ -1345,6 +1345,114 @@ Provide a comprehensive analysis with specific optimization recommendations in J
     }
   });
 
+  // Robots.txt validation endpoint
+  app.post("/api/tools/robots-txt/validate", async (req, res) => {
+    try {
+      const { content } = req.body;
+      
+      if (!content || typeof content !== 'string') {
+        return res.status(400).json({ 
+          valid: false, 
+          errors: ["Content is required and must be a string"] 
+        });
+      }
+
+      const errors: string[] = [];
+      const warnings: string[] = [];
+      const lines = content.split('\n');
+      
+      let currentUserAgent = '';
+      let hasUserAgent = false;
+      let hasSitemap = false;
+      
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        const lineNum = i + 1;
+        
+        // Skip empty lines and comments
+        if (!line || line.startsWith('#')) continue;
+        
+        // Check for proper directive format
+        if (!line.includes(':')) {
+          errors.push(`Line ${lineNum}: Invalid format - missing colon`);
+          continue;
+        }
+        
+        const [directive, ...valueParts] = line.split(':');
+        const value = valueParts.join(':').trim();
+        const directiveLower = directive.trim().toLowerCase();
+        
+        switch (directiveLower) {
+          case 'user-agent':
+            if (!value) {
+              errors.push(`Line ${lineNum}: User-agent cannot be empty`);
+            } else {
+              currentUserAgent = value;
+              hasUserAgent = true;
+            }
+            break;
+            
+          case 'allow':
+          case 'disallow':
+            if (!hasUserAgent) {
+              errors.push(`Line ${lineNum}: ${directive} directive must come after User-agent`);
+            }
+            if (!value.startsWith('/')) {
+              warnings.push(`Line ${lineNum}: Path should start with / for ${directive}`);
+            }
+            break;
+            
+          case 'sitemap':
+            hasSitemap = true;
+            if (!value.startsWith('http://') && !value.startsWith('https://')) {
+              errors.push(`Line ${lineNum}: Sitemap URL must be absolute (start with http:// or https://)`);
+            }
+            break;
+            
+          case 'crawl-delay':
+            const delay = parseInt(value);
+            if (isNaN(delay) || delay < 0) {
+              errors.push(`Line ${lineNum}: Crawl-delay must be a non-negative number`);
+            }
+            if (delay > 86400) {
+              warnings.push(`Line ${lineNum}: Crawl-delay is very high (${delay} seconds)`);
+            }
+            break;
+            
+          default:
+            warnings.push(`Line ${lineNum}: Unknown directive '${directive}'`);
+        }
+      }
+      
+      if (!hasUserAgent) {
+        errors.push("No User-agent directive found");
+      }
+      
+      // Additional checks
+      if (content.length > 500000) {
+        warnings.push("Robots.txt file is very large (>500KB)");
+      }
+      
+      const valid = errors.length === 0;
+      
+      res.json({
+        valid,
+        errors,
+        warnings,
+        stats: {
+          lines: lines.length,
+          userAgents: content.match(/User-agent:/gi)?.length || 0,
+          rules: content.match(/(Allow|Disallow):/gi)?.length || 0,
+          sitemaps: content.match(/Sitemap:/gi)?.length || 0
+        }
+      });
+      
+    } catch (error) {
+      console.error("Error validating robots.txt:", error);
+      res.status(500).json({ message: "Failed to validate robots.txt" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

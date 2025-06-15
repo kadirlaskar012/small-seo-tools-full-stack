@@ -11,6 +11,7 @@ import TextCaseConverter from "@/components/tools/text-case-converter";
 import WordCounter from "@/components/tools/word-counter";
 import { PageSpeedChecker } from "@/components/tools/page-speed-checker";
 import { AdvancedPageSpeedChecker } from "@/components/tools/advanced-page-speed-checker";
+import { RobotsTxtGenerator } from "@/components/tools/robots-txt-generator";
 import type { ToolWithCategory } from "@shared/schema";
 import SEOHead from "@/components/seo-head";
 import { AlertCircle, Home, ChevronRight } from "lucide-react";
@@ -93,6 +94,8 @@ export default function Tool() {
         return <TextCaseConverter />;
       case "word-counter":
         return <WordCounter />;
+      case "robots-txt-generator":
+        return <RobotsTxtGenerator />;
       default:
         return (
           <Card>
