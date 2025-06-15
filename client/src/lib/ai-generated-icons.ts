@@ -49,7 +49,7 @@ export const generateUniqueIcon = (name: string, category?: string): string => {
   };
 
   const categoryKey = (category || 'seo-tools').toLowerCase().replace(/\s+/g, '-');
-  const colors = colorSchemes[categoryKey] || colorSchemes['seo-tools'];
+  const colors = colorSchemes[categoryKey as keyof typeof colorSchemes] || colorSchemes['seo-tools'];
   
   // Advanced pattern recognition system for unique icons
   const analyzeToolName = (toolName: string) => {
