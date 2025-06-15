@@ -10,8 +10,12 @@ import path from "path";
 import fs from "fs";
 import { promisify } from "util";
 import { exec as execCallback } from "child_process";
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
 const exec = promisify(execCallback);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Configure multer for file uploads
 const upload = multer({
