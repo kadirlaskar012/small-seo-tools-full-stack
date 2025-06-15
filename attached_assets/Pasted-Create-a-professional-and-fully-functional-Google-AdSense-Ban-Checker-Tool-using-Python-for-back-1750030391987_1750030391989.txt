@@ -1,0 +1,49 @@
+Create a professional and fully functional **Google AdSense Ban Checker Tool** using Python for backend logic (Flask or FastAPI) and a clean, modern UI (Tailwind CSS or styled HTML/JS). This tool will be part of the "Website Tools" category of a larger tools website. The tool must support both real-time API checks and fallback analysis if APIs fail.
+
+🎯 TOOL GOAL:
+Check if a website/domain is banned from showing Google AdSense ads or has been penalized by Google, using multiple diagnostic methods.
+
+⚙️ BACKEND (PYTHON) LOGIC:
+- Input: Domain or full URL (e.g., example.com)
+- Use the following checks:
+  1. **Fetch website HTML** using requests module.
+  2. Search for presence of AdSense code patterns (`adsbygoogle`, `googlesyndication.com`, etc.)
+  3. Use Google's `site:` search trick with "adsense" keyword to analyze indexing behavior.
+  4. Use third-party API like `isbanned.com`, `adspyglass`, or custom ML logic (if available).
+  5. Optionally include DNS response verification.
+- Return:
+  - Ban status (Banned / Not Banned / Not Detectable)
+  - Explanation (e.g. No ads found / Blocked by robots.txt / AdSense script not loaded)
+  - HTML response code summary
+  - Ad-related JS snippet presence
+  - Indexed ad URLs via Google site search (if detectable)
+
+🎨 UI FEATURES (Frontend):
+- Beautiful, colorful card-based layout with animated loader
+- Input field with example placeholder (e.g., yourdomain.com)
+- Submit button with animation
+- Result card with:
+  - Status Badge (✅ Not Banned / ❌ Banned / ⚠️ Inconclusive)
+  - Details table (Ads code detected, Robots.txt status, Google index visibility)
+  - Optional button: "Open Google Search Preview"
+  - Copy result button
+- UI should be mobile-friendly
+- Use Tailwind CSS or clean modern layout (light/dark toggle optional)
+
+🛠 OPTIONAL SETTINGS (Advanced):
+- Allow users to paste their AdSense Publisher ID (ca-pub-XXXX) to directly validate it
+- Add mini log panel that explains each validation step
+- Export results as PDF or JSON
+
+📦 TECH STACK:
+- Backend: Python (Flask or FastAPI)
+- Frontend: HTML + Tailwind CSS + JS (or React if needed)
+- API integration with external ban check tools (optional)
+- Site must be Replit-compatible
+- Add SSR meta: title, description, tags (Google AdSense Ban Checker Online Tool)
+
+✅ OUTPUT:
+- A fully functional Google AdSense Ban Checker
+- Visually engaging layout
+- Real backend logic that shows helpful diagnostic output
+- Ready to embed inside Website Tools section of the project

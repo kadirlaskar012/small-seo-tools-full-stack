@@ -827,6 +827,15 @@ export const NEW_TOOLS_DATA: Record<string, any[]> = {
       metaDescription: "Check domain age and registration details instantly. Free online tool to verify domain creation and expiration dates.",
       keywords: "domain age checker, domain age lookup, check domain age, domain registration date, whois lookup",
       code: `<div>Domain Age Checker Tool</div>`
+    },
+    {
+      title: "Google AdSense Ban Checker",
+      slug: "adsense-ban-checker",
+      description: "Check if your website is banned from showing Google AdSense ads with comprehensive analysis",
+      metaTitle: "Free Google AdSense Ban Checker - Check Website AdSense Status",
+      metaDescription: "Check if your website is banned from Google AdSense. Analyze AdSense code, robots.txt, and ban indicators with detailed diagnostics.",
+      keywords: "adsense ban checker, google adsense ban, adsense status checker, website monetization, adsense analyzer",
+      code: `<div>Google AdSense Ban Checker Tool</div>`
     }
   ],
   "writing-grammar-tools": [

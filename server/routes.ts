@@ -2530,6 +2530,229 @@ print(json.dumps(result))
     }
   });
 
+  // AdSense Ban Checker API
+  app.post("/api/tools/adsense-ban-checker", async (req, res) => {
+    try {
+      const { domain, publisher_id } = req.body;
+      
+      if (!domain) {
+        return res.status(400).json({ error: "Domain is required" });
+      }
+
+      const { spawn } = await import("child_process");
+      const python = spawn("python3", ["-c", `
+import json
+import requests
+import re
+import time
+import socket
+from urllib.parse import urlparse
+from bs4 import BeautifulSoup
+import dns.resolver
+
+def check_adsense_ban(domain, publisher_id=None):
+    try:
+        # Normalize domain
+        if not domain.startswith(('http://', 'https://')):
+            domain = f'https://{domain}'
+        
+        parsed_url = urlparse(domain)
+        base_domain = parsed_url.netloc or parsed_url.path
+        
+        result = {
+            "success": True,
+            "domain": base_domain,
+            "ban_status": "unknown",
+            "explanation": "",
+            "http_status": None,
+            "adsense_code_detected": False,
+            "robots_txt_status": "unknown",
+            "google_indexed": False,
+            "ad_related_scripts": [],
+            "publisher_id_found": None,
+            "dns_resolution": False,
+            "response_time": None,
+            "detailed_analysis": {},
+            "recommendations": []
+        }
+        
+        # DNS Resolution Check
+        try:
+            dns.resolver.resolve(base_domain, 'A')
+            result["dns_resolution"] = True
+        except:
+            result["dns_resolution"] = False
+            result["explanation"] = "DNS resolution failed - domain may not exist"
+            result["ban_status"] = "not detectable"
+            return result
+        
+        # Fetch website content
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+        
+        start_time = time.time()
+        response = requests.get(domain, headers=headers, timeout=15, allow_redirects=True)
+        response_time = int((time.time() - start_time) * 1000)
+        
+        result["http_status"] = response.status_code
+        result["response_time"] = response_time
+        
+        if response.status_code != 200:
+            result["explanation"] = f"Website returned HTTP {response.status_code} - cannot analyze"
+            result["ban_status"] = "not detectable"
+            return result
+        
+        html_content = response.text
+        soup = BeautifulSoup(html_content, 'html.parser')
+        
+        # Detailed analysis
+        result["detailed_analysis"] = {
+            "html_content_size": len(html_content),
+            "meta_tags_count": len(soup.find_all('meta')),
+            "external_scripts": len(soup.find_all('script', src=True)),
+            "adsense_patterns": []
+        }
+        
+        # Check for AdSense code patterns
+        adsense_patterns = [
+            r'adsbygoogle',
+            r'googlesyndication\.com',
+            r'google_ad_client',
+            r'ca-pub-\d+',
+            r'googleads\.g\.doubleclick\.net',
+            r'pagead2\.googlesyndication\.com'
+        ]
+        
+        found_patterns = []
+        for pattern in adsense_patterns:
+            matches = re.findall(pattern, html_content, re.IGNORECASE)
+            if matches:
+                found_patterns.extend(matches)
+                result["adsense_code_detected"] = True
+        
+        result["detailed_analysis"]["adsense_patterns"] = found_patterns
+        
+        # Extract publisher ID from content
+        pub_id_pattern = r'ca-pub-(\d+)'
+        pub_id_matches = re.findall(pub_id_pattern, html_content)
+        if pub_id_matches:
+            result["publisher_id_found"] = f"ca-pub-{pub_id_matches[0]}"
+        
+        # Check for ad-related scripts
+        scripts = soup.find_all('script', src=True)
+        ad_scripts = []
+        for script in scripts:
+            src = script.get('src', '')
+            if any(ad_domain in src for ad_domain in ['googlesyndication', 'googleads', 'doubleclick', 'adsystem']):
+                ad_scripts.append(src)
+        
+        result["ad_related_scripts"] = ad_scripts[:5]  # Limit to first 5
+        
+        # Check robots.txt
+        try:
+            robots_response = requests.get(f"{domain}/robots.txt", headers=headers, timeout=5)
+            if robots_response.status_code == 200:
+                robots_content = robots_response.text.lower()
+                if 'googlebot' in robots_content and 'disallow' in robots_content:
+                    result["robots_txt_status"] = "restrictive"
+                else:
+                    result["robots_txt_status"] = "permissive"
+            else:
+                result["robots_txt_status"] = "not found"
+        except:
+            result["robots_txt_status"] = "error"
+        
+        # Simulate Google indexing check (simplified)
+        try:
+            search_query = f"site:{base_domain} adsense"
+            # Note: In production, you'd use Google Custom Search API
+            # For now, we'll make an educated guess based on content
+            if result["adsense_code_detected"] and result["http_status"] == 200:
+                result["google_indexed"] = True
+            else:
+                result["google_indexed"] = False
+        except:
+            result["google_indexed"] = False
+        
+        # Determine ban status
+        if not result["adsense_code_detected"]:
+            if result["http_status"] == 200:
+                result["ban_status"] = "not banned"
+                result["explanation"] = "No AdSense code detected - site may not be using AdSense or could be banned"
+                result["recommendations"].append("Consider implementing AdSense code if you want to monetize")
+            else:
+                result["ban_status"] = "not detectable"
+                result["explanation"] = "Website inaccessible - cannot determine AdSense status"
+        else:
+            # AdSense code is present
+            if len(ad_scripts) > 0 and result["robots_txt_status"] != "restrictive":
+                result["ban_status"] = "not banned"
+                result["explanation"] = "AdSense code detected and appears to be loading properly"
+                result["recommendations"].append("Monitor ad performance regularly")
+                result["recommendations"].append("Ensure content complies with AdSense policies")
+            else:
+                result["ban_status"] = "inconclusive"
+                result["explanation"] = "AdSense code present but may have loading issues"
+                result["recommendations"].append("Check browser console for JavaScript errors")
+                result["recommendations"].append("Verify AdSense account status in publisher dashboard")
+        
+        # Publisher ID validation
+        if publisher_id and result["publisher_id_found"]:
+            if publisher_id.lower() == result["publisher_id_found"].lower():
+                result["recommendations"].append("Publisher ID matches - configuration appears correct")
+            else:
+                result["recommendations"].append("Warning: Provided publisher ID doesn't match found ID")
+        
+        # Additional recommendations
+        if result["response_time"] > 3000:
+            result["recommendations"].append("Website loads slowly - optimize for better ad performance")
+        
+        if result["detailed_analysis"]["external_scripts"] > 20:
+            result["recommendations"].append("Many external scripts detected - may impact ad loading")
+        
+        return result
+        
+    except Exception as e:
+        return {
+            "success": False,
+            "error": f"Analysis failed: {str(e)}"
+        }
+
+domain = '''${(domain || '').replace(/'/g, "\\'")}'''
+publisher_id = '''${(publisher_id || '').replace(/'/g, "\\'")}''' if '''${publisher_id || ''}''' else None
+result = check_adsense_ban(domain, publisher_id)
+print(json.dumps(result))
+`]);
+
+      let output = "";
+      let error = "";
+
+      python.stdout.on("data", (data) => {
+        output += data.toString();
+      });
+
+      python.stderr.on("data", (data) => {
+        error += data.toString();
+      });
+
+      python.on("close", (code) => {
+        if (code !== 0) {
+          return res.status(500).json({ error: "Python execution failed", details: error });
+        }
+
+        try {
+          const result = JSON.parse(output);
+          res.json(result);
+        } catch (e) {
+          res.status(500).json({ error: "Failed to parse result", details: output });
+        }
+      });
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error", details: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
