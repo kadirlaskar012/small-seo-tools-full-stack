@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import SEOScoreChecker from "@/components/tools/seo-score-checker";
 import MetaTagsAnalyzer from "@/components/tools/meta-tags-analyzer";
 import KeywordDensityChecker from "@/components/tools/keyword-density-checker";
+import BacklinkChecker from "@/components/tools/backlink-checker";
 import type { ToolWithCategory } from "@shared/schema";
 import SEOHead from "@/components/seo-head";
 import { AlertCircle, Home, ChevronRight } from "lucide-react";
@@ -81,6 +82,8 @@ export default function Tool() {
         return <MetaTagsAnalyzer />;
       case "keyword-density-checker":
         return <KeywordDensityChecker />;
+      case "backlink-checker":
+        return <BacklinkChecker />;
       default:
         return (
           <Card>
