@@ -1453,6 +1453,124 @@ Provide a comprehensive analysis with specific optimization recommendations in J
     }
   });
 
+  // Redirect Chain Checker API
+  app.post("/api/tools/redirect-chain/check", async (req, res) => {
+    try {
+      const { url } = req.body;
+      
+      if (!url) {
+        return res.status(400).json({ error: "URL is required" });
+      }
+
+      // Use Python subprocess to run redirect checker
+      const { spawn } = await import("child_process");
+      
+      const pythonProcess = spawn("python3", ["-c", `
+import sys
+import json
+sys.path.append('server')
+
+# Import redirect checker
+try:
+    from redirect_checker import RedirectChainChecker
+    
+    checker = RedirectChainChecker()
+    result = checker.check_redirect_chain('${url.replace(/'/g, "\\'")}')
+    print(json.dumps(result))
+except Exception as e:
+    error_result = {
+        'success': False,
+        'error': str(e),
+        'chain': [],
+        'summary': {}
+    }
+    print(json.dumps(error_result))
+`]);
+
+      let stdout = "";
+      let stderr = "";
+
+      pythonProcess.stdout.on("data", (data) => {
+        stdout += data.toString();
+      });
+
+      pythonProcess.stderr.on("data", (data) => {
+        stderr += data.toString();
+      });
+
+      pythonProcess.on("close", (code) => {
+        try {
+          const result = JSON.parse(stdout);
+          res.json(result);
+        } catch (e) {
+          res.status(500).json({ 
+            success: false,
+            error: "Failed to parse analysis result",
+            chain: [],
+            summary: {}
+          });
+        }
+      });
+
+    } catch (error) {
+      console.error("Redirect checker error:", error);
+      res.status(500).json({ 
+        success: false,
+        error: "Internal server error",
+        chain: [],
+        summary: {}
+      });
+    }
+  });
+
+  // Generate redirect report
+  app.post("/api/tools/redirect-chain/report", async (req, res) => {
+    try {
+      const { result, format } = req.body;
+      
+      if (!result) {
+        return res.status(400).json({ error: "Result data is required" });
+      }
+
+      const { spawn } = await import("child_process");
+      
+      const pythonProcess = spawn("python3", ["-c", `
+import sys
+import json
+sys.path.append('server')
+
+try:
+    from redirect_checker import RedirectChainChecker
+    
+    checker = RedirectChainChecker()
+    result_data = json.loads('${JSON.stringify(result).replace(/'/g, "\\'")}')
+    report = checker.generate_report(result_data, '${format || 'text'}')
+    print(report)
+except Exception as e:
+    print(f"Error generating report: {str(e)}")
+`]);
+
+      let stdout = "";
+      let stderr = "";
+
+      pythonProcess.stdout.on("data", (data) => {
+        stdout += data.toString();
+      });
+
+      pythonProcess.stderr.on("data", (data) => {
+        stderr += data.toString();
+      });
+
+      pythonProcess.on("close", (code) => {
+        res.json({ report: stdout });
+      });
+
+    } catch (error) {
+      console.error("Report generation error:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
