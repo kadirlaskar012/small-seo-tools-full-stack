@@ -153,6 +153,12 @@ export default function Tool() {
       case "js-obfuscator":
       case "javascript-obfuscator":
         return <JSObfuscator />;
+      case "safe-browsing-checker":
+        return <SafeBrowsingChecker />;
+      case "ip-geolocation-finder":
+        return <IPGeolocationFinder />;
+      case "domain-age-checker":
+        return <DomainAgeChecker />;
       default:
         return (
           <Card>
