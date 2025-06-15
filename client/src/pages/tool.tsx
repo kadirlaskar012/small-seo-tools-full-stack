@@ -122,9 +122,12 @@ export default function Tool() {
           
           <div className="flex items-center gap-4 mb-4">
             <div className="flex items-center gap-3">
-              <div className={`w-12 h-12 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-2xl`}>
-                📝
-              </div>
+              <ToolLogo 
+                toolSlug={tool.slug} 
+                categorySlug={tool.category.slug} 
+                size={64}
+                className="transition-transform hover:scale-105"
+              />
               <div>
                 <h1 className="text-3xl font-bold">{tool.title}</h1>
                 <Badge variant="secondary">{tool.category.name}</Badge>
@@ -157,8 +160,13 @@ export default function Tool() {
               {similarTools.slice(0, 6).map((similarTool) => (
                 <Link key={similarTool.id} href={`/${similarTool.slug}`}>
                   <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-600 cursor-pointer h-full text-center">
-                    <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-400 rounded-lg flex items-center justify-center mx-auto mb-3 text-xl">
-                      📝
+                    <div className="flex items-center justify-center mx-auto mb-3">
+                      <ToolLogo 
+                        toolSlug={similarTool.slug} 
+                        categorySlug={similarTool.category.slug} 
+                        size={40}
+                        className="transition-transform hover:scale-105"
+                      />
                     </div>
                     <h3 className="font-medium text-sm text-gray-900 dark:text-white leading-tight mb-2">
                       {similarTool.title}
