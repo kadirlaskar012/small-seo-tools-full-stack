@@ -3,9 +3,9 @@ import { useParams, Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import WordCounter from "@/components/tools/word-counter";
-import ImageCompressor from "@/components/tools/image-compressor";
-import PDFToWord from "@/components/tools/pdf-to-word";
+import SEOScoreChecker from "@/components/tools/seo-score-checker";
+import MetaTagsAnalyzer from "@/components/tools/meta-tags-analyzer";
+import KeywordDensityChecker from "@/components/tools/keyword-density-checker";
 import type { ToolWithCategory } from "@shared/schema";
 import SEOHead from "@/components/seo-head";
 import { AlertCircle, Home, ChevronRight } from "lucide-react";
@@ -74,13 +74,13 @@ export default function Tool() {
   }
 
   const renderToolComponent = () => {
-    switch (tool.code) {
-      case "word-counter":
-        return <WordCounter />;
-      case "image-compressor":
-        return <ImageCompressor />;
-      case "pdf-to-word":
-        return <PDFToWord />;
+    switch (tool.slug) {
+      case "seo-score-checker":
+        return <SEOScoreChecker />;
+      case "meta-tags-analyzer":
+        return <MetaTagsAnalyzer />;
+      case "keyword-density-checker":
+        return <KeywordDensityChecker />;
       default:
         return (
           <Card>
