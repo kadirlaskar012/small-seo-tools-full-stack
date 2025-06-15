@@ -137,33 +137,36 @@ export class DatabaseStorage implements IStorage {
       console.log(`Inserted batch ${Math.floor(i/batchSize) + 1}/${Math.ceil(allTools.length/batchSize)}`);
     }
 
-    // Default blog posts
-    const defaultBlogPosts = [
-      {
-        title: "10 Essential SEO Tools Every Website Owner Should Use",
-        slug: "essential-seo-tools-website-owners",
-        content: "Discover the must-have SEO tools that will help boost your website's search engine rankings and drive more organic traffic...",
-        excerpt: "Discover the must-have SEO tools that will help boost your website's search engine rankings and drive more organic traffic.",
-        metaTitle: "10 Essential SEO Tools Every Website Owner Should Use",
-        metaDescription: "Discover the must-have SEO tools that will help boost your website's search engine rankings and drive more organic traffic.",
-        metaTags: "seo tools, website optimization, search engine rankings",
-        image: null,
-        isPublished: true,
-      },
-      {
-        title: "How to Optimize Images for Web Without Losing Quality",
-        slug: "optimize-images-web-quality",
-        content: "Learn the best practices for image compression and optimization to improve your website's loading speed while maintaining visual quality...",
-        excerpt: "Learn the best practices for image compression and optimization to improve your website's loading speed while maintaining visual quality.",
-        metaTitle: "How to Optimize Images for Web Without Losing Quality",
-        metaDescription: "Learn the best practices for image compression and optimization to improve your website's loading speed while maintaining visual quality.",
-        metaTags: "image optimization, web performance, image compression",
-        image: null,
-        isPublished: true,
-      },
-    ];
+    // Check if blog posts already exist to avoid duplicates
+    const existingBlogPosts = await db.select().from(blogPosts);
+    if (existingBlogPosts.length === 0) {
+      const defaultBlogPosts = [
+        {
+          title: "10 Essential SEO Tools Every Website Owner Should Use",
+          slug: "essential-seo-tools-website-owners",
+          content: "Discover the must-have SEO tools that will help boost your website's search engine rankings and drive more organic traffic...",
+          excerpt: "Discover the must-have SEO tools that will help boost your website's search engine rankings and drive more organic traffic.",
+          metaTitle: "10 Essential SEO Tools Every Website Owner Should Use",
+          metaDescription: "Discover the must-have SEO tools that will help boost your website's search engine rankings and drive more organic traffic.",
+          metaTags: "seo tools, website optimization, search engine rankings",
+          image: null,
+          isPublished: true,
+        },
+        {
+          title: "How to Optimize Images for Web Without Losing Quality",
+          slug: "optimize-images-web-quality",
+          content: "Learn the best practices for image compression and optimization to improve your website's loading speed while maintaining visual quality...",
+          excerpt: "Learn the best practices for image compression and optimization to improve your website's loading speed while maintaining visual quality.",
+          metaTitle: "How to Optimize Images for Web Without Losing Quality",
+          metaDescription: "Learn the best practices for image compression and optimization to improve your website's loading speed while maintaining visual quality.",
+          metaTags: "image optimization, web performance, image compression",
+          image: null,
+          isPublished: true,
+        },
+      ];
 
-    await db.insert(blogPosts).values(defaultBlogPosts);
+      await db.insert(blogPosts).values(defaultBlogPosts);
+    }
   }
 
   // Users
