@@ -24,7 +24,11 @@ export function LogoUpload({ type, title, description }: LogoUploadProps) {
   // Get current branding
   const { data: currentBranding, isLoading } = useQuery({
     queryKey: ["/api/site-branding", type],
-    queryFn: () => apiRequest(`/api/site-branding/${type}`),
+    queryFn: async () => {
+      const response = await fetch(`/api/site-branding/${type}`);
+      if (!response.ok) throw new Error('Failed to fetch branding');
+      return response.json();
+    },
   });
 
   // Upload mutation
@@ -37,17 +41,17 @@ export function LogoUpload({ type, title, description }: LogoUploadProps) {
       fileName: string; 
       fileSize: number; 
     }) => {
-      if (currentBranding?.id) {
-        return apiRequest(`/api/site-branding/${currentBranding.id}`, {
-          method: "PUT",
-          body: JSON.stringify(fileData),
-        });
-      } else {
-        return apiRequest("/api/site-branding", {
-          method: "POST",
-          body: JSON.stringify(fileData),
-        });
-      }
+      const url = currentBranding?.id ? `/api/site-branding/${currentBranding.id}` : "/api/site-branding";
+      const method = currentBranding?.id ? "PUT" : "POST";
+      
+      const response = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(fileData),
+      });
+      
+      if (!response.ok) throw new Error('Failed to upload branding');
+      return response.json();
     },
     onSuccess: () => {
       toast({

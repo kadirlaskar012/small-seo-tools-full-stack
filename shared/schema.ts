@@ -121,7 +121,8 @@ export const toolIcons = pgTable("tool_icons", {
   id: serial("id").primaryKey(),
   toolId: integer("tool_id").references(() => tools.id).notNull(),
   iconType: varchar("icon_type", { length: 20 }).default("emoji"), // emoji, lucide, custom
-  iconValue: varchar("icon_value", { length: 100 }).notNull(),
+  iconData: varchar("icon_data", { length: 100 }).notNull(),
+  isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
