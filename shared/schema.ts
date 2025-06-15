@@ -15,6 +15,8 @@ export const categories = pgTable("categories", {
   description: text("description"),
   icon: text("icon").notNull().default("build"),
   color: text("color").notNull().default("blue"),
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 export const tools = pgTable("tools", {

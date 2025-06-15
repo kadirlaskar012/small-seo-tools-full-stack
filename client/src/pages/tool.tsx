@@ -34,9 +34,7 @@ export default function Tool() {
   // Track tool usage
   const trackUsageMutation = useMutation({
     mutationFn: async (toolId: number) => {
-      await apiRequest(`/api/tools/${toolId}/usage`, {
-        method: "POST",
-      });
+      await apiRequest("POST", `/api/tools/${toolId}/usage`);
     },
   });
 
