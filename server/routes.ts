@@ -2,7 +2,6 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { analyzeSEO, analyzeMetaTags, analyzeKeywordDensity } from "./seo-analyzer";
-import { generateToolIcon, generateCategoryIcon } from "./icon-generator";
 import crypto from "crypto";
 import { insertCategorySchema, insertToolSchema, insertBlogPostSchema, insertSiteSettingSchema, type ToolWithCategory } from "@shared/schema";
 import { z } from "zod";
@@ -1281,100 +1280,6 @@ Provide a comprehensive analysis with specific optimization recommendations in J
         success: false, 
         error: "Internal server error during speed analysis" 
       });
-    }
-  });
-
-  // Icon generation routes
-  app.post("/api/tools/:id/generate-icon", async (req, res) => {
-    try {
-      const toolId = parseInt(req.params.id);
-      const tool = await storage.getTool(toolId);
-      
-      if (!tool) {
-        return res.status(404).json({ message: "Tool not found" });
-      }
-
-      const iconUrl = await generateToolIcon(tool.title, tool.description);
-      
-      if (iconUrl) {
-        // Update tool icon in database
-        await storage.updateToolIcon(toolId, { iconUrl });
-        res.json({ success: true, iconUrl });
-      } else {
-        res.status(500).json({ success: false, message: "Failed to generate icon" });
-      }
-    } catch (error) {
-      console.error("Icon generation error:", error);
-      res.status(500).json({ success: false, message: "Failed to generate icon" });
-    }
-  });
-
-  app.post("/api/categories/:id/generate-icon", async (req, res) => {
-    try {
-      const categoryId = parseInt(req.params.id);
-      const category = await storage.getCategory(categoryId);
-      
-      if (!category) {
-        return res.status(404).json({ message: "Category not found" });
-      }
-
-      const iconUrl = await generateCategoryIcon(category.name, category.description || '');
-      
-      if (iconUrl) {
-        // Update category icon
-        await storage.updateCategory(categoryId, { icon: iconUrl });
-        res.json({ success: true, iconUrl });
-      } else {
-        res.status(500).json({ success: false, message: "Failed to generate icon" });
-      }
-    } catch (error) {
-      console.error("Category icon generation error:", error);
-      res.status(500).json({ success: false, message: "Failed to generate icon" });
-    }
-  });
-
-  // Batch generate all icons
-  app.post("/api/generate-all-icons", async (req, res) => {
-    try {
-      const tools = await storage.getTools();
-      const categories = await storage.getCategories();
-      
-      const results = {
-        tools: [],
-        categories: [],
-        errors: []
-      };
-
-      // Generate tool icons
-      for (const tool of tools) {
-        try {
-          const iconUrl = await generateToolIcon(tool.title, tool.description);
-          if (iconUrl) {
-            await storage.updateToolIcon(tool.id, { iconUrl });
-            results.tools.push({ id: tool.id, title: tool.title, iconUrl });
-          }
-        } catch (error) {
-          results.errors.push(`Tool ${tool.title}: ${error.message}`);
-        }
-      }
-
-      // Generate category icons  
-      for (const category of categories) {
-        try {
-          const iconUrl = await generateCategoryIcon(category.name, category.description || '');
-          if (iconUrl) {
-            await storage.updateCategory(category.id, { icon: iconUrl });
-            results.categories.push({ id: category.id, name: category.name, iconUrl });
-          }
-        } catch (error) {
-          results.errors.push(`Category ${category.name}: ${error.message}`);
-        }
-      }
-
-      res.json({ success: true, results });
-    } catch (error) {
-      console.error("Batch icon generation error:", error);
-      res.status(500).json({ success: false, message: "Failed to generate icons" });
     }
   });
 

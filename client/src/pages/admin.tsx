@@ -1,234 +1,186 @@
 import { useState } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import ToolList from "@/components/admin/tool-list";
+import ToolForm from "@/components/admin/tool-form";
+import BlogList from "@/components/admin/blog-list";
+import BlogForm from "@/components/admin/blog-form";
+import SiteSettings from "@/components/admin/site-settings";
+import GoogleTools from "@/components/admin/google-tools";
+import FileManager from "@/components/admin/file-manager";
+import SchemaManager from "@/components/admin/schema-manager";
 import type { Category, ToolWithCategory, BlogPost } from "@shared/schema";
-import { Settings, Wand2, AlertCircle, CheckCircle, Loader2 } from "lucide-react";
+import SEOHead from "@/components/seo-head";
+import { Combine, FileText, Settings, TrendingUp, Globe, FolderOpen, Database } from "lucide-react";
 
 export default function Admin() {
-  const [generatingIcons, setGeneratingIcons] = useState(false);
-  const [iconResults, setIconResults] = useState<any[]>([]);
+  const [activeTab, setActiveTab] = useState("tools");
 
   const { data: tools = [] } = useQuery<ToolWithCategory[]>({
     queryKey: ["/api/tools"],
+  });
+
+  const { data: blogPosts = [] } = useQuery<BlogPost[]>({
+    queryKey: ["/api/blog"],
   });
 
   const { data: categories = [] } = useQuery<Category[]>({
     queryKey: ["/api/categories"],
   });
 
-  const generateIconsMutation = useMutation({
-    mutationFn: async () => {
-      const response = await fetch('/api/generate-all-icons', { method: 'POST' });
-      if (!response.ok) throw new Error('Failed to generate icons');
-      return response.json();
-    },
-    onSuccess: (data) => {
-      const results = [];
-      if (data.results?.tools) {
-        data.results.tools.forEach((tool: any) => {
-          results.push({ success: true, message: `Generated icon for tool: ${tool.title}` });
-        });
-      }
-      if (data.results?.categories) {
-        data.results.categories.forEach((category: any) => {
-          results.push({ success: true, message: `Generated icon for category: ${category.name}` });
-        });
-      }
-      if (data.results?.errors) {
-        data.results.errors.forEach((error: string) => {
-          results.push({ success: false, message: error });
-        });
-      }
-      setIconResults(results);
-      setGeneratingIcons(false);
-    },
-    onError: () => {
-      setGeneratingIcons(false);
-    }
-  });
-
-  const handleGenerateIcons = () => {
-    setGeneratingIcons(true);
-    setIconResults([]);
-    generateIconsMutation.mutate();
-  };
-
   return (
-    <div className="min-h-screen bg-gray-50">
-      <title>Admin Panel - Free SEO Tools</title>
-      <meta name="description" content="Admin panel for managing tools and website content." />
-      <meta name="robots" content="noindex" />
+    <>
+      <SEOHead 
+        title="Admin Panel - The Ultimate Online Tools"
+        description="Admin panel for managing tools, blog posts, and website content."
+        noIndex={true}
+      />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Panel</h1>
-          <p className="text-gray-600">Manage your tools and website content</p>
+          <h1 className="text-3xl font-bold mb-2">Admin Panel</h1>
+          <p className="text-muted-foreground">
+            Manage your tools, blog posts, and website content
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* AI Icon Generation */}
-          <div className="lg:col-span-2">
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="grid grid-cols-7 w-full">
+            <TabsTrigger value="tools" className="flex items-center gap-2">
+              <Combine className="h-4 w-4" />
+              Tools
+            </TabsTrigger>
+            <TabsTrigger value="blog" className="flex items-center gap-2">
+              <FileText className="h-4 w-4" />
+              Blog
+            </TabsTrigger>
+            <TabsTrigger value="schema" className="flex items-center gap-2">
+              <Database className="h-4 w-4" />
+              Schema
+            </TabsTrigger>
+            <TabsTrigger value="stats" className="flex items-center gap-2">
+              <TrendingUp className="h-4 w-4" />
+              Stats
+            </TabsTrigger>
+            <TabsTrigger value="google" className="flex items-center gap-2">
+              <Globe className="h-4 w-4" />
+              Google
+            </TabsTrigger>
+            <TabsTrigger value="files" className="flex items-center gap-2">
+              <FolderOpen className="h-4 w-4" />
+              Files
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="flex items-center gap-2">
+              <Settings className="h-4 w-4" />
+              Settings
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="tools" className="space-y-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div>
+                <h2 className="text-2xl font-semibold mb-4">Manage Tools</h2>
+                <ToolList tools={tools} />
+              </div>
+              <div>
+                <h2 className="text-2xl font-semibold mb-4">Add New Tool</h2>
+                <ToolForm categories={categories} />
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="blog" className="space-y-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div>
+                <h2 className="text-2xl font-semibold mb-4">Blog Posts</h2>
+                <BlogList posts={blogPosts} />
+              </div>
+              <div>
+                <h2 className="text-2xl font-semibold mb-4">Create New Post</h2>
+                <BlogForm />
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="schema" className="space-y-6">
+            <SchemaManager />
+          </TabsContent>
+
+          <TabsContent value="stats" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Total Tools</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold">{tools.length}</div>
+                  <p className="text-muted-foreground">Active tools</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Blog Posts</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold">{blogPosts.length}</div>
+                  <p className="text-muted-foreground">Published posts</p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Categories</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-3xl font-bold">{categories.length}</div>
+                  <p className="text-muted-foreground">Tool categories</p>
+                </CardContent>
+              </Card>
+            </div>
+            
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Wand2 className="h-5 w-5" />
-                  AI Icon Generation
-                </CardTitle>
+                <CardTitle>Tool Categories Overview</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <p className="text-gray-600">
-                    Generate unique AI-powered icons for all tools and categories using OpenAI API.
-                  </p>
-                  
-                  <button
-                    onClick={handleGenerateIcons}
-                    disabled={generatingIcons}
-                    className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
-                  >
-                    {generatingIcons ? (
-                      <>
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Generating Icons...
-                      </>
-                    ) : (
-                      <>
-                        <Wand2 className="h-4 w-4 mr-2" />
-                        Generate All Icons
-                      </>
-                    )}
-                  </button>
-
-                  {iconResults.length > 0 && (
-                    <div className="mt-6">
-                      <h3 className="font-semibold text-gray-900 mb-4">Generation Results</h3>
-                      <div className="space-y-2">
-                        {iconResults.map((result, index) => (
-                          <div key={index} className="flex items-center gap-2 text-sm">
-                            {result.success ? (
-                              <CheckCircle className="h-4 w-4 text-green-500" />
-                            ) : (
-                              <AlertCircle className="h-4 w-4 text-red-500" />
-                            )}
-                            <span className={result.success ? "text-green-700" : "text-red-700"}>
-                              {result.message}
-                            </span>
-                          </div>
-                        ))}
+                  {categories.map((category) => (
+                    <div key={category.id} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl">
+                          {category.icon === 'text_fields' ? '📝' : 
+                           category.icon === 'image' ? '🖼️' :
+                           category.icon === 'picture_as_pdf' ? '📄' :
+                           category.icon === 'search' ? '🔍' : '🛠️'}
+                        </span>
+                        <div>
+                          <h3 className="font-semibold">{category.name}</h3>
+                          <p className="text-sm text-muted-foreground">{category.description}</p>
+                        </div>
                       </div>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Statistics */}
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Settings className="h-5 w-5" />
-                  Statistics
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Total Tools</span>
-                    <span className="font-semibold">{tools.length}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Categories</span>
-                    <span className="font-semibold">{categories.length}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Active Tools</span>
-                    <span className="font-semibold">
-                      {tools.filter(tool => tool.isActive).length}
-                    </span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Tools</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {tools.slice(0, 5).map((tool) => (
-                    <div key={tool.id} className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <span className="text-sm">{tool.category.icon}</span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900 truncate">
-                          {tool.title}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {tool.category.name}
-                        </p>
+                      <div className="text-sm text-muted-foreground">
+                        {tools.filter(tool => tool.category.id === category.id).length} tools
                       </div>
                     </div>
                   ))}
                 </div>
               </CardContent>
             </Card>
-          </div>
-        </div>
+          </TabsContent>
 
-        {/* Tools Grid */}
-        <div className="mt-8">
-          <Card>
-            <CardHeader>
-              <CardTitle>All Tools</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {tools.map((tool) => (
-                  <div key={tool.id} className="p-4 border border-gray-200 rounded-lg">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <span className="text-sm">{tool.category.icon}</span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-medium text-gray-900 truncate">
-                          {tool.title}
-                        </h3>
-                        <p className="text-xs text-gray-500">
-                          {tool.category.name}
-                        </p>
-                      </div>
-                    </div>
-                    <p className="text-sm text-gray-600 line-clamp-2">
-                      {tool.description}
-                    </p>
-                    <div className="mt-2 flex items-center justify-between">
-                      <span className={`px-2 py-1 text-xs rounded-full ${
-                        tool.isActive 
-                          ? "bg-green-100 text-green-800" 
-                          : "bg-red-100 text-red-800"
-                      }`}>
-                        {tool.isActive ? "Active" : "Inactive"}
-                      </span>
-                      <a 
-                        href={`/tools/${tool.slug}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-700 text-sm"
-                      >
-                        View Tool
-                      </a>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+          <TabsContent value="google" className="space-y-6">
+            <GoogleTools />
+          </TabsContent>
+
+          <TabsContent value="files" className="space-y-6">
+            <FileManager />
+          </TabsContent>
+
+          <TabsContent value="settings" className="space-y-6">
+            <SiteSettings />
+          </TabsContent>
+        </Tabs>
       </div>
-    </div>
+    </>
   );
 }

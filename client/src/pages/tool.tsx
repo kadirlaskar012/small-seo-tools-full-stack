@@ -1,31 +1,28 @@
-import { useState, useEffect } from "react";
-import { useParams } from "wouter";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { Card, CardContent } from "@/components/ui/card";
-import { Link } from "wouter";
-import { ArrowLeft, ExternalLink, Share2 } from "lucide-react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useParams, Link } from "wouter";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import SEOScoreChecker from "@/components/tools/seo-score-checker";
+import MetaTagsAnalyzer from "@/components/tools/meta-tags-analyzer";
+import KeywordDensityChecker from "@/components/tools/keyword-density-checker";
+import BacklinkChecker from "@/components/tools/backlink-checker";
+import TextCaseConverter from "@/components/tools/text-case-converter";
+import WordCounter from "@/components/tools/word-counter";
+import { PageSpeedChecker } from "@/components/tools/page-speed-checker";
+import { AdvancedPageSpeedChecker } from "@/components/tools/advanced-page-speed-checker";
 import type { ToolWithCategory } from "@shared/schema";
-
-// Tool component mappings - only include existing components
-const TOOL_COMPONENTS = {
-  "page-speed-test": () => import("@/components/tools/advanced-page-speed-checker"),
-  "text-case-converter": () => import("@/components/tools/text-case-converter"),
-  "word-counter": () => import("@/components/tools/word-counter"),
-};
+import SEOHead from "@/components/seo-head";
+import { AlertCircle, Home, ChevronRight } from "lucide-react";
+import { apiRequest } from "@/lib/queryClient";
+import { ToolLogo } from "@/components/ui/tool-logo";
+import { useEffect } from "react";
 
 export default function Tool() {
   const { slug } = useParams();
-  const [isMobile, setIsMobile] = useState(false);
-  const [ToolComponent, setToolComponent] = useState<React.ComponentType | null>(null);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  const { data: tool, isLoading } = useQuery<ToolWithCategory>({
+  const { data: tool, isLoading, error } = useQuery<ToolWithCategory>({
     queryKey: [`/api/tools/${slug}`],
     enabled: !!slug,
   });
@@ -35,218 +32,167 @@ export default function Tool() {
     enabled: !!tool?.id,
   });
 
+  // Track tool usage
   const trackUsageMutation = useMutation({
-    mutationFn: () => fetch(`/api/tools/${tool?.id}/usage`, { method: 'POST' }),
+    mutationFn: async (toolId: number) => {
+      await apiRequest("POST", `/api/tools/${toolId}/usage`);
+    },
   });
 
   useEffect(() => {
-    if (tool && slug && TOOL_COMPONENTS[slug as keyof typeof TOOL_COMPONENTS]) {
-      TOOL_COMPONENTS[slug as keyof typeof TOOL_COMPONENTS]()
-        .then((module: any) => {
-          setToolComponent(() => module.default);
-          trackUsageMutation.mutate();
-        })
-        .catch(() => {
-          setToolComponent(() => () => (
-            <div className="text-center py-8">
-              <p className="text-gray-500">Tool component not available</p>
-            </div>
-          ));
-        });
+    if (tool?.id && !trackUsageMutation.isPending) {
+      trackUsageMutation.mutate(tool.id);
     }
-  }, [tool, slug]);
-
-  const getColorForCategory = (color: string) => {
-    const colorMap: Record<string, string> = {
-      "#3B82F6": "bg-blue-50 text-blue-700 border-blue-200",
-      "#8B5CF6": "bg-purple-50 text-purple-700 border-purple-200",
-      "#EF4444": "bg-red-50 text-red-700 border-red-200",
-      "#10B981": "bg-green-50 text-green-700 border-green-200",
-      "#F59E0B": "bg-orange-50 text-orange-700 border-orange-200",
-      "#6366F1": "bg-indigo-50 text-indigo-700 border-indigo-200",
-      "#EC4899": "bg-pink-50 text-pink-700 border-pink-200",
-      "#14B8A6": "bg-teal-50 text-teal-700 border-teal-200",
-      "#84CC16": "bg-lime-50 text-lime-700 border-lime-200",
-      "#F97316": "bg-orange-50 text-orange-700 border-orange-200",
-    };
-    return colorMap[color] || "bg-gray-50 text-gray-700 border-gray-200";
-  };
-
-  const shareUrl = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: tool?.title,
-        text: tool?.description,
-        url: window.location.href,
-      });
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-    }
-  };
+  }, [tool?.id]);
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading tool...</p>
+      <div className="container mx-auto px-4 py-8">
+        <div className="animate-pulse">
+          <div className="h-8 bg-muted rounded w-1/3 mb-4"></div>
+          <div className="h-12 bg-muted rounded w-2/3 mb-8"></div>
+          <div className="h-64 bg-muted rounded"></div>
         </div>
       </div>
     );
   }
 
-  if (!tool) {
+  if (error || !tool) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Tool Not Found</h1>
-          <p className="text-gray-600 mb-6">The requested tool could not be found.</p>
-          <Link 
-            href="/"
-            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to Tools
-          </Link>
-        </div>
+      <div className="container mx-auto px-4 py-8">
+        <Card className="max-w-md mx-auto">
+          <CardContent className="pt-6 text-center">
+            <AlertCircle className="h-16 w-16 text-destructive mx-auto mb-4" />
+            <h1 className="text-2xl font-bold mb-2">Tool Not Found</h1>
+            <p className="text-muted-foreground mb-4">
+              The tool you're looking for doesn't exist or has been removed.
+            </p>
+            <Link href="/">
+              <Badge variant="outline" className="cursor-pointer">← Back to Home</Badge>
+            </Link>
+          </CardContent>
+        </Card>
       </div>
     );
   }
+
+  const renderToolComponent = () => {
+    switch (tool.slug) {
+      case "seo-score-checker":
+        return <SEOScoreChecker />;
+      case "meta-tags-analyzer":
+        return <MetaTagsAnalyzer />;
+      case "keyword-density-checker":
+        return <KeywordDensityChecker />;
+      case "backlink-checker":
+        return <BacklinkChecker />;
+      case "page-speed-checker":
+      case "page-speed-test":
+        return <AdvancedPageSpeedChecker />;
+      case "text-case-converter":
+        return <TextCaseConverter />;
+      case "word-counter":
+        return <WordCounter />;
+      default:
+        return (
+          <Card>
+            <CardContent className="pt-6">
+              <p className="text-muted-foreground">
+                This tool is currently under development. Please check back later.
+              </p>
+            </CardContent>
+          </Card>
+        );
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* SEO Meta Tags */}
-      <title>{tool.metaTitle || `${tool.title} - Free Online Tool`}</title>
-      <meta name="description" content={tool.metaDescription || tool.description} />
-      <meta name="keywords" content={tool.metaTags || `${tool.title}, free tool, online tool`} />
-
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <Link 
-                href="/"
-                className="inline-flex items-center text-gray-600 hover:text-gray-900 transition-colors"
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Tools
-              </Link>
-              <div className={`px-3 py-1 rounded-full text-sm font-medium border ${getColorForCategory(tool.category.color)}`}>
+    <>
+      <SEOHead 
+        title={tool.metaTitle || `${tool.title} - The Ultimate Online Tools`}
+        description={tool.metaDescription || tool.description}
+        keywords={tool.metaTags || `${tool.title}, ${tool.category.name}, online tools`}
+      />
+      
+      <div className="bg-muted/30 border-b">
+        <div className="container mx-auto px-4 py-8">
+          <nav className="flex items-center space-x-1 text-sm text-muted-foreground mb-4">
+            <Link href="/">
+              <Button variant="ghost" size="sm" className="h-auto p-1">
+                <Home className="h-4 w-4" />
+              </Button>
+            </Link>
+            <ChevronRight className="h-4 w-4" />
+            <Link href={`/?category=${tool.category.slug}`}>
+              <Button variant="ghost" size="sm" className="h-auto p-1 text-muted-foreground hover:text-foreground">
                 {tool.category.name}
+              </Button>
+            </Link>
+            <ChevronRight className="h-4 w-4" />
+            <span className="text-foreground font-medium">{tool.title}</span>
+          </nav>
+          
+          <div className="flex items-center gap-4 mb-4">
+            <div className="flex items-center gap-3">
+              <ToolLogo 
+                toolSlug={tool.slug} 
+                categorySlug={tool.category.slug} 
+                size={64}
+                className="transition-transform hover:scale-105"
+              />
+              <div>
+                <h1 className="text-3xl font-bold">{tool.title}</h1>
+                <Badge variant="secondary">{tool.category.name}</Badge>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={shareUrl}
-                className="inline-flex items-center px-3 py-2 text-sm text-gray-600 hover:text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                <Share2 className="h-4 w-4 mr-2" />
-                Share
-              </button>
+          </div>
+          
+          <p className="text-lg text-muted-foreground max-w-3xl">
+            {tool.description}
+          </p>
+        </div>
+      </div>
+
+      <div className="container mx-auto px-4 py-8">
+        {renderToolComponent()}
+        
+        {/* Similar Tools Section */}
+        {similarTools.length > 0 && (
+          <div className="mt-16 border-t pt-12">
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                Similar Tools
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400">
+                Explore more tools from the {tool.category.name} category
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {similarTools.slice(0, 6).map((similarTool) => (
+                <Link key={similarTool.id} href={`/${similarTool.slug}`}>
+                  <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-600 cursor-pointer h-full text-center">
+                    <div className="flex items-center justify-center mx-auto mb-3">
+                      <ToolLogo 
+                        toolSlug={similarTool.slug} 
+                        categorySlug={similarTool.category.slug} 
+                        size={40}
+                        className="transition-transform hover:scale-105"
+                      />
+                    </div>
+                    <h3 className="font-medium text-sm text-gray-900 dark:text-white leading-tight mb-2">
+                      {similarTool.title}
+                    </h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">
+                      {similarTool.description}
+                    </p>
+                  </div>
+                </Link>
+              ))}
             </div>
           </div>
-        </div>
+        )}
       </div>
-
-      {/* Tool Name Box */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
-          <div className="text-center">
-            <div className="mb-4">
-              {!isMobile && (
-                <div className={`inline-flex p-4 rounded-2xl ${getColorForCategory(tool.category.color)} bg-white/10 border border-white/20`}>
-                  <span className="text-4xl">{tool.category.icon}</span>
-                </div>
-              )}
-            </div>
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
-              {tool.title}
-            </h1>
-            <p className="text-lg md:text-xl text-blue-100 max-w-3xl mx-auto">
-              {tool.description}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Tool Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Main Tool Area */}
-          <div className="lg:col-span-3">
-            <Card className="mb-8">
-              <CardContent className="p-6">
-                {ToolComponent ? <ToolComponent /> : (
-                  <div className="text-center py-12">
-                    <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                    <p className="text-gray-600">Loading tool interface...</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Sidebar */}
-          <div className="lg:col-span-1 space-y-6">
-            {/* Tool Info */}
-            <Card>
-              <CardContent className="p-6">
-                <h3 className="font-semibold text-gray-900 mb-4">About This Tool</h3>
-                <div className="space-y-3 text-sm text-gray-600">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-                    Free to use
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                    No registration required
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
-                    Privacy focused
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Similar Tools */}
-            {similarTools.length > 0 && (
-              <Card>
-                <CardContent className="p-6">
-                  <h3 className="font-semibold text-gray-900 mb-4">Related Tools</h3>
-                  <div className="space-y-3">
-                    {similarTools.slice(0, 4).map((similarTool) => (
-                      <Link
-                        key={similarTool.id}
-                        href={`/tools/${similarTool.slug}`}
-                        className="block p-3 rounded-lg border border-gray-200 hover:border-blue-200 hover:bg-blue-50 transition-colors group"
-                      >
-                        <div className="flex items-center gap-3">
-                          {!isMobile && (
-                            <div className={`p-2 rounded-lg ${getColorForCategory(similarTool.category.color)} flex-shrink-0`}>
-                              <span className="text-lg">{similarTool.category.icon}</span>
-                            </div>
-                          )}
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-medium text-gray-900 group-hover:text-blue-700 transition-colors text-sm">
-                              {similarTool.title}
-                            </h4>
-                            <p className="text-xs text-gray-600 truncate">
-                              {similarTool.description}
-                            </p>
-                          </div>
-                          <ExternalLink className="h-4 w-4 text-gray-400 group-hover:text-blue-600 transition-colors flex-shrink-0" />
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
+    </>
   );
 }
