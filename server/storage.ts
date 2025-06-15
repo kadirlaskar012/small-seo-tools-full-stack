@@ -3,6 +3,8 @@ import {
   categories,
   tools,
   blogPosts,
+  siteSettings,
+  admins,
   type User,
   type InsertUser,
   type Category,
@@ -11,8 +13,14 @@ import {
   type InsertTool,
   type BlogPost,
   type InsertBlogPost,
+  type SiteSetting,
+  type InsertSiteSetting,
+  type Admin,
+  type InsertAdmin,
   type ToolWithCategory,
 } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   // Users
@@ -45,33 +53,25 @@ export interface IStorage {
   createBlogPost(post: InsertBlogPost): Promise<BlogPost>;
   updateBlogPost(id: number, post: Partial<InsertBlogPost>): Promise<BlogPost | undefined>;
   deleteBlogPost(id: number): Promise<boolean>;
+
+  // Site Settings
+  getSiteSettings(): Promise<SiteSetting[]>;
+  getSiteSetting(key: string): Promise<SiteSetting | undefined>;
+  setSiteSetting(setting: InsertSiteSetting): Promise<SiteSetting>;
+
+  // Admins
+  getAdminByUsername(username: string): Promise<Admin | undefined>;
+  createAdmin(admin: InsertAdmin): Promise<Admin>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  private categories: Map<number, Category>;
-  private tools: Map<number, Tool>;
-  private blogPosts: Map<number, BlogPost>;
-  private currentUserId: number;
-  private currentCategoryId: number;
-  private currentToolId: number;
-  private currentBlogPostId: number;
+export class DatabaseStorage implements IStorage {
+  async initializeDefaultData() {
+    // Check if data already exists
+    const existingCategories = await db.select().from(categories);
+    if (existingCategories.length > 0) {
+      return; // Data already exists
+    }
 
-  constructor() {
-    this.users = new Map();
-    this.categories = new Map();
-    this.tools = new Map();
-    this.blogPosts = new Map();
-    this.currentUserId = 1;
-    this.currentCategoryId = 1;
-    this.currentToolId = 1;
-    this.currentBlogPostId = 1;
-
-    // Initialize with default categories
-    this.initializeDefaultData();
-  }
-
-  private initializeDefaultData() {
     // Default categories
     const defaultCategories = [
       { name: "Text Tools", slug: "text-tools", description: "Tools for text manipulation and analysis", icon: "text_fields", color: "blue" },
@@ -80,10 +80,7 @@ export class MemStorage implements IStorage {
       { name: "SEO Tools", slug: "seo-tools", description: "Tools for SEO analysis and optimization", icon: "search", color: "cyan" },
     ];
 
-    defaultCategories.forEach(cat => {
-      const category: Category = { ...cat, id: this.currentCategoryId++ };
-      this.categories.set(category.id, category);
-    });
+    const insertedCategories = await db.insert(categories).values(defaultCategories).returning();
 
     // Default tools
     const defaultTools = [
@@ -91,44 +88,41 @@ export class MemStorage implements IStorage {
         title: "Word Counter",
         slug: "word-counter",
         description: "Count words, characters, paragraphs, and reading time instantly",
-        categoryId: 1,
+        categoryId: insertedCategories[0].id,
         code: "word-counter",
         metaTitle: "Word Counter Tool - Count Words and Characters Online",
         metaDescription: "Free online word counter tool. Count words, characters, paragraphs, and sentences. Perfect for writers, students, and content creators.",
         metaTags: "word count, character count, text analysis, writing tools",
+        image: null,
         isActive: true,
-        createdAt: new Date(),
       },
       {
         title: "Image Compressor",
         slug: "image-compressor",
         description: "Compress images without losing quality",
-        categoryId: 2,
+        categoryId: insertedCategories[1].id,
         code: "image-compressor",
         metaTitle: "Image Compressor - Compress Images Online Free",
         metaDescription: "Free online image compression tool. Reduce image file size without losing quality. Supports JPEG, PNG, WebP formats.",
         metaTags: "image compression, optimize images, reduce file size, image tools",
+        image: null,
         isActive: true,
-        createdAt: new Date(),
       },
       {
         title: "PDF to Word",
         slug: "pdf-to-word",
         description: "Convert PDF files to editable Word documents",
-        categoryId: 3,
+        categoryId: insertedCategories[2].id,
         code: "pdf-to-word",
         metaTitle: "PDF to Word Converter - Convert PDF to DOC Online",
         metaDescription: "Free online PDF to Word converter. Convert PDF files to editable Word documents quickly and easily.",
         metaTags: "pdf to word, pdf converter, document conversion, pdf tools",
+        image: null,
         isActive: true,
-        createdAt: new Date(),
       },
     ];
 
-    defaultTools.forEach(tool => {
-      const newTool: Tool = { ...tool, id: this.currentToolId++ };
-      this.tools.set(newTool.id, newTool);
-    });
+    await db.insert(tools).values(defaultTools);
 
     // Default blog posts
     const defaultBlogPosts = [
@@ -140,9 +134,8 @@ export class MemStorage implements IStorage {
         metaTitle: "10 Essential SEO Tools Every Website Owner Should Use",
         metaDescription: "Discover the must-have SEO tools that will help boost your website's search engine rankings and drive more organic traffic.",
         metaTags: "seo tools, website optimization, search engine rankings",
+        image: null,
         isPublished: true,
-        createdAt: new Date(),
-        updatedAt: new Date(),
       },
       {
         title: "How to Optimize Images for Web Without Losing Quality",
@@ -152,192 +145,231 @@ export class MemStorage implements IStorage {
         metaTitle: "How to Optimize Images for Web Without Losing Quality",
         metaDescription: "Learn the best practices for image compression and optimization to improve your website's loading speed while maintaining visual quality.",
         metaTags: "image optimization, web performance, image compression",
+        image: null,
         isPublished: true,
-        createdAt: new Date(),
-        updatedAt: new Date(),
       },
     ];
 
-    defaultBlogPosts.forEach(post => {
-      const newPost: BlogPost = { ...post, id: this.currentBlogPostId++ };
-      this.blogPosts.set(newPost.id, newPost);
-    });
+    await db.insert(blogPosts).values(defaultBlogPosts);
   }
 
   // Users
   async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(user => user.username === username);
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.currentUserId++;
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
     return user;
   }
 
   // Categories
   async getCategories(): Promise<Category[]> {
-    return Array.from(this.categories.values());
+    return await db.select().from(categories);
   }
 
   async getCategory(id: number): Promise<Category | undefined> {
-    return this.categories.get(id);
+    const [category] = await db.select().from(categories).where(eq(categories.id, id));
+    return category || undefined;
   }
 
   async getCategoryBySlug(slug: string): Promise<Category | undefined> {
-    return Array.from(this.categories.values()).find(cat => cat.slug === slug);
+    const [category] = await db.select().from(categories).where(eq(categories.slug, slug));
+    return category || undefined;
   }
 
   async createCategory(insertCategory: InsertCategory): Promise<Category> {
-    const id = this.currentCategoryId++;
-    const category: Category = { 
-      ...insertCategory, 
-      id,
-      icon: insertCategory.icon || "build",
-      color: insertCategory.color || "blue",
-      description: insertCategory.description || null
-    };
-    this.categories.set(id, category);
+    const [category] = await db
+      .insert(categories)
+      .values(insertCategory)
+      .returning();
     return category;
   }
 
   async updateCategory(id: number, updateData: Partial<InsertCategory>): Promise<Category | undefined> {
-    const category = this.categories.get(id);
-    if (!category) return undefined;
-    
-    const updated: Category = { ...category, ...updateData };
-    this.categories.set(id, updated);
-    return updated;
+    const [updated] = await db
+      .update(categories)
+      .set(updateData)
+      .where(eq(categories.id, id))
+      .returning();
+    return updated || undefined;
   }
 
   async deleteCategory(id: number): Promise<boolean> {
-    return this.categories.delete(id);
+    const result = await db.delete(categories).where(eq(categories.id, id));
+    return result.rowCount > 0;
   }
 
   // Tools
   async getTools(): Promise<ToolWithCategory[]> {
-    const tools = Array.from(this.tools.values());
-    return tools.map(tool => ({
-      ...tool,
-      category: this.categories.get(tool.categoryId)!,
+    const results = await db
+      .select()
+      .from(tools)
+      .leftJoin(categories, eq(tools.categoryId, categories.id));
+    
+    return results.map(row => ({
+      ...row.tools,
+      category: row.categories!,
     }));
   }
 
   async getToolsByCategory(categoryId: number): Promise<ToolWithCategory[]> {
-    const tools = Array.from(this.tools.values()).filter(tool => tool.categoryId === categoryId);
-    return tools.map(tool => ({
-      ...tool,
-      category: this.categories.get(tool.categoryId)!,
+    const results = await db
+      .select()
+      .from(tools)
+      .leftJoin(categories, eq(tools.categoryId, categories.id))
+      .where(eq(tools.categoryId, categoryId));
+    
+    return results.map(row => ({
+      ...row.tools,
+      category: row.categories!,
     }));
   }
 
   async getTool(id: number): Promise<ToolWithCategory | undefined> {
-    const tool = this.tools.get(id);
-    if (!tool) return undefined;
+    const [result] = await db
+      .select()
+      .from(tools)
+      .leftJoin(categories, eq(tools.categoryId, categories.id))
+      .where(eq(tools.id, id));
     
-    const category = this.categories.get(tool.categoryId);
-    if (!category) return undefined;
+    if (!result) return undefined;
     
-    return { ...tool, category };
+    return {
+      ...result.tools,
+      category: result.categories!,
+    };
   }
 
   async getToolBySlug(slug: string): Promise<ToolWithCategory | undefined> {
-    const tool = Array.from(this.tools.values()).find(t => t.slug === slug);
-    if (!tool) return undefined;
+    const [result] = await db
+      .select()
+      .from(tools)
+      .leftJoin(categories, eq(tools.categoryId, categories.id))
+      .where(eq(tools.slug, slug));
     
-    const category = this.categories.get(tool.categoryId);
-    if (!category) return undefined;
+    if (!result) return undefined;
     
-    return { ...tool, category };
+    return {
+      ...result.tools,
+      category: result.categories!,
+    };
   }
 
   async createTool(insertTool: InsertTool): Promise<Tool> {
-    const id = this.currentToolId++;
-    const tool: Tool = { 
-      ...insertTool, 
-      id,
-      createdAt: new Date(),
-      metaTitle: insertTool.metaTitle || null,
-      metaDescription: insertTool.metaDescription || null,
-      metaTags: insertTool.metaTags || null,
-      isActive: insertTool.isActive !== undefined ? insertTool.isActive : true,
-    };
-    this.tools.set(id, tool);
+    const [tool] = await db
+      .insert(tools)
+      .values(insertTool)
+      .returning();
     return tool;
   }
 
   async updateTool(id: number, updateData: Partial<InsertTool>): Promise<Tool | undefined> {
-    const tool = this.tools.get(id);
-    if (!tool) return undefined;
-    
-    const updated: Tool = { ...tool, ...updateData };
-    this.tools.set(id, updated);
-    return updated;
+    const [updated] = await db
+      .update(tools)
+      .set(updateData)
+      .where(eq(tools.id, id))
+      .returning();
+    return updated || undefined;
   }
 
   async deleteTool(id: number): Promise<boolean> {
-    return this.tools.delete(id);
+    const result = await db.delete(tools).where(eq(tools.id, id));
+    return result.rowCount > 0;
   }
 
   // Blog Posts
   async getBlogPosts(): Promise<BlogPost[]> {
-    return Array.from(this.blogPosts.values()).sort((a, b) => 
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
+    return await db.select().from(blogPosts).orderBy(blogPosts.createdAt);
   }
 
   async getPublishedBlogPosts(): Promise<BlogPost[]> {
-    return Array.from(this.blogPosts.values())
-      .filter(post => post.isPublished)
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    return await db
+      .select()
+      .from(blogPosts)
+      .where(eq(blogPosts.isPublished, true))
+      .orderBy(blogPosts.createdAt);
   }
 
   async getBlogPost(id: number): Promise<BlogPost | undefined> {
-    return this.blogPosts.get(id);
+    const [post] = await db.select().from(blogPosts).where(eq(blogPosts.id, id));
+    return post || undefined;
   }
 
   async getBlogPostBySlug(slug: string): Promise<BlogPost | undefined> {
-    return Array.from(this.blogPosts.values()).find(post => post.slug === slug);
+    const [post] = await db.select().from(blogPosts).where(eq(blogPosts.slug, slug));
+    return post || undefined;
   }
 
   async createBlogPost(insertPost: InsertBlogPost): Promise<BlogPost> {
-    const id = this.currentBlogPostId++;
-    const post: BlogPost = { 
-      ...insertPost, 
-      id,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      excerpt: insertPost.excerpt || null,
-      metaTitle: insertPost.metaTitle || null,
-      metaDescription: insertPost.metaDescription || null,
-      metaTags: insertPost.metaTags || null,
-      isPublished: insertPost.isPublished !== undefined ? insertPost.isPublished : false,
-    };
-    this.blogPosts.set(id, post);
+    const [post] = await db
+      .insert(blogPosts)
+      .values(insertPost)
+      .returning();
     return post;
   }
 
   async updateBlogPost(id: number, updateData: Partial<InsertBlogPost>): Promise<BlogPost | undefined> {
-    const post = this.blogPosts.get(id);
-    if (!post) return undefined;
-    
-    const updated: BlogPost = { 
-      ...post, 
-      ...updateData,
-      updatedAt: new Date(),
-    };
-    this.blogPosts.set(id, updated);
-    return updated;
+    const [updated] = await db
+      .update(blogPosts)
+      .set({ ...updateData, updatedAt: new Date() })
+      .where(eq(blogPosts.id, id))
+      .returning();
+    return updated || undefined;
   }
 
   async deleteBlogPost(id: number): Promise<boolean> {
-    return this.blogPosts.delete(id);
+    const result = await db.delete(blogPosts).where(eq(blogPosts.id, id));
+    return result.rowCount > 0;
+  }
+
+  // Site Settings
+  async getSiteSettings(): Promise<SiteSetting[]> {
+    return await db.select().from(siteSettings);
+  }
+
+  async getSiteSetting(key: string): Promise<SiteSetting | undefined> {
+    const [setting] = await db.select().from(siteSettings).where(eq(siteSettings.key, key));
+    return setting || undefined;
+  }
+
+  async setSiteSetting(setting: InsertSiteSetting): Promise<SiteSetting> {
+    const [result] = await db
+      .insert(siteSettings)
+      .values(setting)
+      .onConflictDoUpdate({
+        target: siteSettings.key,
+        set: {
+          value: setting.value,
+          updatedAt: new Date(),
+        },
+      })
+      .returning();
+    return result;
+  }
+
+  // Admins
+  async getAdminByUsername(username: string): Promise<Admin | undefined> {
+    const [admin] = await db.select().from(admins).where(eq(admins.username, username));
+    return admin || undefined;
+  }
+
+  async createAdmin(admin: InsertAdmin): Promise<Admin> {
+    const [result] = await db
+      .insert(admins)
+      .values(admin)
+      .returning();
+    return result;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
