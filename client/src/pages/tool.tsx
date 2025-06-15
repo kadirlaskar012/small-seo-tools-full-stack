@@ -99,6 +99,12 @@ export default function Tool() {
         return <WordCounter />;
       case "robots-txt-generator":
         return <RobotsTxtGenerator />;
+      case "date-difference-calculator":
+        return <DateDifferenceCalculator />;
+      case "age-in-months-calculator":
+        return <AgeInMonthsCalculator />;
+      case "percentage-change-calculator":
+        return <PercentageCalculator />;
       default:
         return (
           <Card>
