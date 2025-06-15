@@ -14,7 +14,7 @@ import { LogoUpload } from "@/components/admin/logo-upload";
 import { HomepageIconManager } from "@/components/admin/homepage-icon-manager";
 import type { Category, ToolWithCategory, BlogPost } from "@shared/schema";
 import SEOHead from "@/components/seo-head";
-import { Combine, FileText, Settings, TrendingUp, Globe, FolderOpen, Database, Image, Eye } from "lucide-react";
+import { Combine, FileText, Settings, TrendingUp, Globe, FolderOpen, Database, Image, Eye, Edit, Menu } from "lucide-react";
 
 export default function Admin() {
   const [activeTab, setActiveTab] = useState("tools");
@@ -48,7 +48,7 @@ export default function Admin() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid grid-cols-9 w-full">
+          <TabsList className="grid grid-cols-11 w-full">
             <TabsTrigger value="tools" className="flex items-center gap-2">
               <Combine className="h-4 w-4" />
               Tools
@@ -56,6 +56,14 @@ export default function Admin() {
             <TabsTrigger value="blog" className="flex items-center gap-2">
               <FileText className="h-4 w-4" />
               Blog
+            </TabsTrigger>
+            <TabsTrigger value="pages" className="flex items-center gap-2">
+              <Edit className="h-4 w-4" />
+              Pages
+            </TabsTrigger>
+            <TabsTrigger value="social" className="flex items-center gap-2">
+              <Menu className="h-4 w-4" />
+              Social
             </TabsTrigger>
             <TabsTrigger value="icons" className="flex items-center gap-2">
               <Eye className="h-4 w-4" />
@@ -109,6 +117,272 @@ export default function Admin() {
               <div>
                 <h2 className="text-2xl font-semibold mb-4">Create New Post</h2>
                 <BlogForm />
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="pages" className="space-y-6">
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-2xl font-semibold mb-6">Page Management</h2>
+                <p className="text-muted-foreground mb-6">
+                  Edit and customize static pages, meta tags, and content structure.
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Homepage Content</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Hero Title</label>
+                      <input 
+                        type="text" 
+                        className="w-full p-2 border rounded-md"
+                        placeholder="Enter homepage hero title"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Hero Description</label>
+                      <textarea 
+                        className="w-full p-2 border rounded-md h-24"
+                        placeholder="Enter hero description"
+                      />
+                    </div>
+                    <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                      Update Homepage
+                    </button>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>About Page</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">About Title</label>
+                      <input 
+                        type="text" 
+                        className="w-full p-2 border rounded-md"
+                        placeholder="Enter about page title"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">About Content</label>
+                      <textarea 
+                        className="w-full p-2 border rounded-md h-32"
+                        placeholder="Enter about page content"
+                      />
+                    </div>
+                    <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                      Update About Page
+                    </button>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Privacy Policy</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Privacy Policy Content</label>
+                      <textarea 
+                        className="w-full p-2 border rounded-md h-32"
+                        placeholder="Enter privacy policy content"
+                      />
+                    </div>
+                    <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                      Update Privacy Policy
+                    </button>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Terms of Service</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Terms of Service Content</label>
+                      <textarea 
+                        className="w-full p-2 border rounded-md h-32"
+                        placeholder="Enter terms of service content"
+                      />
+                    </div>
+                    <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                      Update Terms of Service
+                    </button>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="social" className="space-y-6">
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-2xl font-semibold mb-6">Social Menu Management</h2>
+                <p className="text-muted-foreground mb-6">
+                  Configure social media links and navigation menu items.
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Social Media Links</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Facebook URL</label>
+                      <input 
+                        type="url" 
+                        className="w-full p-2 border rounded-md"
+                        placeholder="https://facebook.com/yourpage"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Twitter URL</label>
+                      <input 
+                        type="url" 
+                        className="w-full p-2 border rounded-md"
+                        placeholder="https://twitter.com/youraccount"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">LinkedIn URL</label>
+                      <input 
+                        type="url" 
+                        className="w-full p-2 border rounded-md"
+                        placeholder="https://linkedin.com/company/yourcompany"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Instagram URL</label>
+                      <input 
+                        type="url" 
+                        className="w-full p-2 border rounded-md"
+                        placeholder="https://instagram.com/youraccount"
+                      />
+                    </div>
+                    <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                      Update Social Links
+                    </button>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Navigation Menu</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="border rounded-md p-4">
+                      <h4 className="font-medium mb-3">Current Menu Items</h4>
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                          <span>Home</span>
+                          <button className="text-red-600 text-sm">Remove</button>
+                        </div>
+                        <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                          <span>Tools</span>
+                          <button className="text-red-600 text-sm">Remove</button>
+                        </div>
+                        <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                          <span>Blog</span>
+                          <button className="text-red-600 text-sm">Remove</button>
+                        </div>
+                        <div className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                          <span>About</span>
+                          <button className="text-red-600 text-sm">Remove</button>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="border-t pt-4">
+                      <h4 className="font-medium mb-3">Add New Menu Item</h4>
+                      <div className="space-y-2">
+                        <input 
+                          type="text" 
+                          className="w-full p-2 border rounded-md"
+                          placeholder="Menu item name"
+                        />
+                        <input 
+                          type="text" 
+                          className="w-full p-2 border rounded-md"
+                          placeholder="Menu item URL"
+                        />
+                      </div>
+                      <button className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 mt-3">
+                        Add Menu Item
+                      </button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Footer Links</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Contact Email</label>
+                      <input 
+                        type="email" 
+                        className="w-full p-2 border rounded-md"
+                        placeholder="contact@yoursite.com"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Support Email</label>
+                      <input 
+                        type="email" 
+                        className="w-full p-2 border rounded-md"
+                        placeholder="support@yoursite.com"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Copyright Text</label>
+                      <input 
+                        type="text" 
+                        className="w-full p-2 border rounded-md"
+                        placeholder="© 2024 Your Company Name"
+                      />
+                    </div>
+                    <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                      Update Footer
+                    </button>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Contact Information</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Business Address</label>
+                      <textarea 
+                        className="w-full p-2 border rounded-md h-20"
+                        placeholder="Enter your business address"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Phone Number</label>
+                      <input 
+                        type="tel" 
+                        className="w-full p-2 border rounded-md"
+                        placeholder="+1 (555) 123-4567"
+                      />
+                    </div>
+                    <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+                      Update Contact Info
+                    </button>
+                  </CardContent>
+                </Card>
               </div>
             </div>
           </TabsContent>
