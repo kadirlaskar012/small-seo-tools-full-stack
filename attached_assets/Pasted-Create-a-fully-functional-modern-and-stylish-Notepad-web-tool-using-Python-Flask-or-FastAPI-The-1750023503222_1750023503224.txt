@@ -1,0 +1,56 @@
+Create a fully functional, modern, and stylish Notepad web tool using Python (Flask or FastAPI). The UI must be clean, professional, mobile-friendly, and responsive. The notepad will be part of the "Text Tools" category and the page URL will be either `./notepad` or `./f/notepad`.
+
+### 🔧 Tool Name:
+Smart Modern Notepad
+
+### ✅ Features to Include:
+
+1. **Text Editor Area**:
+   - Large, resizable text input area
+   - Auto-save to localStorage (data persists on reload)
+   - Line number toggle
+   - Word wrap toggle
+
+2. **File Operations**:
+   - Save as `.txt` file
+   - Upload `.txt` file to edit
+   - Clear all content button
+   - Rename file before downloading
+
+3. **Text Tools Integration**:
+   - Word count / Character count
+   - Find & Replace text
+   - Select All / Copy All buttons
+
+4. **Themes & UI**:
+   - Light/Dark Mode toggle
+   - Multiple themes (Monokai, Solarized, Dracula, etc.)
+   - Font size and font family selector (e.g., Roboto, Courier)
+
+5. **Keyboard Shortcuts**:
+   - Ctrl + S = Save
+   - Ctrl + F = Find
+   - Ctrl + / = Toggle theme
+
+6. **Auto Features**:
+   - Auto-capitalize sentence start (optional toggle)
+   - Auto punctuation checker (optional)
+   - Smart Suggestions (using simple AI prompts or regex)
+
+7. **Visual Design Requirements**:
+   - Use Tailwind CSS for beautiful and responsive design
+   - Stylish card layout with soft shadows and rounded corners
+   - Use icons for buttons (Download, Upload, Copy, etc.)
+   - Add animated transitions (fade-in, hover effects)
+   - Top header: “📝 Stylish Online Notepad – Write & Save Instantly”
+
+8. **SEO & Embedding**:
+   - Set meta title: "Online Stylish Notepad – Write & Save Instantly"
+   - Set meta description: "Write, edit, save, and share your notes instantly with this modern and elegant online notepad tool."
+   - Make iframe embeddable in WordPress
+
+### 📦 Tech Stack:
+- Backend: Python (Flask/FastAPI)
+- Frontend: HTML + Tailwind CSS + JavaScript (Vanilla or Alpine.js)
+- Optional: Use LocalStorage for storing data client-side
+- Fully deployable to Vercel, Replit, or your custom host

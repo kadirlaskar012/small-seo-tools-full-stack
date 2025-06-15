@@ -17,6 +17,7 @@ import { AgeInMonthsCalculator } from "@/components/tools/age-in-months-calculat
 import { PercentageCalculator } from "@/components/tools/percentage-calculator";
 import { SmartRedirectChainChecker } from "@/components/tools/smart-redirect-chain-checker";
 import { SchemaMarkupTester } from "@/components/tools/schema-markup-tester";
+import { SmartModernNotepad } from "@/components/tools/smart-modern-notepad";
 import type { ToolWithCategory } from "@shared/schema";
 import SEOHead from "@/components/seo-head";
 import { AlertCircle, Home, ChevronRight } from "lucide-react";
@@ -111,6 +112,8 @@ export default function Tool() {
         return <SmartRedirectChainChecker />;
       case "schema-markup-tester":
         return <SchemaMarkupTester />;
+      case "smart-modern-notepad":
+        return <SmartModernNotepad />;
       default:
         return (
           <Card>
