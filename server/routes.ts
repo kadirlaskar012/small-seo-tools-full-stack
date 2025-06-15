@@ -1582,52 +1582,7 @@ except Exception as e:
 
       const { spawn } = await import("child_process");
       
-      const pythonProcess = spawn("python3", ["-c", `
-import sys
-import json
-sys.path.append('server')
-
-try:
-    from schema_validator import SchemaMarkupTester
-    
-    tester = SchemaMarkupTester()
-    result = tester.validate_from_url('${url.replace(/'/g, "\\'")}')
-    
-    # Convert result to JSON-serializable format
-    result_data = {
-        'success': result.success,
-        'url': result.url,
-        'page_title': result.page_title,
-        'total_schemas': result.total_schemas,
-        'total_errors': result.total_errors,
-        'total_warnings': result.total_warnings,
-        'processing_time': result.processing_time,
-        'schemas': []
-    }
-    
-    for schema in result.schemas_found:
-        schema_data = {
-            'type': schema.type,
-            'schema_type': schema.schema_type.value,
-            'content': schema.content,
-            'errors': schema.errors,
-            'warnings': schema.warnings
-        }
-        result_data['schemas'].append(schema_data)
-    
-    print(json.dumps(result_data))
-    
-except Exception as e:
-    error_result = {
-        'success': False,
-        'error': str(e),
-        'schemas': [],
-        'total_schemas': 0,
-        'total_errors': 1,
-        'total_warnings': 0
-    }
-    print(json.dumps(error_result))
-`]);
+      const pythonProcess = spawn("python3", ["server/schema-validator.py", "validate-url", url]);
 
       let stdout = "";
       let stderr = "";
