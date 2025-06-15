@@ -2,10 +2,10 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams, Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import { Button } from "@/components/ui/button";
 import type { BlogPost } from "@shared/schema";
 import SEOHead from "@/components/seo-head";
-import { AlertCircle, Calendar, Clock } from "lucide-react";
+import { AlertCircle, Calendar, Clock, Home, ChevronRight } from "lucide-react";
 
 export default function BlogPost() {
   const { slug } = useParams();
@@ -62,19 +62,21 @@ export default function BlogPost() {
       
       <div className="bg-muted/30 border-b">
         <div className="container mx-auto px-4 py-8">
-          <Breadcrumb className="mb-4">
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/">Home</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/blog">Blog</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbPage>{post.title}</BreadcrumbPage>
-            </BreadcrumbList>
-          </Breadcrumb>
+          <nav className="flex items-center space-x-1 text-sm text-muted-foreground mb-4">
+            <Link href="/">
+              <Button variant="ghost" size="sm" className="h-auto p-1">
+                <Home className="h-4 w-4" />
+              </Button>
+            </Link>
+            <ChevronRight className="h-4 w-4" />
+            <Link href="/blog">
+              <Button variant="ghost" size="sm" className="h-auto p-1 text-muted-foreground hover:text-foreground">
+                Blog
+              </Button>
+            </Link>
+            <ChevronRight className="h-4 w-4" />
+            <span className="text-foreground font-medium">{post.title}</span>
+          </nav>
           
           <div className="max-w-4xl">
             <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
