@@ -59,100 +59,21 @@ export default function MetaTagsAnalyzer() {
     setError("");
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 2500));
-      
-      // Generate realistic meta tag analysis
-      const domain = new URL(url).hostname;
-      const mockAnalysis: MetaAnalysis = {
-        title: {
-          content: `${domain.replace(/^www\./, '').split('.')[0]} - Professional Services & Solutions`,
-          length: Math.floor(Math.random() * 30) + 40,
-          status: Math.random() > 0.3 ? "good" : "warning"
+      // Fetch and analyze actual webpage meta tags
+      const response = await fetch('/api/seo/meta-tags', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        description: {
-          content: `Discover premium services and solutions at ${domain}. Expert team providing quality results with customer satisfaction guaranteed. Contact us today for consultation.`,
-          length: Math.floor(Math.random() * 40) + 140,
-          status: Math.random() > 0.2 ? "good" : "warning"
-        },
-        keywords: ["business", "services", "professional", "solutions", domain.split('.')[0]],
-        viewport: "width=device-width, initial-scale=1.0",
-        robots: Math.random() > 0.5 ? "index, follow" : "noindex, follow",
-        canonical: url,
-        ogTags: [
-          {
-            name: "og:title",
-            content: `${domain} - Professional Services`,
-            status: "good"
-          },
-          {
-            name: "og:description", 
-            content: "Professional services and solutions for your business needs",
-            status: "good"
-          },
-          {
-            name: "og:image",
-            content: Math.random() > 0.3 ? `${url}/og-image.jpg` : "",
-            status: Math.random() > 0.3 ? "good" : "warning",
-            recommendation: Math.random() > 0.3 ? undefined : "Add an Open Graph image for better social sharing"
-          },
-          {
-            name: "og:url",
-            content: url,
-            status: "good"
-          },
-          {
-            name: "og:type",
-            content: "website",
-            status: "good"
-          }
-        ],
-        twitterTags: [
-          {
-            name: "twitter:card",
-            content: "summary_large_image",
-            status: "good"
-          },
-          {
-            name: "twitter:title",
-            content: `${domain} - Professional Services`,
-            status: "good"
-          },
-          {
-            name: "twitter:description",
-            content: "Professional services and solutions",
-            status: "good"
-          }
-        ],
-        structuredData: [
-          {
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            "name": domain,
-            "url": url
-          }
-        ],
-        httpEquiv: [
-          {
-            name: "X-UA-Compatible",
-            content: "IE=edge",
-            status: "good"
-          }
-        ],
-        customTags: [
-          {
-            name: "author",
-            content: "Website Team",
-            status: "good"
-          },
-          {
-            name: "theme-color",
-            content: "#000000",
-            status: "good"
-          }
-        ]
-      };
+        body: JSON.stringify({ url }),
+      });
 
-      setAnalysis(mockAnalysis);
+      if (!response.ok) {
+        throw new Error('Failed to analyze meta tags');
+      }
+
+      const analysisData = await response.json();
+      setAnalysis(analysisData);
     } catch (err) {
       setError("Failed to analyze meta tags. Please try again.");
     } finally {

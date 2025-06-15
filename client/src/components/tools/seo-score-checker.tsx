@@ -63,45 +63,21 @@ export default function SEOScoreChecker() {
     setError("");
 
     try {
-      // Simulate SEO analysis - in production this would call a real SEO API
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      
-      // Mock analysis results based on URL patterns
-      const mockAnalysis: SEOAnalysis = {
-        score: Math.floor(Math.random() * 40) + 60, // 60-100
-        title: {
-          exists: Math.random() > 0.1,
-          length: Math.floor(Math.random() * 70) + 20,
-          optimized: Math.random() > 0.3
+      // Fetch and analyze actual webpage content
+      const response = await fetch('/api/seo/analyze', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        metaDescription: {
-          exists: Math.random() > 0.2,
-          length: Math.floor(Math.random() * 160) + 120,
-          optimized: Math.random() > 0.4
-        },
-        headings: {
-          h1Count: Math.floor(Math.random() * 3) + 1,
-          h2Count: Math.floor(Math.random() * 10) + 2,
-          structure: Math.random() > 0.3
-        },
-        images: {
-          total: Math.floor(Math.random() * 20) + 5,
-          withAlt: Math.floor(Math.random() * 15) + 3,
-          optimized: Math.random() > 0.5
-        },
-        links: {
-          internal: Math.floor(Math.random() * 50) + 10,
-          external: Math.floor(Math.random() * 20) + 5,
-          broken: Math.floor(Math.random() * 3)
-        },
-        performance: {
-          loadTime: Math.random() * 3 + 1,
-          mobileOptimized: Math.random() > 0.2,
-          httpsEnabled: url.startsWith('https')
-        }
-      };
+        body: JSON.stringify({ url }),
+      });
 
-      setAnalysis(mockAnalysis);
+      if (!response.ok) {
+        throw new Error('Failed to analyze webpage');
+      }
+
+      const analysisData = await response.json();
+      setAnalysis(analysisData);
     } catch (err) {
       setError("Failed to analyze URL. Please try again.");
     } finally {

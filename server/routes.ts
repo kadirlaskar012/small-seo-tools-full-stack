@@ -1,6 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import { analyzeSEO, analyzeMetaTags, analyzeKeywordDensity } from "./seo-analyzer";
 import { insertCategorySchema, insertToolSchema, insertBlogPostSchema, insertSiteSettingSchema, type ToolWithCategory } from "@shared/schema";
 import { z } from "zod";
 import multer from "multer";
@@ -443,6 +444,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting tool icon:", error);
       res.status(500).json({ message: "Failed to delete tool icon" });
+    }
+  });
+
+  // SEO Analysis API
+  app.post("/api/seo/analyze", async (req, res) => {
+    try {
+      const { url } = req.body;
+      
+      if (!url) {
+        return res.status(400).json({ message: "URL is required" });
+      }
+
+      // Fetch webpage content
+      const response = await fetch(url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const html = await response.text();
+      const analysis = analyzeSEO(html, url);
+      
+      res.json(analysis);
+    } catch (error) {
+      console.error("SEO analysis error:", error);
+      res.status(500).json({ message: "Failed to analyze webpage" });
+    }
+  });
+
+  app.post("/api/seo/meta-tags", async (req, res) => {
+    try {
+      const { url } = req.body;
+      
+      if (!url) {
+        return res.status(400).json({ message: "URL is required" });
+      }
+
+      const response = await fetch(url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const html = await response.text();
+      const metaAnalysis = analyzeMetaTags(html, url);
+      
+      res.json(metaAnalysis);
+    } catch (error) {
+      console.error("Meta tags analysis error:", error);
+      res.status(500).json({ message: "Failed to analyze meta tags" });
     }
   });
 
