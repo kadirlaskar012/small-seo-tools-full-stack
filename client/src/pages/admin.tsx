@@ -10,9 +10,10 @@ import SiteSettings from "@/components/admin/site-settings";
 import GoogleTools from "@/components/admin/google-tools";
 import FileManager from "@/components/admin/file-manager";
 import SchemaManager from "@/components/admin/schema-manager";
+import { LogoUpload } from "@/components/admin/logo-upload";
 import type { Category, ToolWithCategory, BlogPost } from "@shared/schema";
 import SEOHead from "@/components/seo-head";
-import { Combine, FileText, Settings, TrendingUp, Globe, FolderOpen, Database } from "lucide-react";
+import { Combine, FileText, Settings, TrendingUp, Globe, FolderOpen, Database, Image } from "lucide-react";
 
 export default function Admin() {
   const [activeTab, setActiveTab] = useState("tools");
@@ -46,7 +47,7 @@ export default function Admin() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid grid-cols-7 w-full">
+          <TabsList className="grid grid-cols-8 w-full">
             <TabsTrigger value="tools" className="flex items-center gap-2">
               <Combine className="h-4 w-4" />
               Tools
@@ -54,6 +55,10 @@ export default function Admin() {
             <TabsTrigger value="blog" className="flex items-center gap-2">
               <FileText className="h-4 w-4" />
               Blog
+            </TabsTrigger>
+            <TabsTrigger value="branding" className="flex items-center gap-2">
+              <Image className="h-4 w-4" />
+              Branding
             </TabsTrigger>
             <TabsTrigger value="schema" className="flex items-center gap-2">
               <Database className="h-4 w-4" />
@@ -99,6 +104,24 @@ export default function Admin() {
               <div>
                 <h2 className="text-2xl font-semibold mb-4">Create New Post</h2>
                 <BlogForm />
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="branding" className="space-y-6">
+            <div>
+              <h2 className="text-2xl font-semibold mb-6">Site Branding</h2>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <LogoUpload
+                  type="logo"
+                  title="Website Logo"
+                  description="Upload your main website logo that will appear in the header and throughout the site."
+                />
+                <LogoUpload
+                  type="nav_icon"
+                  title="Navigation Icon"
+                  description="Upload a small icon for navigation elements and mobile displays."
+                />
               </div>
             </div>
           </TabsContent>
