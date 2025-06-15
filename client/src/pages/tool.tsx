@@ -10,6 +10,7 @@ import type { ToolWithCategory } from "@shared/schema";
 import SEOHead from "@/components/seo-head";
 import { AlertCircle, Home, ChevronRight } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
+import { ToolLogo } from "@/components/ui/tool-logo";
 import { useEffect } from "react";
 
 export default function Tool() {

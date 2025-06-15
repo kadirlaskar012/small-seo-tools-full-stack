@@ -9,6 +9,7 @@ import { useMobile } from "@/hooks/use-mobile";
 import { Search, ArrowRight, Combine, ChevronRight } from "lucide-react";
 import type { Category, ToolWithCategory, BlogPost } from "@shared/schema";
 import SEOHead from "@/components/seo-head";
+import { ToolLogo } from "@/components/ui/tool-logo";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -129,8 +130,13 @@ export default function Home() {
                         {categoryTools.map((tool) => (
                           <Link key={tool.id} href={`/${tool.slug}`}>
                             <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 hover:shadow-md transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-600 cursor-pointer h-full text-center">
-                              <div className={`w-12 h-12 ${getColorForCategory(tool.category.color)} rounded-lg flex items-center justify-center mx-auto mb-3 text-2xl`}>
-                                {getIconForCategory(tool.category.icon)}
+                              <div className="flex items-center justify-center mx-auto mb-3">
+                                <ToolLogo 
+                                  toolSlug={tool.slug} 
+                                  categorySlug={tool.category.slug} 
+                                  size={48}
+                                  className="transition-transform hover:scale-105"
+                                />
                               </div>
                               <h3 className="font-medium text-sm text-gray-900 dark:text-white leading-tight">
                                 {tool.title}
@@ -140,11 +146,16 @@ export default function Home() {
                         ))}
                       </div>
                     ) : (
-                      /* Mobile List Layout - Lightweight text boxes */
+                      /* Mobile List Layout - With logos */
                       <div className="space-y-2">
                         {categoryTools.map((tool) => (
                           <Link key={tool.id} href={`/${tool.slug}`}>
-                            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md p-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md p-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors flex items-center gap-3">
+                              <ToolLogo 
+                                toolSlug={tool.slug} 
+                                categorySlug={tool.category.slug} 
+                                size={32}
+                              />
                               <span className="text-sm text-gray-900 dark:text-white">{tool.title}</span>
                             </div>
                           </Link>
