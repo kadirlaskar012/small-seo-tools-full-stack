@@ -1938,14 +1938,14 @@ import re
 def generate_regex(pattern, options, test_string=""):
     try:
         regex_map = {
-            "email": r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}",
-            "phone": r"\\+?1?\\d{9,15}",
-            "url": r"https?://(?:[-\\w.])+(?:\\.[a-zA-Z]{2,5})+/?.*",
-            "ipv4": r"\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b",
-            "date": r"\\d{4}-\\d{2}-\\d{2}",
-            "time": r"\\d{2}:\\d{2}(?::\\d{2})?",
-            "number": r"\\d+",
-            "word": r"\\w+",
+            "email": r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}",
+            "phone": r"\+?1?\d{9,15}",
+            "url": r"https?://(?:[-\w.])+(?:\.[a-zA-Z]{2,5})+/?.*",
+            "ipv4": r"\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b",
+            "date": r"\d{4}-\d{2}-\d{2}",
+            "time": r"\d{2}:\d{2}(?::\d{2})?",
+            "number": r"\d+",
+            "word": r"\w+",
             "custom": pattern
         }
         
@@ -1964,7 +1964,7 @@ def generate_regex(pattern, options, test_string=""):
             try:
                 compiled_regex = re.compile(regex_pattern, flags)
                 matches = compiled_regex.findall(test_string)
-            except:
+            except Exception as e:
                 pass
         
         return {
@@ -1979,9 +1979,9 @@ def generate_regex(pattern, options, test_string=""):
             "error": str(e)
         }
 
-pattern = "${pattern || ''}"
-options = ${JSON.stringify(options || {})}
-test_string = "${(testString || '').replace(/"/g, '\\"')}"
+pattern = '''${(pattern || '').replace(/'/g, "\\'")}'''
+options = ${JSON.stringify(options || {}).replace(/false/g, 'False').replace(/true/g, 'True').replace(/null/g, 'None')}
+test_string = '''${(testString || '').replace(/'/g, "\\'")}'''
 result = generate_regex(pattern, options, test_string)
 print(json.dumps(result))
 `]);
