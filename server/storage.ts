@@ -117,6 +117,13 @@ export interface IStorage {
   createToolIcon(icon: InsertToolIcon): Promise<ToolIcon>;
   updateToolIcon(toolId: number, icon: Partial<InsertToolIcon>): Promise<ToolIcon | undefined>;
   deleteToolIcon(toolId: number): Promise<boolean>;
+
+  // Site Branding
+  getSiteBranding(): Promise<SiteBranding[]>;
+  getSiteBrandingByType(type: string): Promise<SiteBranding | undefined>;
+  createSiteBranding(branding: InsertSiteBranding): Promise<SiteBranding>;
+  updateSiteBranding(id: number, branding: Partial<InsertSiteBranding>): Promise<SiteBranding | undefined>;
+  deleteSiteBranding(id: number): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -655,6 +662,42 @@ export class DatabaseStorage implements IStorage {
 
   async deleteToolIcon(toolId: number): Promise<boolean> {
     const result = await db.delete(toolIcons).where(eq(toolIcons.toolId, toolId));
+    return (result.rowCount || 0) > 0;
+  }
+
+  async getSiteBranding(): Promise<SiteBranding[]> {
+    return await db.select().from(siteBranding).orderBy(siteBranding.createdAt);
+  }
+
+  async getSiteBrandingByType(type: string): Promise<SiteBranding | undefined> {
+    const [result] = await db
+      .select()
+      .from(siteBranding)
+      .where(eq(siteBranding.type, type))
+      .orderBy(siteBranding.createdAt)
+      .limit(1);
+    return result || undefined;
+  }
+
+  async createSiteBranding(branding: InsertSiteBranding): Promise<SiteBranding> {
+    const [result] = await db
+      .insert(siteBranding)
+      .values(branding)
+      .returning();
+    return result;
+  }
+
+  async updateSiteBranding(id: number, updateData: Partial<InsertSiteBranding>): Promise<SiteBranding | undefined> {
+    const [result] = await db
+      .update(siteBranding)
+      .set({ ...updateData, updatedAt: new Date() })
+      .where(eq(siteBranding.id, id))
+      .returning();
+    return result || undefined;
+  }
+
+  async deleteSiteBranding(id: number): Promise<boolean> {
+    const result = await db.delete(siteBranding).where(eq(siteBranding.id, id));
     return (result.rowCount || 0) > 0;
   }
 }

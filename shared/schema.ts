@@ -125,6 +125,20 @@ export const toolIcons = pgTable("tool_icons", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Site Branding System
+export const siteBranding = pgTable("site_branding", {
+  id: serial("id").primaryKey(),
+  type: varchar("type", { length: 20 }).notNull(), // 'logo' or 'nav_icon'
+  name: text("name").notNull(),
+  fileData: text("file_data").notNull(), // Base64 encoded file data
+  fileType: varchar("file_type", { length: 50 }).notNull(), // 'image/png', 'image/svg+xml', etc.
+  fileName: text("file_name").notNull(),
+  fileSize: integer("file_size").notNull(),
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
   password: true,
@@ -222,6 +236,15 @@ export type InsertPageSchema = z.infer<typeof insertPageSchemaSchema>;
 
 export type ToolIcon = typeof toolIcons.$inferSelect;
 export type InsertToolIcon = z.infer<typeof insertToolIconSchema>;
+
+export const insertSiteBrandingSchema = createInsertSchema(siteBranding).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type SiteBranding = typeof siteBranding.$inferSelect;
+export type InsertSiteBranding = z.infer<typeof insertSiteBrandingSchema>;
 
 export type ToolWithCategory = Tool & { category: Category };
 export type ToolWithUsage = Tool & { category: Category; usageCount?: number };
