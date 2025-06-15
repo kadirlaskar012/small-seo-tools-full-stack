@@ -45,10 +45,8 @@ export function DomainAgeChecker() {
 
     setIsLoading(true);
     try {
-      const response = await apiRequest("/api/tools/domain-age-checker", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ domain: domain.trim() }),
+      const response = await apiRequest("POST", "/api/tools/domain-age-checker", {
+        domain: domain.trim()
       });
 
       const data = await response.json();

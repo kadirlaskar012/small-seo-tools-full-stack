@@ -58,14 +58,10 @@ export function RegexGenerator() {
 
     setIsLoading(true);
     try {
-      const response = await apiRequest("/api/tools/regex-generator", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          pattern, 
-          options, 
-          testString: testString.trim() 
-        }),
+      const response = await apiRequest("POST", "/api/tools/regex-generator", {
+        pattern, 
+        options, 
+        testString: testString.trim() 
       });
 
       const data = await response.json();

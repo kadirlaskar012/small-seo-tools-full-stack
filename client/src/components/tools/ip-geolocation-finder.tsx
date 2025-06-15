@@ -47,10 +47,8 @@ export function IPGeolocationFinder() {
 
     setIsLoading(true);
     try {
-      const response = await apiRequest("/api/tools/ip-geolocation-finder", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ip: ipInput.trim() }),
+      const response = await apiRequest("POST", "/api/tools/ip-geolocation-finder", {
+        ip: ipInput.trim()
       });
 
       const data = await response.json();

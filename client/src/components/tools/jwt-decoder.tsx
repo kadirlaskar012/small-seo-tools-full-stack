@@ -35,10 +35,8 @@ export function JWTDecoder() {
 
     setIsLoading(true);
     try {
-      const response = await apiRequest("/api/tools/jwt-decoder", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: token.trim() }),
+      const response = await apiRequest("POST", "/api/tools/jwt-decoder", {
+        token: token.trim()
       });
 
       const data = await response.json();

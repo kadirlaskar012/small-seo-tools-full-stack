@@ -56,10 +56,9 @@ export function JSObfuscator() {
 
     setIsLoading(true);
     try {
-      const response = await apiRequest("/api/tools/js-obfuscator", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code: code.trim(), level }),
+      const response = await apiRequest("POST", "/api/tools/js-obfuscator", {
+        code: code.trim(), 
+        level
       });
 
       const data = await response.json();

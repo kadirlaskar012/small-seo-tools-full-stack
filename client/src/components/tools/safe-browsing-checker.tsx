@@ -39,10 +39,8 @@ export function SafeBrowsingChecker() {
 
     setIsLoading(true);
     try {
-      const response = await apiRequest("/api/tools/safe-browsing-checker", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: url.trim() }),
+      const response = await apiRequest("POST", "/api/tools/safe-browsing-checker", {
+        url: url.trim()
       });
 
       const data = await response.json();
