@@ -12,7 +12,7 @@ import FileManager from "@/components/admin/file-manager";
 import SchemaManager from "@/components/admin/schema-manager";
 import type { Category, ToolWithCategory, BlogPost } from "@shared/schema";
 import SEOHead from "@/components/seo-head";
-import { Combine, FileText, Settings, TrendingUp, Globe, FolderOpen } from "lucide-react";
+import { Combine, FileText, Settings, TrendingUp, Globe, FolderOpen, Database } from "lucide-react";
 
 export default function Admin() {
   const [activeTab, setActiveTab] = useState("tools");
