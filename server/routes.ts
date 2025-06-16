@@ -2079,7 +2079,7 @@ print(json.dumps(result))
 
       // Call Python script for PDF password removal
       const { spawn } = await import("child_process");
-      const pythonProcess = spawn("python3", ["server/advanced-pdf-cracker.py"], {
+      const pythonProcess = spawn("python3", ["server/ultimate-pdf-cracker.py"], {
         timeout: 25000 // Kill process after 25 seconds
       });
 

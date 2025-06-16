@@ -292,7 +292,7 @@ export function PDFPasswordRemover() {
                 </div>
                 <div className="flex items-start space-x-3">
                   <div className="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">2</div>
-                  <p>Our tool automatically tries 5000+ passwords using multiple PDF libraries</p>
+                  <p>Our tool uses 7 advanced exploitation methods and 10,000+ password patterns</p>
                 </div>
                 <div className="flex items-start space-x-3">
                   <div className="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">3</div>
@@ -303,7 +303,7 @@ export function PDFPasswordRemover() {
               <Alert>
                 <Shield className="h-4 w-4" />
                 <AlertDescription>
-                  <strong>Multi-Library Approach:</strong> Uses PyPDF2, pikepdf, and PyMuPDF with 5000+ password combinations, smart pattern generation, and aggressive cracking techniques.
+                  <strong>Ultimate Security Bypass:</strong> Uses 7 advanced exploitation techniques including binary manipulation, encryption removal, and security bypass methods with 10,000+ password patterns.
                 </AlertDescription>
               </Alert>
 
