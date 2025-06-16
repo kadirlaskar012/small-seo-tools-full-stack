@@ -2067,19 +2067,40 @@ print(json.dumps(result))
       const password = req.body.password || "";
       const pdfBuffer = req.file.buffer;
 
+      // Set timeout for the entire process (2 minutes)
+      const processTimeout = setTimeout(() => {
+        if (!res.headersSent) {
+          res.status(500).json({
+            success: false,
+            error: "PDF processing timed out. Please try with a smaller file or simpler password."
+          });
+        }
+      }, 120000); // 2 minutes
+
       // Call Python script for PDF password removal
       const { spawn } = await import("child_process");
-      const pythonProcess = spawn("python3", ["server/pdf-password-remover.py"]);
+      const pythonProcess = spawn("python3", ["server/pdf-password-remover.py"], {
+        timeout: 110000 // Kill process after 110 seconds
+      });
 
       let output = "";
       let error = "";
+      let isFinished = false;
 
       // Send PDF data and password to Python script
-      pythonProcess.stdin.write(JSON.stringify({
-        pdf_data: pdfBuffer.toString('base64'),
-        password: password
-      }));
-      pythonProcess.stdin.end();
+      try {
+        pythonProcess.stdin.write(JSON.stringify({
+          pdf_data: pdfBuffer.toString('base64'),
+          password: password
+        }));
+        pythonProcess.stdin.end();
+      } catch (writeError) {
+        clearTimeout(processTimeout);
+        return res.status(500).json({
+          success: false,
+          error: "Failed to send data to processor"
+        });
+      }
 
       pythonProcess.stdout.on("data", (data) => {
         output += data.toString();
@@ -2090,13 +2111,30 @@ print(json.dumps(result))
       });
 
       pythonProcess.on("close", (code) => {
+        if (isFinished) return;
+        isFinished = true;
+        clearTimeout(processTimeout);
+
         try {
           if (code !== 0) {
             console.error("Python script error:", error);
-            return res.status(500).json({
-              success: false,
-              error: "PDF processing failed"
-            });
+            if (!res.headersSent) {
+              return res.status(500).json({
+                success: false,
+                error: "PDF processing failed: " + (error || "Unknown error")
+              });
+            }
+            return;
+          }
+
+          if (!output.trim()) {
+            if (!res.headersSent) {
+              return res.status(500).json({
+                success: false,
+                error: "No output received from processor"
+              });
+            }
+            return;
           }
 
           const result = JSON.parse(output);
@@ -2134,22 +2172,41 @@ print(json.dumps(result))
             }, 10 * 60 * 1000);
           }
 
-          res.json(result);
+          if (!res.headersSent) {
+            res.json(result);
+          }
         } catch (parseError) {
-          console.error("Failed to parse Python output:", parseError);
+          console.error("Failed to parse Python output:", parseError, "Output:", output);
+          if (!res.headersSent) {
+            res.status(500).json({
+              success: false,
+              error: "Failed to process PDF response"
+            });
+          }
+        }
+      });
+
+      pythonProcess.on("error", (processError) => {
+        if (isFinished) return;
+        isFinished = true;
+        clearTimeout(processTimeout);
+        console.error("Python process error:", processError);
+        if (!res.headersSent) {
           res.status(500).json({
             success: false,
-            error: "Failed to process PDF response"
+            error: "PDF processor failed to start"
           });
         }
       });
 
     } catch (error) {
       console.error("PDF password remover error:", error);
-      res.status(500).json({
-        success: false,
-        error: "Internal server error"
-      });
+      if (!res.headersSent) {
+        res.status(500).json({
+          success: false,
+          error: "Internal server error"
+        });
+      }
     }
   });
 

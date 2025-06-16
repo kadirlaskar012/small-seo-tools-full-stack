@@ -1,4 +1,4 @@
-import { Switch, Route, useLocation } from "wouter";
+import { Switch, Route, useLocation, Redirect } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -30,6 +30,12 @@ function Router() {
           <Route path="/admin" component={Admin} />
           <Route path="/blog" component={Blog} />
           <Route path="/blog/:slug" component={BlogPost} />
+          <Route path="/tool/:slug">
+            {(params) => {
+              window.history.replaceState(null, '', `/${params.slug}`);
+              return <Tool />;
+            }}
+          </Route>
           <Route path="/:slug" component={Tool} />
           <Route component={NotFound} />
         </Switch>
