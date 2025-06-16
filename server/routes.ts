@@ -2077,10 +2077,10 @@ print(json.dumps(result))
         }
       }, 30000); // 30 seconds
 
-      // Call content-preserving PDF cracker as primary method
+      // Call ultimate PDF cracker with improved content preservation
       const { spawn } = await import("child_process");
-      let pythonProcess = spawn("python3", ["server/content-preserving-pdf-cracker.py"], {
-        timeout: 20000 // Kill process after 20 seconds
+      let pythonProcess = spawn("python3", ["server/ultimate-pdf-cracker.py"], {
+        timeout: 25000 // Kill process after 25 seconds
       });
 
       let output = "";
@@ -2115,39 +2115,39 @@ print(json.dumps(result))
         isFinished = true;
         clearTimeout(processTimeout);
 
-        const tryUltimateFallback = async () => {
-          console.log("Trying ultimate PDF cracker as fallback...");
-          const ultimateProcess = spawn("python3", ["server/ultimate-pdf-cracker.py"], {
+        const tryContentPreservingFallback = async () => {
+          console.log("Trying content-preserving PDF cracker as fallback...");
+          const contentProcess = spawn("python3", ["server/content-preserving-pdf-cracker.py"], {
             timeout: 15000
           });
           
-          let ultimateOutput = "";
-          let ultimateError = "";
+          let contentOutput = "";
+          let contentError = "";
           
           try {
-            ultimateProcess.stdin.write(JSON.stringify({
+            contentProcess.stdin.write(JSON.stringify({
               pdf_data: pdfBuffer.toString('base64')
             }));
-            ultimateProcess.stdin.end();
+            contentProcess.stdin.end();
           } catch (writeError) {
             return null;
           }
           
           return new Promise((resolve) => {
-            ultimateProcess.stdout.on("data", (data) => {
-              ultimateOutput += data.toString();
+            contentProcess.stdout.on("data", (data) => {
+              contentOutput += data.toString();
             });
             
-            ultimateProcess.stderr.on("data", (data) => {
-              ultimateError += data.toString();
+            contentProcess.stderr.on("data", (data) => {
+              contentError += data.toString();
             });
             
-            ultimateProcess.on("close", (ultimateCode) => {
-              if (ultimateCode === 0 && ultimateOutput.trim()) {
+            contentProcess.on("close", (contentCode) => {
+              if (contentCode === 0 && contentOutput.trim()) {
                 try {
-                  const ultimateResult = JSON.parse(ultimateOutput);
-                  if (ultimateResult.success) {
-                    resolve(ultimateResult);
+                  const contentResult = JSON.parse(contentOutput);
+                  if (contentResult.success) {
+                    resolve(contentResult);
                     return;
                   }
                 } catch (e) {}
@@ -2155,7 +2155,7 @@ print(json.dumps(result))
               resolve(null);
             });
             
-            ultimateProcess.on("error", () => {
+            contentProcess.on("error", () => {
               resolve(null);
             });
           });
@@ -2166,7 +2166,7 @@ print(json.dumps(result))
             console.error("Ultimate PDF cracker failed:", error);
             
             // Try ultimate fallback
-            const fallbackResult = await tryUltimateFallback();
+            const fallbackResult = await tryContentPreservingFallback();
             if (fallbackResult && !res.headersSent) {
               // Process fallback result same as main result
               if (fallbackResult.output_data) {

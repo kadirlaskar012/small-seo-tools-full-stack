@@ -89,11 +89,21 @@ def try_pypdf2_preserve(pdf_path):
                     "method": "PyPDF2 Content Preserve"
                 }
             
-            # Try password cracking with content preservation
+            # Try comprehensive password cracking with content preservation
             passwords = [
                 "", "123456", "password", "admin", "user", "test", "demo",
-                "123", "1234", "12345", "qwerty", "abc123", "password123",
-                "admin123", "root", "guest", "default", "pass", "pwd"
+                "123", "1234", "12345", "123456789", "qwerty", "abc123", "password123",
+                "admin123", "root", "guest", "default", "pass", "pwd", "login",
+                "secret", "welcome", "master", "owner", "unlock", "open", "free",
+                "document", "file", "pdf", "secure", "protected", "private",
+                "confidential", "restricted", "access", "enter", "key", "code",
+                "temp", "temporary", "draft", "copy", "backup", "archive",
+                "sample", "example", "template", "original", "final", "version",
+                "public", "shared", "common", "simple", "easy", "quick", "fast",
+                "new", "old", "current", "latest", "updated", "modified", "revised",
+                "a", "1", "12", "abc", "aaa", "111", "000", "999", "password1",
+                "Password", "PASSWORD", "Admin", "ADMIN", "User", "USER",
+                "Test", "TEST", "Demo", "DEMO", "Root", "ROOT", "Guest", "GUEST"
             ]
             
             for pwd in passwords:
@@ -162,8 +172,22 @@ def try_pikepdf_preserve(pdf_path):
                 }
                 
         except pikepdf.PasswordError:
-            # Try common passwords
-            passwords = ["", "123456", "password", "admin", "user", "test"]
+            # Try comprehensive passwords
+            passwords = [
+                "", "123456", "password", "admin", "user", "test", "demo",
+                "123", "1234", "12345", "123456789", "qwerty", "abc123", "password123",
+                "admin123", "root", "guest", "default", "pass", "pwd", "login",
+                "secret", "welcome", "master", "owner", "unlock", "open", "free",
+                "document", "file", "pdf", "secure", "protected", "private",
+                "confidential", "restricted", "access", "enter", "key", "code",
+                "temp", "temporary", "draft", "copy", "backup", "archive",
+                "sample", "example", "template", "original", "final", "version",
+                "public", "shared", "common", "simple", "easy", "quick", "fast",
+                "new", "old", "current", "latest", "updated", "modified", "revised",
+                "a", "1", "12", "abc", "aaa", "111", "000", "999", "password1",
+                "Password", "PASSWORD", "Admin", "ADMIN", "User", "USER",
+                "Test", "TEST", "Demo", "DEMO", "Root", "ROOT", "Guest", "GUEST"
+            ]
             
             for pwd in passwords:
                 try:
@@ -229,8 +253,22 @@ def try_pymupdf_preserve(pdf_path):
         except Exception:
             pass
         
-        # Try password cracking
-        passwords = ["", "123456", "password", "admin", "user"]
+        # Try comprehensive password cracking
+        passwords = [
+            "", "123456", "password", "admin", "user", "test", "demo",
+            "123", "1234", "12345", "123456789", "qwerty", "abc123", "password123",
+            "admin123", "root", "guest", "default", "pass", "pwd", "login",
+            "secret", "welcome", "master", "owner", "unlock", "open", "free",
+            "document", "file", "pdf", "secure", "protected", "private",
+            "confidential", "restricted", "access", "enter", "key", "code",
+            "temp", "temporary", "draft", "copy", "backup", "archive",
+            "sample", "example", "template", "original", "final", "version",
+            "public", "shared", "common", "simple", "easy", "quick", "fast",
+            "new", "old", "current", "latest", "updated", "modified", "revised",
+            "a", "1", "12", "abc", "aaa", "111", "000", "999", "password1",
+            "Password", "PASSWORD", "Admin", "ADMIN", "User", "USER",
+            "Test", "TEST", "Demo", "DEMO", "Root", "ROOT", "Guest", "GUEST"
+        ]
         
         for pwd in passwords:
             try:
