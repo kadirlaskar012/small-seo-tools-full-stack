@@ -1068,15 +1068,6 @@ export default function FancyTextGenerator() {
 
   return (
     <div className="max-w-7xl mx-auto p-4 sm:p-6 space-y-6">
-      {/* Main Header */}
-      <div className="text-center space-y-4">
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">
-          Fancy Text Generator
-        </h1>
-        <p className="text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-          Create stunning fancy text with 100+ unique Unicode fonts. Perfect for Instagram, BGMI, FreeFire usernames, and social media profiles. Copy any style instantly!
-        </p>
-      </div>
 
       {/* Symbol Panels */}
       <Card className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-blue-200 dark:border-blue-800">
