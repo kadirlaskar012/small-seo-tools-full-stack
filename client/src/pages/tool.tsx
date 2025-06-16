@@ -28,6 +28,9 @@ import { DomainAgeChecker } from "@/components/tools/domain-age-checker";
 import { AdSenseBanChecker } from "@/components/tools/adsense-ban-checker";
 import ProfilePictureMaker from "@/components/tools/profile-picture-maker";
 import { PDFPasswordRemover } from "@/components/tools/pdf-password-remover";
+import RemoveDuplicateLines from "@/components/tools/remove-duplicate-lines";
+import WordFrequencyCounter from "@/components/tools/word-frequency-counter";
+import SlugGenerator from "@/components/tools/slug-generator";
 import type { ToolWithCategory } from "@shared/schema";
 import SEOHead from "@/components/seo-head";
 import { AlertCircle, Home, ChevronRight, ChevronDown, ChevronUp, Search } from "lucide-react";
@@ -173,6 +176,12 @@ export default function Tool() {
         return <ProfilePictureMaker />;
       case "pdf-password-remover":
         return <PDFPasswordRemover />;
+      case "remove-duplicate-lines":
+        return <RemoveDuplicateLines />;
+      case "word-frequency-counter":
+        return <WordFrequencyCounter />;
+      case "slug-generator":
+        return <SlugGenerator />;
       default:
         return (
           <Card>
