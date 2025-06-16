@@ -31,6 +31,7 @@ import { PDFPasswordRemover } from "@/components/tools/pdf-password-remover";
 import RemoveDuplicateLines from "@/components/tools/remove-duplicate-lines";
 import WordFrequencyCounter from "@/components/tools/word-frequency-counter";
 import SlugGenerator from "@/components/tools/slug-generator";
+import FancyTextGenerator from "@/components/tools/fancy-text-generator";
 import type { ToolWithCategory } from "@shared/schema";
 import SEOHead from "@/components/seo-head";
 import { AlertCircle, Home, ChevronRight, ChevronDown, ChevronUp, Search } from "lucide-react";
@@ -182,6 +183,8 @@ export default function Tool() {
         return <WordFrequencyCounter />;
       case "slug-generator":
         return <SlugGenerator />;
+      case "fancy-text-generator":
+        return <FancyTextGenerator />;
       default:
         return (
           <Card>
