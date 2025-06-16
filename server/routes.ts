@@ -2119,6 +2119,16 @@ print(json.dumps(result))
           if (code !== 0) {
             console.error("Python script error:", error);
             if (!res.headersSent) {
+              // Check for specific password cracking failure
+              if (error.includes("password required and common passwords failed") || 
+                  error.includes("Unable to unlock PDF")) {
+                return res.status(400).json({
+                  success: false,
+                  error: "Password cracking failed",
+                  message: "This PDF has a strong password that couldn't be cracked automatically. Please provide the exact password to unlock it.",
+                  suggestion: "Try entering the password manually, or check if it contains special characters, mixed case, or numbers."
+                });
+              }
               return res.status(500).json({
                 success: false,
                 error: "PDF processing failed: " + (error || "Unknown error")

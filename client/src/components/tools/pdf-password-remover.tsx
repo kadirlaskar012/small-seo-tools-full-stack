@@ -163,11 +163,20 @@ export function PDFPasswordRemover() {
           description: `PDF unlocked! ${data.pages_count} pages processed in ${data.processing_time}s`,
         });
       } else {
-        toast({
-          title: "Password Removal Failed",
-          description: data.error || "Failed to remove password protection",
-          variant: "destructive",
-        });
+        // Handle specific password cracking failure
+        if (data.error === "Password cracking failed") {
+          toast({
+            title: "Strong Password Detected",
+            description: data.message || "Please provide the exact password to unlock this PDF",
+            variant: "destructive",
+          });
+        } else {
+          toast({
+            title: "Password Removal Failed",
+            description: data.error || "Failed to remove password protection",
+            variant: "destructive",
+          });
+        }
       }
     } catch (error) {
       console.error("PDF password removal error:", error);
@@ -381,14 +390,38 @@ export function PDFPasswordRemover() {
                       </AlertDescription>
                     </Alert>
                   ) : (
-                    <Alert className="border-red-200 bg-red-50 dark:bg-red-950">
-                      <AlertTriangle className="h-4 w-4 text-red-600" />
-                      <AlertDescription className="text-red-800 dark:text-red-200">
-                        <strong>Password Removal Failed</strong>
-                        <br />
-                        {result.error || "Unable to remove password protection."}
-                      </AlertDescription>
-                    </Alert>
+                    <div className="space-y-3">
+                      <Alert className="border-red-200 bg-red-50 dark:bg-red-950">
+                        <AlertTriangle className="h-4 w-4 text-red-600" />
+                        <AlertDescription className="text-red-800 dark:text-red-200">
+                          <strong>
+                            {result.error === "Password cracking failed" 
+                              ? "Strong Password Detected" 
+                              : "Password Removal Failed"}
+                          </strong>
+                          <br />
+                          {result.message || result.error || "Unable to remove password protection."}
+                        </AlertDescription>
+                      </Alert>
+                      
+                      {result.error === "Password cracking failed" && (
+                        <div className="bg-orange-50 dark:bg-orange-950 border border-orange-200 dark:border-orange-800 rounded-lg p-4">
+                          <div className="flex items-start gap-2">
+                            <Info className="h-4 w-4 text-orange-600 dark:text-orange-400 mt-0.5 flex-shrink-0" />
+                            <div className="text-sm text-orange-800 dark:text-orange-200">
+                              <p className="font-medium mb-2">What to try next:</p>
+                              <ul className="space-y-1 text-xs">
+                                <li>• Enter the exact password above and try again</li>
+                                <li>• Check for typos, spaces, or special characters</li>
+                                <li>• Try variations like: Name2024, Company123!, Date-Format</li>
+                                <li>• Consider if password contains mixed case or symbols</li>
+                                <li>• Contact the PDF creator if password is unknown</li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   )}
 
                   {result.success && (
