@@ -161,17 +161,7 @@ export function HTMLToMarkdownConverter() {
   return (
     <div className="space-y-6">
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Code className="h-5 w-5" />
-            HTML to Markdown Converter
-          </CardTitle>
-          <CardDescription>
-            Convert HTML content to clean Markdown format. 
-            Perfect for documentation, blogs, and content migration.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 pt-6">
           <div className="flex gap-2 mb-4">
             <Button 
               onClick={convertToMarkdown} 

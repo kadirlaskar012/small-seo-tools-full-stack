@@ -147,17 +147,7 @@ export function BackgroundRemover() {
   return (
     <div className="space-y-6">
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Scissors className="h-5 w-5" />
-            Background Remover
-          </CardTitle>
-          <CardDescription>
-            Automatically remove backgrounds from images using AI technology. 
-            Get transparent PNG images ready for use.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-6 pt-6">
           {/* Upload Section */}
           <div className="space-y-4">
             <Label htmlFor="image-upload" className="text-base font-medium">Upload Image</Label>

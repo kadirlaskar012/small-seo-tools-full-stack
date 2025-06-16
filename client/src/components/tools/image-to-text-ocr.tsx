@@ -158,17 +158,7 @@ export function ImageToTextOCR() {
   return (
     <div className="space-y-6">
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <FileImage className="h-5 w-5" />
-            Image to Text (OCR)
-          </CardTitle>
-          <CardDescription>
-            Extract text from images using advanced OCR technology. 
-            Supports JPG, PNG, and other common image formats.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 pt-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Upload Section */}
             <div className="space-y-4">

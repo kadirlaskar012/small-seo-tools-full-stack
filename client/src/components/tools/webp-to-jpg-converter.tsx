@@ -164,17 +164,7 @@ export function WebPToJPGConverter() {
   return (
     <div className="space-y-6">
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <ImageIcon className="h-5 w-5" />
-            WebP to JPG Converter
-          </CardTitle>
-          <CardDescription>
-            Convert WebP images to JPG format with customizable compression settings. 
-            Perfect for compatibility with older browsers and systems.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-6 pt-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Upload and Settings Section */}
             <div className="space-y-4">

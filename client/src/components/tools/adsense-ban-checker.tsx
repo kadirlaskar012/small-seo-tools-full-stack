@@ -157,17 +157,7 @@ export function AdSenseBanChecker() {
   return (
     <div className="space-y-6">
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Shield className="h-5 w-5" />
-            Google AdSense Ban Checker
-          </CardTitle>
-          <CardDescription>
-            Check if your website is banned from showing Google AdSense ads. 
-            Analyzes AdSense code presence, Google indexing, and potential ban indicators.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 pt-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="domain">Website Domain</Label>
