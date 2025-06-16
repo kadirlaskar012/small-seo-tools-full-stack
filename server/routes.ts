@@ -2077,9 +2077,9 @@ print(json.dumps(result))
         }
       }, 30000); // 30 seconds
 
-      // Call pikepdf processor - the most powerful Python PDF library
+      // Call ultimate PDF cracker with comprehensive attack methods
       const { spawn } = await import("child_process");
-      let pythonProcess = spawn("python3", ["server/pikepdf-processor.py"], {
+      let pythonProcess = spawn("python3", ["server/ultimate-pdf-cracker.py"], {
         timeout: 60000 // Kill process after 60 seconds
       });
 
@@ -2119,7 +2119,7 @@ print(json.dumps(result))
 
         try {
           if (code !== 0) {
-            console.error("pikepdf processor failed:", error);
+            console.error("Ultimate PDF cracker failed:", error);
             
             if (!res.headersSent) {
               return res.json({
@@ -2193,7 +2193,7 @@ print(json.dumps(result))
         if (isFinished) return;
         isFinished = true;
         clearTimeout(processTimeout);
-        console.error("pikepdf process error:", processError);
+        console.error("Ultimate PDF cracker process error:", processError);
         if (!res.headersSent) {
           res.status(500).json({
             success: false,
