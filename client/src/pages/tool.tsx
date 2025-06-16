@@ -424,7 +424,57 @@ export default function Tool() {
             </div>
           </div>
         )}
+
+        {/* SEO Article Section */}
+        <ToolArticleSection toolId={tool.id} />
       </div>
     </>
+  );
+}
+
+// Tool Article Component
+function ToolArticleSection({ toolId }: { toolId: number }) {
+  const { data: article, isLoading } = useQuery({
+    queryKey: [`/api/tools/${toolId}/article`],
+    retry: false,
+  });
+
+  if (isLoading) {
+    return (
+      <div className="mt-16 pt-4 border-t">
+        <div className="animate-pulse">
+          <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/3 mb-4"></div>
+          <div className="space-y-2">
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-5/6"></div>
+            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-4/6"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!article) {
+    return null;
+  }
+
+  return (
+    <div className="mt-16 pt-8 border-t" style={{ paddingTop: '15px' }}>
+      <article className="prose prose-lg max-w-none dark:prose-invert">
+        <h2 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">{article.title}</h2>
+        <div 
+          className="content text-gray-700 dark:text-gray-300 leading-relaxed"
+          dangerouslySetInnerHTML={{ __html: article.content }}
+        />
+        
+        {/* Schema Markup for SEO */}
+        {article.schemaMarkup && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: article.schemaMarkup }}
+          />
+        )}
+      </article>
+    </div>
   );
 }
