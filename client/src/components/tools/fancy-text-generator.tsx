@@ -648,23 +648,95 @@ const FONT_STYLES: FontStyle[] = [
     return map[char] || char;
   })},
 
-  // Fire Text
-  { name: "Fire Text", category: "fire", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => {
-    const fireChars = ['🔥', '🌟', '⭐', '✨', '💫'];
-    return char + fireChars[Math.floor(Math.random() * fireChars.length)];
-  })},
+  // Decorative Style 1 - Lucky Style
+  { name: "Lucky Style", category: "decorative", transform: (text) => `꧁༒☬☠${text}☠︎☬༒꧂` },
 
-  // Ice Text
-  { name: "Ice Text", category: "ice", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => {
-    const iceChars = ['❄️', '🧊', '💎', '🔷', '🔹'];
-    return char + iceChars[Math.floor(Math.random() * iceChars.length)];
-  })},
+  // Decorative Style 2 - Ninja Style
+  { name: "Ninja Decorative", category: "decorative", transform: (text) => `꧁༺${text}༻꧂` },
 
-  // Lightning Text
-  { name: "Lightning Text", category: "lightning", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => {
-    const lightningChars = ['⚡', '🌩️', '⚡', '💥', '✨'];
-    return char + lightningChars[Math.floor(Math.random() * lightningChars.length)];
-  })},
+  // Decorative Style 3 - Joker Style
+  { name: "Joker Style", category: "decorative", transform: (text) => `꧁༺J꙰O꙰K꙰E꙰R꙰༻꧂༄●⃝ᶫᵒꪜe☯ᴮᴼᵞ࿐` },
+
+  // Decorative Style 4 - Alone Boy
+  { name: "Alone Boy", category: "decorative", transform: (text) => `×͜×ㅤ${text}ㅤ𝙱𝙾𝚈` },
+
+  // Decorative Style 5 - Sunny Style
+  { name: "Sunny Style", category: "decorative", transform: (text) => `亗꧁༒☬${text}☬༒꧂` },
+
+  // Decorative Style 6 - Royal Crown
+  { name: "Royal Crown", category: "decorative", transform: (text) => `◥꧁ད ঔৣ͎.͎${text}ঔৣ͎.͎ད꧂◤` },
+
+  // Decorative Style 7 - Diamond Border
+  { name: "Diamond Border", category: "decorative", transform: (text) => `♦◊◊『${text}』◊◊♦` },
+
+  // Decorative Style 8 - Star Frame
+  { name: "Star Frame", category: "decorative", transform: (text) => `★·.·´¯\`·.·★ ${text} ★·.·´¯\`·.·★` },
+
+  // Decorative Style 9 - Gothic Style
+  { name: "Gothic Style", category: "decorative", transform: (text) => `ঔৣ☬✞✞☬ঔৣ${text}ঔৣ☬✞✞☬ঔৣ` },
+
+  // Decorative Style 10 - King Style
+  { name: "King Style", category: "decorative", transform: (text) => `꧁░K░I░N░G░${text}░꧂` },
+
+  // Decorative Style 11 - Queen Style
+  { name: "Queen Style", category: "decorative", transform: (text) => `꧁✦Q✦U✦E✦E✦N✦${text}✦꧂` },
+
+  // Decorative Style 12 - Boss Style
+  { name: "Boss Style", category: "decorative", transform: (text) => `⚡${text}⚡Boss⚡` },
+
+  // Decorative Style 13 - Pro Style
+  { name: "Pro Style", category: "decorative", transform: (text) => `🅿🆁🅾${text}` },
+
+  // Decorative Style 14 - Cool Style
+  { name: "Cool Style", category: "decorative", transform: (text) => `༺ ̊ ༻-×͜×-༺ ̊ ༻ ${text} ༺ ̊ ༻-×͜×-༺ ̊ ༻` },
+
+  // Decorative Style 15 - Attitude Style
+  { name: "Attitude Style", category: "decorative", transform: (text) => `☬ᴮᴬᴰʙᴏʏ☬${text}☬ᴮᴬᴰʙᴏʏ☬` },
+
+  // Decorative Style 16 - Legend Style
+  { name: "Legend Style", category: "decorative", transform: (text) => `꧁༺₦Ї₦ℑ₳༻꧂${text}` },
+
+  // Decorative Style 17 - Master Style
+  { name: "Master Style", category: "decorative", transform: (text) => `♔♕♔${text}♔♕♔` },
+
+  // Decorative Style 18 - God Style
+  { name: "God Style", category: "decorative", transform: (text) => `【†】【G】【O】【D】${text}【†】` },
+
+  // Decorative Style 19 - Shadow Style
+  { name: "Shadow Decorative", category: "decorative", transform: (text) => `ঔৣͦͬ░░♕๖ۣۜǤнσѕт♕░░ঔৣͦͬ${text}` },
+
+  // Decorative Style 20 - Hunter Style
+  { name: "Hunter Style", category: "decorative", transform: (text) => `᭄ꦿ᭄ꦿ${text}ꦿ᭄ꦿ᭄` },
+
+  // Decorative Style 21 - Killer Style
+  { name: "Killer Style", category: "decorative", transform: (text) => `K͓̽I͓̽L͓̽L͓̽E͓̽R͓̽${text}` },
+
+  // Decorative Style 22 - Prince Style
+  { name: "Prince Style", category: "decorative", transform: (text) => `◤◢◣◥◤◢◣◥${text}◤◢◣◥◤◢◣◥` },
+
+  // Decorative Style 23 - Princess Style
+  { name: "Princess Style", category: "decorative", transform: (text) => `•◦✦◦•◦✦◦•${text}•◦✦◦•◦✦◦•` },
+
+  // Decorative Style 24 - Stylish Border
+  { name: "Stylish Border", category: "decorative", transform: (text) => `ミ★彡★彡${text}彡★彡★ミ` },
+
+  // Decorative Style 25 - Warrior Frame
+  { name: "Warrior Frame", category: "decorative", transform: (text) => `░W░A░R░R░I░O░R░${text}` },
+
+  // Decorative Style 26 - Champion Style
+  { name: "Champion Style", category: "decorative", transform: (text) => `C̸H̸A̸M̸P̸I̸O̸N̸${text}` },
+
+  // Decorative Style 27 - Elite Style
+  { name: "Elite Style", category: "decorative", transform: (text) => `ᴱᴸᴵᵀᴱ${text}ᴱᴸᴵᵀᴱ` },
+
+  // Decorative Style 28 - Alpha Style
+  { name: "Alpha Style", category: "decorative", transform: (text) => `ΛŁƤĦΛ${text}ΛŁƤĦΛ` },
+
+  // Decorative Style 29 - Beta Style
+  { name: "Beta Style", category: "decorative", transform: (text) => `乃乇ㄒ卂${text}乃乇ㄒ卂` },
+
+  // Decorative Style 30 - Sigma Style
+  { name: "Sigma Style", category: "decorative", transform: (text) => `ΣIᎶmΛ${text}ΣIᎶmΛ` },
 
   // Bubble Letter
   { name: "Bubble Letter", category: "bubble", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => {
@@ -676,64 +748,61 @@ const FONT_STYLES: FontStyle[] = [
   })},
 
   // Neon Style
-  { name: "Neon Style", category: "neon", transform: (text) => text.split('').map(char => '▫️' + char + '▫️').join('') },
+  { name: "Neon Style", category: "neon", transform: (text) => text.split('').map(char => '▫' + char + '▫').join('') },
 
   // Galaxy Style
-  { name: "Galaxy Style", category: "galaxy", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => {
-    const galaxyChars = ['✨', '🌟', '⭐', '💫', '🌠'];
-    return galaxyChars[Math.floor(Math.random() * galaxyChars.length)] + char + galaxyChars[Math.floor(Math.random() * galaxyChars.length)];
-  })},
+  { name: "Galaxy Style", category: "galaxy", transform: (text) => text.split('').map(char => '✦' + char + '✦').join('') },
 
   // Shadow Bold
-  { name: "Shadow Bold", category: "shadow", transform: (text) => text.split('').map(char => char + '🌑').join('') },
+  { name: "Shadow Bold", category: "shadow", transform: (text) => text.split('').map(char => char + '◉').join('') },
 
   // Glow Effect
-  { name: "Glow Effect", category: "glow", transform: (text) => text.split('').map(char => '✨' + char + '✨').join('') },
+  { name: "Glow Effect", category: "glow", transform: (text) => text.split('').map(char => '☼' + char + '☼').join('') },
 
   // Diamond Style
-  { name: "Diamond Style", category: "diamond", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '💎' + char + '💎') },
+  { name: "Diamond Style", category: "diamond", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '◆' + char + '◆') },
 
   // Crown Style
-  { name: "Crown Style", category: "crown", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '👑' + char + '👑') },
+  { name: "Crown Style", category: "crown", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '♔' + char + '♔') },
 
   // Heart Style
-  { name: "Heart Style", category: "heart", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '💖' + char + '💖') },
+  { name: "Heart Style", category: "heart", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '♡' + char + '♡') },
 
   // Star Border
-  { name: "Star Border", category: "star", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '⭐' + char + '⭐') },
+  { name: "Star Border", category: "star", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '✦' + char + '✦') },
 
   // Moon Style
-  { name: "Moon Style", category: "moon", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🌙' + char + '🌙') },
+  { name: "Moon Style", category: "moon", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '☾' + char + '☽') },
 
   // Sun Style
-  { name: "Sun Style", category: "sun", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '☀️' + char + '☀️') },
+  { name: "Sun Style", category: "sun", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '☀' + char + '☀') },
 
   // Arrow Style
   { name: "Arrow Style", category: "arrow", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '➤' + char + '➤') },
 
   // Music Style
-  { name: "Music Style", category: "music", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🎵' + char + '🎵') },
+  { name: "Music Style", category: "music", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '♪' + char + '♪') },
 
   // Gaming Style
-  { name: "Gaming Style", category: "gaming", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🎮' + char + '🎮') },
+  { name: "Gaming Style", category: "gaming", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '⚡' + char + '⚡') },
 
   // Tech Style
   { name: "Tech Style", category: "tech", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '⚡' + char + '⚡') },
 
   // Cyber Style
-  { name: "Cyber Style", category: "cyber", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🔸' + char + '🔸') },
+  { name: "Cyber Style", category: "cyber", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '▸' + char + '◂') },
 
   // Matrix Style
-  { name: "Matrix Style", category: "matrix", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🟢' + char + '🟢') },
+  { name: "Matrix Style", category: "matrix", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '●' + char + '●') },
 
   // Retro Style
-  { name: "Retro Style", category: "retro", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '📼' + char + '📼') },
+  { name: "Retro Style", category: "retro", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '◄' + char + '►') },
 
   // Vintage Style
-  { name: "Vintage Style", category: "vintage", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🏺' + char + '🏺') },
+  { name: "Vintage Style", category: "vintage", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '◊' + char + '◊') },
 
   // Modern Style
-  { name: "Modern Style", category: "modern", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🔲' + char + '🔲') },
+  { name: "Modern Style", category: "modern", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '▪' + char + '▪') },
 
   // Minimal Style
   { name: "Minimal Style", category: "minimal", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '◦' + char + '◦') },
@@ -742,121 +811,121 @@ const FONT_STYLES: FontStyle[] = [
   { name: "Elegant Style", category: "elegant", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '✦' + char + '✦') },
 
   // Luxury Style
-  { name: "Luxury Style", category: "luxury", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '💍' + char + '💍') },
+  { name: "Luxury Style", category: "luxury", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '◈' + char + '◈') },
 
   // Royal Style
-  { name: "Royal Style", category: "royal", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🏰' + char + '🏰') },
+  { name: "Royal Style", category: "royal", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '♛' + char + '♛') },
 
   // Warrior Style
-  { name: "Warrior Style", category: "warrior", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '⚔️' + char + '⚔️') },
+  { name: "Warrior Style", category: "warrior", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '⚔' + char + '⚔') },
 
   // Angel Style
-  { name: "Angel Style", category: "angel", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '👼' + char + '👼') },
+  { name: "Angel Style", category: "angel", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '☪' + char + '☪') },
 
   // Devil Style
-  { name: "Devil Style", category: "devil", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '😈' + char + '😈') },
+  { name: "Devil Style", category: "devil", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '⸸' + char + '⸸') },
 
   // Ghost Style
-  { name: "Ghost Style", category: "ghost", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '👻' + char + '👻') },
+  { name: "Ghost Style", category: "ghost", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '◯' + char + '◯') },
 
   // Skull Style
-  { name: "Skull Style", category: "skull", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '💀' + char + '💀') },
+  { name: "Skull Style", category: "skull", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '☠' + char + '☠') },
 
   // Robot Style
-  { name: "Robot Style", category: "robot", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🤖' + char + '🤖') },
+  { name: "Robot Style", category: "robot", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '⧨' + char + '⧨') },
 
   // Alien Style
-  { name: "Alien Style", category: "alien", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '👽' + char + '👽') },
+  { name: "Alien Style", category: "alien", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '◉' + char + '◉') },
 
   // Space Style
-  { name: "Space Style", category: "space", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🚀' + char + '🚀') },
+  { name: "Space Style", category: "space", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '✦' + char + '✧') },
 
   // Ocean Style
-  { name: "Ocean Style", category: "ocean", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🌊' + char + '🌊') },
+  { name: "Ocean Style", category: "ocean", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '〰' + char + '〰') },
 
   // Forest Style
-  { name: "Forest Style", category: "forest", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🌲' + char + '🌲') },
+  { name: "Forest Style", category: "forest", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '♠' + char + '♠') },
 
   // Mountain Style
-  { name: "Mountain Style", category: "mountain", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🏔️' + char + '🏔️') },
+  { name: "Mountain Style", category: "mountain", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '▲' + char + '▲') },
 
   // Desert Style
-  { name: "Desert Style", category: "desert", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🏜️' + char + '🏜️') },
+  { name: "Desert Style", category: "desert", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '◇' + char + '◇') },
 
   // Jungle Style
-  { name: "Jungle Style", category: "jungle", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🌴' + char + '🌴') },
+  { name: "Jungle Style", category: "jungle", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '♧' + char + '♧') },
 
   // City Style
-  { name: "City Style", category: "city", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🏙️' + char + '🏙️') },
+  { name: "City Style", category: "city", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '▦' + char + '▦') },
 
   // Wild Style
-  { name: "Wild Style", category: "wild", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🦁' + char + '🦁') },
+  { name: "Wild Style", category: "wild", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '♦' + char + '♦') },
 
   // Dragon Style
-  { name: "Dragon Style", category: "dragon", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🐉' + char + '🐉') },
+  { name: "Dragon Style", category: "dragon", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '☬' + char + '☬') },
 
   // Phoenix Style
-  { name: "Phoenix Style", category: "phoenix", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🔥🦅🔥' + char + '🔥🦅🔥') },
+  { name: "Phoenix Style", category: "phoenix", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '☥' + char + '☥') },
 
   // Thunder Style
-  { name: "Thunder Style", category: "thunder", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '⛈️' + char + '⛈️') },
+  { name: "Thunder Style", category: "thunder", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '⚡' + char + '⚡') },
 
   // Storm Style
-  { name: "Storm Style", category: "storm", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🌪️' + char + '🌪️') },
+  { name: "Storm Style", category: "storm", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '◉' + char + '◉') },
 
   // Tornado Style
-  { name: "Tornado Style", category: "tornado", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🌀' + char + '🌀') },
+  { name: "Tornado Style", category: "tornado", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '◐' + char + '◑') },
 
   // Rainbow Style
-  { name: "Rainbow Style", category: "rainbow", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🌈' + char + '🌈') },
+  { name: "Rainbow Style", category: "rainbow", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '◈' + char + '◈') },
 
   // Flower Style
-  { name: "Flower Style", category: "flower", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🌸' + char + '🌸') },
+  { name: "Flower Style", category: "flower", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '❀' + char + '❀') },
 
   // Butterfly Style
-  { name: "Butterfly Style", category: "butterfly", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🦋' + char + '🦋') },
+  { name: "Butterfly Style", category: "butterfly", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '❅' + char + '❅') },
 
   // Crystal Style
-  { name: "Crystal Style", category: "crystal", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '💎🔹💎' + char + '💎🔹💎') },
+  { name: "Crystal Style", category: "crystal", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '◆' + char + '◆') },
 
   // Magic Style
-  { name: "Magic Style", category: "magic", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🪄✨🪄' + char + '🪄✨🪄') },
+  { name: "Magic Style", category: "magic", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '☆' + char + '☆') },
 
   // Wizard Style
-  { name: "Wizard Style", category: "wizard", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🧙‍♂️' + char + '🧙‍♂️') },
+  { name: "Wizard Style", category: "wizard", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '✦' + char + '✦') },
 
   // Ninja Style
-  { name: "Ninja Style", category: "ninja", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🥷' + char + '🥷') },
+  { name: "Ninja Style", category: "ninja", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '⚹' + char + '⚹') },
 
   // Pirate Style
-  { name: "Pirate Style", category: "pirate", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🏴‍☠️' + char + '🏴‍☠️') },
+  { name: "Pirate Style", category: "pirate", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '☠' + char + '☠') },
 
   // Viking Style
-  { name: "Viking Style", category: "viking", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '⚔️🛡️⚔️' + char + '⚔️🛡️⚔️') },
+  { name: "Viking Style", category: "viking", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '⚔' + char + '⚔') },
 
   // Knight Style
-  { name: "Knight Style", category: "knight", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🏰⚔️🏰' + char + '🏰⚔️🏰') },
+  { name: "Knight Style", category: "knight", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '♜' + char + '♜') },
 
   // Samurai Style
-  { name: "Samurai Style", category: "samurai", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🗾⚔️🗾' + char + '🗾⚔️🗾') },
+  { name: "Samurai Style", category: "samurai", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '⚔' + char + '⚔') },
 
   // Gladiator Style
-  { name: "Gladiator Style", category: "gladiator", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🏛️⚔️🏛️' + char + '🏛️⚔️🏛️') },
+  { name: "Gladiator Style", category: "gladiator", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '⛨' + char + '⛨') },
 
   // Spartan Style
-  { name: "Spartan Style", category: "spartan", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🛡️⚔️🛡️' + char + '🛡️⚔️🛡️') },
+  { name: "Spartan Style", category: "spartan", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '⛊' + char + '⛊') },
 
   // Aztec Style
-  { name: "Aztec Style", category: "aztec", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🏺🔺🏺' + char + '🏺🔺🏺') },
+  { name: "Aztec Style", category: "aztec", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '▲' + char + '▲') },
 
   // Egyptian Style
-  { name: "Egyptian Style", category: "egyptian", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🔺⚱️🔺' + char + '🔺⚱️🔺') },
+  { name: "Egyptian Style", category: "egyptian", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '▲' + char + '▲') },
 
   // Greek Style Ancient
-  { name: "Greek Ancient", category: "ancient", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🏛️🏺🏛️' + char + '🏛️🏺🏛️') },
+  { name: "Greek Ancient", category: "ancient", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '♔' + char + '♔') },
 
   // Roman Style
-  { name: "Roman Style", category: "roman-style", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🏛️🦅🏛️' + char + '🏛️🦅🏛️') }
+  { name: "Roman Style", category: "roman-style", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '⚜' + char + '⚜') }
 ];
 
 export default function FancyTextGenerator() {
