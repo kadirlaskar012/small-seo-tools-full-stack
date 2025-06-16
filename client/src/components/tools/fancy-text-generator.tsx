@@ -291,7 +291,572 @@ const FONT_STYLES: FontStyle[] = [
   }},
 
   // Crossed Out
-  { name: "Crossed Out", category: "decorative", transform: (text) => text.split('').map(char => char + '̶').join('') }
+  { name: "Crossed Out", category: "decorative", transform: (text) => text.split('').map(char => char + '̶').join('') },
+
+  // Latin Extended Characters
+  { name: "Latin Extended A", category: "latin", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => {
+    const map: Record<string, string> = {
+      'a': 'ā', 'b': 'ḃ', 'c': 'ċ', 'd': 'ḋ', 'e': 'ē', 'f': 'ḟ', 'g': 'ḡ', 'h': 'ḣ', 'i': 'ī', 'j': 'ĵ', 'k': 'ḳ', 'l': 'ḷ', 'm': 'ṁ', 'n': 'ṅ', 'o': 'ō', 'p': 'ṗ', 'q': 'q̄', 'r': 'ṙ', 's': 'ṡ', 't': 'ṫ', 'u': 'ū', 'v': 'ṽ', 'w': 'ẇ', 'x': 'ẋ', 'y': 'ȳ', 'z': 'ż',
+      'A': 'Ā', 'B': 'Ḃ', 'C': 'Ċ', 'D': 'Ḋ', 'E': 'Ē', 'F': 'Ḟ', 'G': 'Ḡ', 'H': 'Ḣ', 'I': 'Ī', 'J': 'Ĵ', 'K': 'Ḳ', 'L': 'Ḷ', 'M': 'Ṁ', 'N': 'Ṅ', 'O': 'Ō', 'P': 'Ṗ', 'Q': 'Q̄', 'R': 'Ṙ', 'S': 'Ṡ', 'T': 'Ṫ', 'U': 'Ū', 'V': 'Ṽ', 'W': 'Ẇ', 'X': 'Ẋ', 'Y': 'Ȳ', 'Z': 'Ż'
+    };
+    return map[char] || char;
+  })},
+
+  // Latin Extended B
+  { name: "Latin Extended B", category: "latin", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => {
+    const map: Record<string, string> = {
+      'a': 'ă', 'b': 'ḅ', 'c': 'ç', 'd': 'ḑ', 'e': 'ĕ', 'f': 'f̧', 'g': 'ģ', 'h': 'ḩ', 'i': 'ĭ', 'j': 'ǰ', 'k': 'ķ', 'l': 'ļ', 'm': 'ḿ', 'n': 'ņ', 'o': 'ŏ', 'p': 'p̧', 'q': 'q̧', 'r': 'ŗ', 's': 'ş', 't': 'ţ', 'u': 'ŭ', 'v': 'v̧', 'w': 'ŵ', 'x': 'x̧', 'y': 'ŷ', 'z': 'ž',
+      'A': 'Ă', 'B': 'Ḅ', 'C': 'Ç', 'D': 'Ḑ', 'E': 'Ĕ', 'F': 'F̧', 'G': 'Ģ', 'H': 'Ḩ', 'I': 'Ĭ', 'J': 'J̌', 'K': 'Ķ', 'L': 'Ļ', 'M': 'Ḿ', 'N': 'Ņ', 'O': 'Ŏ', 'P': 'P̧', 'Q': 'Q̧', 'R': 'Ŗ', 'S': 'Ş', 'T': 'Ţ', 'U': 'Ŭ', 'V': 'V̧', 'W': 'Ŵ', 'X': 'X̧', 'Y': 'Ŷ', 'Z': 'Ž'
+    };
+    return map[char] || char;
+  })},
+
+  // Cyrillic Style
+  { name: "Cyrillic Style", category: "cyrillic", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => {
+    const map: Record<string, string> = {
+      'a': 'а', 'b': 'в', 'c': 'с', 'd': 'ḑ', 'e': 'е', 'f': 'f', 'g': 'g', 'h': 'н', 'i': 'і', 'j': 'ј', 'k': 'к', 'l': 'l', 'm': 'м', 'n': 'п', 'o': 'о', 'p': 'р', 'q': 'q', 'r': 'г', 's': 'ѕ', 't': 'т', 'u': 'u', 'v': 'v', 'w': 'w', 'x': 'х', 'y': 'у', 'z': 'z',
+      'A': 'А', 'B': 'В', 'C': 'С', 'D': 'Ḑ', 'E': 'Е', 'F': 'F', 'G': 'G', 'H': 'Н', 'I': 'І', 'J': 'Ј', 'K': 'К', 'L': 'L', 'M': 'М', 'N': 'П', 'O': 'О', 'P': 'Р', 'Q': 'Q', 'R': 'Г', 'S': 'Ѕ', 'T': 'Т', 'U': 'U', 'V': 'V', 'W': 'W', 'X': 'Х', 'Y': 'У', 'Z': 'Z'
+    };
+    return map[char] || char;
+  })},
+
+  // Greek Style
+  { name: "Greek Style", category: "greek", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => {
+    const map: Record<string, string> = {
+      'a': 'α', 'b': 'β', 'c': 'ς', 'd': 'δ', 'e': 'ε', 'f': 'φ', 'g': 'γ', 'h': 'η', 'i': 'ι', 'j': 'ϳ', 'k': 'κ', 'l': 'λ', 'm': 'μ', 'n': 'ν', 'o': 'ο', 'p': 'π', 'q': 'q', 'r': 'ρ', 's': 'σ', 't': 'τ', 'u': 'υ', 'v': 'ν', 'w': 'ω', 'x': 'χ', 'y': 'ψ', 'z': 'ζ',
+      'A': 'Α', 'B': 'Β', 'C': 'Σ', 'D': 'Δ', 'E': 'Ε', 'F': 'Φ', 'G': 'Γ', 'H': 'Η', 'I': 'Ι', 'J': 'Ϳ', 'K': 'Κ', 'L': 'Λ', 'M': 'Μ', 'N': 'Ν', 'O': 'Ο', 'P': 'Π', 'Q': 'Q', 'R': 'Ρ', 'S': 'Σ', 'T': 'Τ', 'U': 'Υ', 'V': 'Ν', 'W': 'Ω', 'X': 'Χ', 'Y': 'Ψ', 'Z': 'Ζ'
+    };
+    return map[char] || char;
+  })},
+
+  // Bubble Text Negative
+  { name: "Bubble Text Negative", category: "circles", transform: (text) => text.replace(/[a-zA-Z0-9]/g, (char) => {
+    const map: Record<string, string> = {
+      'a': '🅐', 'b': '🅑', 'c': '🅒', 'd': '🅓', 'e': '🅔', 'f': '🅕', 'g': '🅖', 'h': '🅗', 'i': '🅘', 'j': '🅙', 'k': '🅚', 'l': '🅛', 'm': '🅜', 'n': '🅝', 'o': '🅞', 'p': '🅟', 'q': '🅠', 'r': '🅡', 's': '🅢', 't': '🅣', 'u': '🅤', 'v': '🅥', 'w': '🅦', 'x': '🅧', 'y': '🅨', 'z': '🅩',
+      'A': '🅐', 'B': '🅑', 'C': '🅒', 'D': '🅓', 'E': '🅔', 'F': '🅕', 'G': '🅖', 'H': '🅗', 'I': '🅘', 'J': '🅙', 'K': '🅚', 'L': '🅛', 'M': '🅜', 'N': '🅝', 'O': '🅞', 'P': '🅟', 'Q': '🅠', 'R': '🅡', 'S': '🅢', 'T': '🅣', 'U': '🅤', 'V': '🅥', 'W': '🅦', 'X': '🅧', 'Y': '🅨', 'Z': '🅩',
+      '0': '⓿', '1': '❶', '2': '❷', '3': '❸', '4': '❹', '5': '❺', '6': '❻', '7': '❼', '8': '❽', '9': '❾'
+    };
+    return map[char] || char;
+  })},
+
+  // Double Struck Outline
+  { name: "Double Struck Outline", category: "outline", transform: (text) => text.replace(/[a-zA-Z0-9]/g, (char) => {
+    const map: Record<string, string> = {
+      'a': '𝕒', 'b': '𝕓', 'c': '𝕔', 'd': '𝕕', 'e': '𝕖', 'f': '𝕗', 'g': '𝕘', 'h': '𝕙', 'i': '𝕚', 'j': '𝕛', 'k': '𝕜', 'l': '𝕝', 'm': '𝕞', 'n': '𝕟', 'o': '𝕠', 'p': '𝕡', 'q': '𝕢', 'r': '𝕣', 's': '𝕤', 't': '𝕥', 'u': '𝕦', 'v': '𝕧', 'w': '𝕨', 'x': '𝕩', 'y': '𝕪', 'z': '𝕫',
+      'A': '𝔸', 'B': '𝔹', 'C': 'ℂ', 'D': '𝔻', 'E': '𝔼', 'F': '𝔽', 'G': '𝔾', 'H': 'ℍ', 'I': '𝕀', 'J': '𝕁', 'K': '𝕂', 'L': '𝕃', 'M': '𝕄', 'N': 'ℕ', 'O': '𝕆', 'P': 'ℙ', 'Q': 'ℚ', 'R': 'ℝ', 'S': '𝕊', 'T': '𝕋', 'U': '𝕌', 'V': '𝕍', 'W': '𝕎', 'X': '𝕏', 'Y': '𝕐', 'Z': 'ℤ',
+      '0': '𝟘', '1': '𝟙', '2': '𝟚', '3': '𝟛', '4': '𝟜', '5': '𝟝', '6': '𝟞', '7': '𝟟', '8': '𝟠', '9': '𝟡'
+    };
+    return map[char] || char;
+  })},
+
+  // Blackboard Bold
+  { name: "Blackboard Bold", category: "blackboard", transform: (text) => text.replace(/[a-zA-Z0-9]/g, (char) => {
+    const map: Record<string, string> = {
+      'a': '𝒂', 'b': '𝒃', 'c': '𝒄', 'd': '𝒅', 'e': '𝒆', 'f': '𝒇', 'g': '𝒈', 'h': '𝒉', 'i': '𝒊', 'j': '𝒋', 'k': '𝒌', 'l': '𝒍', 'm': '𝒎', 'n': '𝒏', 'o': '𝒐', 'p': '𝒑', 'q': '𝒒', 'r': '𝒓', 's': '𝒔', 't': '𝒕', 'u': '𝒖', 'v': '𝒗', 'w': '𝒘', 'x': '𝒙', 'y': '𝒚', 'z': '𝒛',
+      'A': '𝑨', 'B': '𝑩', 'C': '𝑪', 'D': '𝑫', 'E': '𝑬', 'F': '𝑭', 'G': '𝑮', 'H': '𝑯', 'I': '𝑰', 'J': '𝑱', 'K': '𝑲', 'L': '𝑳', 'M': '𝑴', 'N': '𝑵', 'O': '𝑶', 'P': '𝑷', 'Q': '𝑸', 'R': '𝑹', 'S': '𝑺', 'T': '𝑻', 'U': '𝑼', 'V': '𝑽', 'W': '𝑾', 'X': '𝑿', 'Y': '𝒀', 'Z': '𝒁',
+      '0': '𝟎', '1': '𝟏', '2': '𝟐', '3': '𝟑', '4': '𝟒', '5': '𝟓', '6': '𝟔', '7': '𝟕', '8': '𝟖', '9': '𝟗'
+    };
+    return map[char] || char;
+  })},
+
+  // Outline Text
+  { name: "Outline Text", category: "outline", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => {
+    const map: Record<string, string> = {
+      'a': '𝖺', 'b': '𝖻', 'c': '𝖼', 'd': '𝖽', 'e': '𝖾', 'f': '𝖿', 'g': '𝗀', 'h': '𝗁', 'i': '𝗂', 'j': '𝗃', 'k': '𝗄', 'l': '𝗅', 'm': '𝗆', 'n': '𝗇', 'o': '𝗈', 'p': '𝗉', 'q': '𝗊', 'r': '𝗋', 's': '𝗌', 't': '𝗍', 'u': '𝗎', 'v': '𝗏', 'w': '𝗐', 'x': '𝗑', 'y': '𝗒', 'z': '𝗓',
+      'A': '𝖠', 'B': '𝖡', 'C': '𝖢', 'D': '𝖣', 'E': '𝖤', 'F': '𝖥', 'G': '𝖦', 'H': '𝖧', 'I': '𝖨', 'J': '𝖩', 'K': '𝖪', 'L': '𝖫', 'M': '𝖬', 'N': '𝖭', 'O': '𝖮', 'P': '𝖯', 'Q': '𝖰', 'R': '𝖱', 'S': '𝖲', 'T': '𝖳', 'U': '𝖴', 'V': '𝖵', 'W': '𝖶', 'X': '𝖷', 'Y': '𝖸', 'Z': '𝖹'
+    };
+    return map[char] || char;
+  })},
+
+  // Diacritic Heavy
+  { name: "Diacritic Heavy", category: "diacritic", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => {
+    const map: Record<string, string> = {
+      'a': 'ä', 'b': 'ḃ', 'c': 'ċ', 'd': 'ḋ', 'e': 'ë', 'f': 'ḟ', 'g': 'ġ', 'h': 'ḧ', 'i': 'ï', 'j': 'j̈', 'k': 'k̈', 'l': 'l̈', 'm': 'ṁ', 'n': 'ṅ', 'o': 'ö', 'p': 'ṗ', 'q': 'q̈', 'r': 'ṙ', 's': 'ṡ', 't': 'ẗ', 'u': 'ü', 'v': 'v̈', 'w': 'ẅ', 'x': 'ẍ', 'y': 'ÿ', 'z': 'ż',
+      'A': 'Ä', 'B': 'Ḃ', 'C': 'Ċ', 'D': 'Ḋ', 'E': 'Ë', 'F': 'Ḟ', 'G': 'Ġ', 'H': 'Ḧ', 'I': 'Ï', 'J': 'J̈', 'K': 'K̈', 'L': 'L̈', 'M': 'Ṁ', 'N': 'Ṅ', 'O': 'Ö', 'P': 'Ṗ', 'Q': 'Q̈', 'R': 'Ṙ', 'S': 'Ṡ', 'T': 'T̈', 'U': 'Ü', 'V': 'V̈', 'W': 'Ẅ', 'X': 'Ẍ', 'Y': 'Ÿ', 'Z': 'Ż'
+    };
+    return map[char] || char;
+  })},
+
+  // Accented Characters
+  { name: "Accented Characters", category: "accented", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => {
+    const map: Record<string, string> = {
+      'a': 'á', 'b': 'ḅ', 'c': 'ć', 'd': 'ḍ', 'e': 'é', 'f': 'f́', 'g': 'ǵ', 'h': 'h́', 'i': 'í', 'j': 'j́', 'k': 'ḱ', 'l': 'ĺ', 'm': 'ḿ', 'n': 'ń', 'o': 'ó', 'p': 'ṕ', 'q': 'q́', 'r': 'ŕ', 's': 'ś', 't': 't́', 'u': 'ú', 'v': 'v́', 'w': 'ẃ', 'x': 'x́', 'y': 'ý', 'z': 'ź',
+      'A': 'Á', 'B': 'Ḅ', 'C': 'Ć', 'D': 'Ḍ', 'E': 'É', 'F': 'F́', 'G': 'Ǵ', 'H': 'H́', 'I': 'Í', 'J': 'J́', 'K': 'Ḱ', 'L': 'Ĺ', 'M': 'Ḿ', 'N': 'Ń', 'O': 'Ó', 'P': 'Ṕ', 'Q': 'Q́', 'R': 'Ŕ', 'S': 'Ś', 'T': 'T́', 'U': 'Ú', 'V': 'V́', 'W': 'Ẃ', 'X': 'X́', 'Y': 'Ý', 'Z': 'Ź'
+    };
+    return map[char] || char;
+  })},
+
+  // Tilde Style
+  { name: "Tilde Style", category: "tilde", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => {
+    const map: Record<string, string> = {
+      'a': 'ã', 'b': 'b̃', 'c': 'c̃', 'd': 'd̃', 'e': 'ẽ', 'f': 'f̃', 'g': 'g̃', 'h': 'h̃', 'i': 'ĩ', 'j': 'j̃', 'k': 'k̃', 'l': 'l̃', 'm': 'm̃', 'n': 'ñ', 'o': 'õ', 'p': 'p̃', 'q': 'q̃', 'r': 'r̃', 's': 's̃', 't': 't̃', 'u': 'ũ', 'v': 'ṽ', 'w': 'w̃', 'x': 'x̃', 'y': 'ỹ', 'z': 'z̃',
+      'A': 'Ã', 'B': 'B̃', 'C': 'C̃', 'D': 'D̃', 'E': 'Ẽ', 'F': 'F̃', 'G': 'G̃', 'H': 'H̃', 'I': 'Ĩ', 'J': 'J̃', 'K': 'K̃', 'L': 'L̃', 'M': 'M̃', 'N': 'Ñ', 'O': 'Õ', 'P': 'P̃', 'Q': 'Q̃', 'R': 'R̃', 'S': 'S̃', 'T': 'T̃', 'U': 'Ũ', 'V': 'Ṽ', 'W': 'W̃', 'X': 'X̃', 'Y': 'Ỹ', 'Z': 'Z̃'
+    };
+    return map[char] || char;
+  })},
+
+  // Circumflex Style
+  { name: "Circumflex Style", category: "circumflex", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => {
+    const map: Record<string, string> = {
+      'a': 'â', 'b': 'b̂', 'c': 'ĉ', 'd': 'd̂', 'e': 'ê', 'f': 'f̂', 'g': 'ĝ', 'h': 'ĥ', 'i': 'î', 'j': 'ĵ', 'k': 'k̂', 'l': 'l̂', 'm': 'm̂', 'n': 'n̂', 'o': 'ô', 'p': 'p̂', 'q': 'q̂', 'r': 'r̂', 's': 'ŝ', 't': 't̂', 'u': 'û', 'v': 'v̂', 'w': 'ŵ', 'x': 'x̂', 'y': 'ŷ', 'z': 'ẑ',
+      'A': 'Â', 'B': 'B̂', 'C': 'Ĉ', 'D': 'D̂', 'E': 'Ê', 'F': 'F̂', 'G': 'Ĝ', 'H': 'Ĥ', 'I': 'Î', 'J': 'Ĵ', 'K': 'K̂', 'L': 'L̂', 'M': 'M̂', 'N': 'N̂', 'O': 'Ô', 'P': 'P̂', 'Q': 'Q̂', 'R': 'R̂', 'S': 'Ŝ', 'T': 'T̂', 'U': 'Û', 'V': 'V̂', 'W': 'Ŵ', 'X': 'X̂', 'Y': 'Ŷ', 'Z': 'Ẑ'
+    };
+    return map[char] || char;
+  })},
+
+  // Grave Accent
+  { name: "Grave Accent", category: "grave", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => {
+    const map: Record<string, string> = {
+      'a': 'à', 'b': 'b̀', 'c': 'c̀', 'd': 'd̀', 'e': 'è', 'f': 'f̀', 'g': 'g̀', 'h': 'h̀', 'i': 'ì', 'j': 'j̀', 'k': 'k̀', 'l': 'l̀', 'm': 'm̀', 'n': 'ǹ', 'o': 'ò', 'p': 'p̀', 'q': 'q̀', 'r': 'r̀', 's': 's̀', 't': 't̀', 'u': 'ù', 'v': 'v̀', 'w': 'ẁ', 'x': 'x̀', 'y': 'ỳ', 'z': 'z̀',
+      'A': 'À', 'B': 'B̀', 'C': 'C̀', 'D': 'D̀', 'E': 'È', 'F': 'F̀', 'G': 'G̀', 'H': 'H̀', 'I': 'Ì', 'J': 'J̀', 'K': 'K̀', 'L': 'L̀', 'M': 'M̀', 'N': 'Ǹ', 'O': 'Ò', 'P': 'P̀', 'Q': 'Q̀', 'R': 'R̀', 'S': 'S̀', 'T': 'T̀', 'U': 'Ù', 'V': 'V̀', 'W': 'Ẁ', 'X': 'X̀', 'Y': 'Ỳ', 'Z': 'Z̀'
+    };
+    return map[char] || char;
+  })},
+
+  // Celtic Style
+  { name: "Celtic Style", category: "celtic", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => {
+    const map: Record<string, string> = {
+      'a': 'ⱥ', 'b': 'ƀ', 'c': 'ȼ', 'd': 'đ', 'e': 'ɇ', 'f': 'ƒ', 'g': 'ǥ', 'h': 'ħ', 'i': 'ɨ', 'j': 'ɉ', 'k': 'ꝁ', 'l': 'ł', 'm': 'ɱ', 'n': 'ꞑ', 'o': 'ø', 'p': 'ᵽ', 'q': 'ꝗ', 'r': 'ɍ', 's': 'ş', 't': 'ŧ', 'u': 'ᵾ', 'v': 'ⱱ', 'w': 'ⱳ', 'x': 'ẋ', 'y': 'ɏ', 'z': 'ƶ',
+      'A': 'Ⱥ', 'B': 'Ɓ', 'C': 'Ȼ', 'D': 'Đ', 'E': 'Ɇ', 'F': 'Ƒ', 'G': 'Ǥ', 'H': 'Ħ', 'I': 'Ɨ', 'J': 'Ɉ', 'K': 'Ꝁ', 'L': 'Ł', 'M': 'Ɱ', 'N': 'Ꞑ', 'O': 'Ø', 'P': 'Ᵽ', 'Q': 'Ꝗ', 'R': 'Ɍ', 'S': 'Ş', 'T': 'Ŧ', 'U': 'ᵾ', 'V': 'ⱱ', 'W': 'Ⱳ', 'X': 'Ẋ', 'Y': 'Ɏ', 'Z': 'Ƶ'
+    };
+    return map[char] || char;
+  })},
+
+  // Runic Style
+  { name: "Runic Style", category: "runic", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => {
+    const map: Record<string, string> = {
+      'a': 'ᚨ', 'b': 'ᛒ', 'c': 'ᚲ', 'd': 'ᛞ', 'e': 'ᛖ', 'f': 'ᚠ', 'g': 'ᚷ', 'h': 'ᚺ', 'i': 'ᛁ', 'j': 'ᛃ', 'k': 'ᚲ', 'l': 'ᛚ', 'm': 'ᛗ', 'n': 'ᚾ', 'o': 'ᛟ', 'p': 'ᛈ', 'q': 'ᚲ', 'r': 'ᚱ', 's': 'ᛊ', 't': 'ᛏ', 'u': 'ᚢ', 'v': 'ᚡ', 'w': 'ᚹ', 'x': 'ᚲᛊ', 'y': 'ᛃ', 'z': 'ᛉ',
+      'A': 'ᚨ', 'B': 'ᛒ', 'C': 'ᚲ', 'D': 'ᛞ', 'E': 'ᛖ', 'F': 'ᚠ', 'G': 'ᚷ', 'H': 'ᚺ', 'I': 'ᛁ', 'J': 'ᛃ', 'K': 'ᚲ', 'L': 'ᛚ', 'M': 'ᛗ', 'N': 'ᚾ', 'O': 'ᛟ', 'P': 'ᛈ', 'Q': 'ᚲ', 'R': 'ᚱ', 'S': 'ᛊ', 'T': 'ᛏ', 'U': 'ᚢ', 'V': 'ᚡ', 'W': 'ᚹ', 'X': 'ᚲᛊ', 'Y': 'ᛃ', 'Z': 'ᛉ'
+    };
+    return map[char] || char;
+  })},
+
+  // Arabic Numerals Style
+  { name: "Arabic Numerals", category: "arabic", transform: (text) => text.replace(/[0-9]/g, (char) => {
+    const map: Record<string, string> = {
+      '0': '٠', '1': '١', '2': '٢', '3': '٣', '4': '٤', '5': '٥', '6': '٦', '7': '٧', '8': '٨', '9': '٩'
+    };
+    return map[char] || char;
+  })},
+
+  // Roman Numerals
+  { name: "Roman Numerals", category: "roman", transform: (text) => text.replace(/[0-9]/g, (char) => {
+    const map: Record<string, string> = {
+      '1': 'Ⅰ', '2': 'Ⅱ', '3': 'Ⅲ', '4': 'Ⅳ', '5': 'Ⅴ', '6': 'Ⅵ', '7': 'Ⅶ', '8': 'Ⅷ', '9': 'Ⅸ', '0': '⓪'
+    };
+    return map[char] || char;
+  })},
+
+  // Chinese Numbers
+  { name: "Chinese Numbers", category: "chinese", transform: (text) => text.replace(/[0-9]/g, (char) => {
+    const map: Record<string, string> = {
+      '0': '〇', '1': '一', '2': '二', '3': '三', '4': '四', '5': '五', '6': '六', '7': '七', '8': '八', '9': '九'
+    };
+    return map[char] || char;
+  })},
+
+  // Braille Patterns
+  { name: "Braille Patterns", category: "braille", transform: (text) => text.replace(/[a-zA-Z0-9]/g, (char) => {
+    const map: Record<string, string> = {
+      'a': '⠁', 'b': '⠃', 'c': '⠉', 'd': '⠙', 'e': '⠑', 'f': '⠋', 'g': '⠛', 'h': '⠓', 'i': '⠊', 'j': '⠚', 'k': '⠅', 'l': '⠇', 'm': '⠍', 'n': '⠝', 'o': '⠕', 'p': '⠏', 'q': '⠟', 'r': '⠗', 's': '⠎', 't': '⠞', 'u': '⠥', 'v': '⠧', 'w': '⠺', 'x': '⠭', 'y': '⠽', 'z': '⠵',
+      'A': '⠁', 'B': '⠃', 'C': '⠉', 'D': '⠙', 'E': '⠑', 'F': '⠋', 'G': '⠛', 'H': '⠓', 'I': '⠊', 'J': '⠚', 'K': '⠅', 'L': '⠇', 'M': '⠍', 'N': '⠝', 'O': '⠕', 'P': '⠏', 'Q': '⠟', 'R': '⠗', 'S': '⠎', 'T': '⠞', 'U': '⠥', 'V': '⠧', 'W': '⠺', 'X': '⠭', 'Y': '⠽', 'Z': '⠵',
+      '0': '⠚', '1': '⠁', '2': '⠃', '3': '⠉', '4': '⠙', '5': '⠑', '6': '⠋', '7': '⠛', '8': '⠓', '9': '⠊'
+    };
+    return map[char] || char;
+  })},
+
+  // Leet Speak (1337)
+  { name: "Leet Speak", category: "leet", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => {
+    const map: Record<string, string> = {
+      'a': '4', 'b': '8', 'c': '(', 'd': 'Ð', 'e': '3', 'f': 'ƒ', 'g': '9', 'h': '#', 'i': '!', 'j': '_|', 'k': '|<', 'l': '1', 'm': '/\\/\\', 'n': '/\\/', 'o': '0', 'p': '|*', 'q': '9', 'r': '12', 's': '5', 't': '7', 'u': '(_)', 'v': '\\/', 'w': '\\/\\/', 'x': '><', 'y': '`/', 'z': '2',
+      'A': '4', 'B': '8', 'C': '(', 'D': 'Ð', 'E': '3', 'F': 'ƒ', 'G': '9', 'H': '#', 'I': '!', 'J': '_|', 'K': '|<', 'L': '1', 'M': '/\\/\\', 'N': '/\\/', 'O': '0', 'P': '|*', 'Q': '9', 'R': '12', 'S': '5', 'T': '7', 'U': '(_)', 'V': '\\/', 'W': '\\/\\/', 'X': '><', 'Y': '`/', 'Z': '2'
+    };
+    return map[char] || char;
+  })},
+
+  // Symbols Mix
+  { name: "Symbols Mix", category: "symbols", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => {
+    const map: Record<string, string> = {
+      'a': '⟒', 'b': '♭', 'c': '☾', 'd': '♦', 'e': '€', 'f': '♠', 'g': '⚬', 'h': '♯', 'i': '☤', 'j': '⚘', 'k': '☃', 'l': '♪', 'm': '♫', 'n': '♩', 'o': '⊕', 'p': '☮', 'q': '♕', 'r': '®', 's': '§', 't': '♣', 'u': '☺', 'v': '✓', 'w': '₩', 'x': '✗', 'y': '¥', 'z': '♩',
+      'A': '△', 'B': '♭', 'C': '☾', 'D': '♦', 'E': '€', 'F': '♠', 'G': '⚬', 'H': '♯', 'I': '☤', 'J': '⚘', 'K': '☃', 'L': '♪', 'M': '♫', 'N': '♩', 'O': '⊕', 'P': '☮', 'Q': '♕', 'R': '®', 'S': '§', 'T': '♣', 'U': '☺', 'V': '✓', 'W': '₩', 'X': '✗', 'Y': '¥', 'Z': '♩'
+    };
+    return map[char] || char;
+  })},
+
+  // Geometric Shapes
+  { name: "Geometric Shapes", category: "geometric", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => {
+    const map: Record<string, string> = {
+      'a': '▲', 'b': '■', 'c': '●', 'd': '♦', 'e': '▼', 'f': '▶', 'g': '◆', 'h': '▪', 'i': '▸', 'j': '◗', 'k': '◀', 'l': '◼', 'm': '▬', 'n': '◣', 'o': '⬢', 'p': '◐', 'q': '◑', 'r': '◒', 's': '◓', 't': '◯', 'u': '◞', 'v': '◟', 'w': '◈', 'x': '◊', 'y': '◌', 'z': '◍',
+      'A': '▲', 'B': '■', 'C': '●', 'D': '♦', 'E': '▼', 'F': '▶', 'G': '◆', 'H': '▪', 'I': '▸', 'J': '◗', 'K': '◀', 'L': '◼', 'M': '▬', 'N': '◣', 'O': '⬢', 'P': '◐', 'Q': '◑', 'R': '◒', 'S': '◓', 'T': '◯', 'U': '◞', 'V': '◟', 'W': '◈', 'X': '◊', 'Y': '◌', 'Z': '◍'
+    };
+    return map[char] || char;
+  })},
+
+  // Binary Style
+  { name: "Binary Style", category: "binary", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => {
+    const binaryMap: Record<string, string> = {
+      'a': '01100001', 'b': '01100010', 'c': '01100011', 'd': '01100100', 'e': '01100101', 'f': '01100110', 'g': '01100111', 'h': '01101000', 'i': '01101001', 'j': '01101010', 'k': '01101011', 'l': '01101100', 'm': '01101101', 'n': '01101110', 'o': '01101111', 'p': '01110000', 'q': '01110001', 'r': '01110010', 's': '01110011', 't': '01110100', 'u': '01110101', 'v': '01110110', 'w': '01110111', 'x': '01111000', 'y': '01111001', 'z': '01111010',
+      'A': '01000001', 'B': '01000010', 'C': '01000011', 'D': '01000100', 'E': '01000101', 'F': '01000110', 'G': '01000111', 'H': '01001000', 'I': '01001001', 'J': '01001010', 'K': '01001011', 'L': '01001100', 'M': '01001101', 'N': '01001110', 'O': '01001111', 'P': '01010000', 'Q': '01010001', 'R': '01010010', 'S': '01010011', 'T': '01010100', 'U': '01010101', 'V': '01010110', 'W': '01010111', 'X': '01011000', 'Y': '01011001', 'Z': '01011010'
+    };
+    return binaryMap[char] || char;
+  }).replace(/(\d{8})/g, '$1 ') },
+
+  // Hexadecimal Style
+  { name: "Hexadecimal Style", category: "hex", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => {
+    return '0x' + char.charCodeAt(0).toString(16).toUpperCase();
+  }).replace(/0x([A-F0-9]+)/g, '0x$1 ') },
+
+  // Morse Code
+  { name: "Morse Code", category: "morse", transform: (text) => text.replace(/[a-zA-Z0-9]/g, (char) => {
+    const morseMap: Record<string, string> = {
+      'a': '.-', 'b': '-...', 'c': '-.-.', 'd': '-..', 'e': '.', 'f': '..-.', 'g': '--.', 'h': '....', 'i': '..', 'j': '.---', 'k': '-.-', 'l': '.-..', 'm': '--', 'n': '-.', 'o': '---', 'p': '.--.', 'q': '--.-', 'r': '.-.', 's': '...', 't': '-', 'u': '..-', 'v': '...-', 'w': '.--', 'x': '-..-', 'y': '-.--', 'z': '--..',
+      'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.', 'G': '--.', 'H': '....', 'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..', 'M': '--', 'N': '-.', 'O': '---', 'P': '.--.', 'Q': '--.-', 'R': '.-.', 'S': '...', 'T': '-', 'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-', 'Y': '-.--', 'Z': '--..',
+      '0': '-----', '1': '.----', '2': '..---', '3': '...--', '4': '....-', '5': '.....', '6': '-....', '7': '--...', '8': '---..', '9': '----.'
+    };
+    return morseMap[char] || char;
+  }).replace(/([.-]+)/g, '$1 ') },
+
+  // NATO Phonetic
+  { name: "NATO Phonetic", category: "nato", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => {
+    const natoMap: Record<string, string> = {
+      'a': 'Alpha', 'b': 'Bravo', 'c': 'Charlie', 'd': 'Delta', 'e': 'Echo', 'f': 'Foxtrot', 'g': 'Golf', 'h': 'Hotel', 'i': 'India', 'j': 'Juliet', 'k': 'Kilo', 'l': 'Lima', 'm': 'Mike', 'n': 'November', 'o': 'Oscar', 'p': 'Papa', 'q': 'Quebec', 'r': 'Romeo', 's': 'Sierra', 't': 'Tango', 'u': 'Uniform', 'v': 'Victor', 'w': 'Whiskey', 'x': 'X-ray', 'y': 'Yankee', 'z': 'Zulu',
+      'A': 'ALPHA', 'B': 'BRAVO', 'C': 'CHARLIE', 'D': 'DELTA', 'E': 'ECHO', 'F': 'FOXTROT', 'G': 'GOLF', 'H': 'HOTEL', 'I': 'INDIA', 'J': 'JULIET', 'K': 'KILO', 'L': 'LIMA', 'M': 'MIKE', 'N': 'NOVEMBER', 'O': 'OSCAR', 'P': 'PAPA', 'Q': 'QUEBEC', 'R': 'ROMEO', 'S': 'SIERRA', 'T': 'TANGO', 'U': 'UNIFORM', 'V': 'VICTOR', 'W': 'WHISKEY', 'X': 'X-RAY', 'Y': 'YANKEE', 'Z': 'ZULU'
+    };
+    return natoMap[char] || char;
+  }).replace(/([A-Za-z-]+)/g, '$1 ') },
+
+  // Subscript Numbers
+  { name: "Subscript Numbers", category: "script", transform: (text) => text.replace(/[0-9]/g, (char) => {
+    const map: Record<string, string> = {
+      '0': '₀', '1': '₁', '2': '₂', '3': '₃', '4': '₄', '5': '₅', '6': '₆', '7': '₇', '8': '₈', '9': '₉'
+    };
+    return map[char] || char;
+  })},
+
+  // Superscript Numbers
+  { name: "Superscript Numbers", category: "script", transform: (text) => text.replace(/[0-9]/g, (char) => {
+    const map: Record<string, string> = {
+      '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹'
+    };
+    return map[char] || char;
+  })},
+
+  // Negative Squared
+  { name: "Negative Squared", category: "squares", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => {
+    const map: Record<string, string> = {
+      'a': '🅰', 'b': '🅱', 'c': '🅲', 'd': '🅳', 'e': '🅴', 'f': '🅵', 'g': '🅶', 'h': '🅷', 'i': '🅸', 'j': '🅹', 'k': '🅺', 'l': '🅻', 'm': '🅼', 'n': '🅽', 'o': '🅾', 'p': '🅿', 'q': '🆀', 'r': '🆁', 's': '🆂', 't': '🆃', 'u': '🆄', 'v': '🆅', 'w': '🆆', 'x': '🆇', 'y': '🆈', 'z': '🆉',
+      'A': '🅰', 'B': '🅱', 'C': '🅲', 'D': '🅳', 'E': '🅴', 'F': '🅵', 'G': '🅶', 'H': '🅷', 'I': '🅸', 'J': '🅹', 'K': '🅺', 'L': '🅻', 'M': '🅼', 'N': '🅽', 'O': '🅾', 'P': '🅿', 'Q': '🆀', 'R': '🆁', 'S': '🆂', 'T': '🆃', 'U': '🆄', 'V': '🆅', 'W': '🆆', 'X': '🆇', 'Y': '🆈', 'Z': '🆉'
+    };
+    return map[char] || char;
+  })},
+
+  // Double Underlined
+  { name: "Double Underlined", category: "decorative", transform: (text) => text.split('').map(char => char + '\u0333').join('') },
+
+  // Wave Underlined
+  { name: "Wave Underlined", category: "decorative", transform: (text) => text.split('').map(char => char + '\u0330').join('') },
+
+  // Ring Above
+  { name: "Ring Above", category: "decorative", transform: (text) => text.split('').map(char => char + '\u030A').join('') },
+
+  // Double Grave
+  { name: "Double Grave", category: "decorative", transform: (text) => text.split('').map(char => char + '\u030F').join('') },
+
+  // Inverted Breve
+  { name: "Inverted Breve", category: "decorative", transform: (text) => text.split('').map(char => char + '\u0311').join('') },
+
+  // Advanced Zalgo
+  { name: "Advanced Zalgo", category: "crazy", transform: (text) => {
+    const zalgoUp = ['̍', '̎', '̄', '̅', '̿', '̑', '̆', '̐', '͒', '͗', '͑', '̇', '̈', '̊', '͂', '̓', '̈́', '͊', '͋', '͌', '̃', '̂', '̌', '͐', '́', '̋', '̏', '̽', '̉', 'ͣ', 'ͤ', 'ͥ', 'ͦ', 'ͧ', 'ͨ', 'ͩ', 'ͪ', 'ͫ', 'ͬ', 'ͭ', 'ͮ', 'ͯ', '̾', '͛', '͆', '̚'];
+    const zalgoDown = ['̖', '̗', '̘', '̙', '̜', '̝', '̞', '̟', '̠', '̤', '̥', '̦', '̩', '̪', '̫', '̬', '̭', '̮', '̯', '̰', '̱', '̲', '̳', '̹', '̺', '̻', '̼', 'ͅ', '͇', '͈', '͉', '͍', '͎', '͓', '͔', '͕', '͖', '͙', '͚', '̻'];
+    const zalgoMid = ['̕', '̛', '̀', '́', '͘', '̡', '̢', '̧', '̨', '̴', '̵', '̶', '͜', '͝', '͞', '͟', '͠', '͢', '̸', '̷', '͡'];
+    
+    return text.split('').map(char => {
+      if (char.match(/[a-zA-Z]/)) {
+        let result = char;
+        const intensity = Math.floor(Math.random() * 5) + 1;
+        
+        for (let i = 0; i < intensity; i++) {
+          const rand = Math.random();
+          if (rand < 0.4) {
+            result += zalgoUp[Math.floor(Math.random() * zalgoUp.length)];
+          } else if (rand < 0.8) {
+            result += zalgoDown[Math.floor(Math.random() * zalgoDown.length)];
+          } else {
+            result += zalgoMid[Math.floor(Math.random() * zalgoMid.length)];
+          }
+        }
+        return result;
+      }
+      return char;
+    }).join('');
+  }},
+
+  // Shadow Text
+  { name: "Shadow Text", category: "shadow", transform: (text) => text.split('').map(char => char + '҈').join('') },
+
+  // Glitch Text
+  { name: "Glitch Text", category: "glitch", transform: (text) => {
+    const glitchChars = ['̴', '̵', '̶', '̷', '̸', '̡', '̢', '̧', '̨', '͜', '͝', '͞', '͟', '͠', '͢'];
+    return text.split('').map(char => {
+      if (char.match(/[a-zA-Z]/)) {
+        return char + glitchChars[Math.floor(Math.random() * glitchChars.length)];
+      }
+      return char;
+    }).join('');
+  }},
+
+  // Aesthetic Text
+  { name: "Aesthetic Text", category: "aesthetic", transform: (text) => text.split('').join(' ').replace(/\s+/g, '  ') },
+
+  // Vapor Wave
+  { name: "Vapor Wave", category: "vaporwave", transform: (text) => text.replace(/[a-zA-Z0-9 ]/g, (char) => {
+    const map: Record<string, string> = {
+      'a': 'ａ', 'b': 'ｂ', 'c': 'ｃ', 'd': 'ｄ', 'e': 'ｅ', 'f': 'ｆ', 'g': 'ｇ', 'h': 'ｈ', 'i': 'ｉ', 'j': 'ｊ', 'k': 'ｋ', 'l': 'ｌ', 'm': 'ｍ', 'n': 'ｎ', 'o': 'ｏ', 'p': 'ｐ', 'q': 'ｑ', 'r': 'ｒ', 's': 'ｓ', 't': 'ｔ', 'u': 'ｕ', 'v': 'ｖ', 'w': 'ｗ', 'x': 'ｘ', 'y': 'ｙ', 'z': 'ｚ',
+      'A': 'Ａ', 'B': 'Ｂ', 'C': 'Ｃ', 'D': 'Ｄ', 'E': 'Ｅ', 'F': 'Ｆ', 'G': 'Ｇ', 'H': 'Ｈ', 'I': 'Ｉ', 'J': 'Ｊ', 'K': 'Ｋ', 'L': 'Ｌ', 'M': 'Ｍ', 'N': 'Ｎ', 'O': 'Ｏ', 'P': 'Ｐ', 'Q': 'Ｑ', 'R': 'Ｒ', 'S': 'Ｓ', 'T': 'Ｔ', 'U': 'Ｕ', 'V': 'Ｖ', 'W': 'Ｗ', 'X': 'Ｘ', 'Y': 'Ｙ', 'Z': 'Ｚ',
+      '0': '０', '1': '１', '2': '２', '3': '３', '4': '４', '5': '５', '6': '６', '7': '７', '8': '８', '9': '９',
+      ' ': '　'
+    };
+    return map[char] || char;
+  }).toUpperCase()},
+
+  // Old English
+  { name: "Old English", category: "oldeng", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => {
+    const map: Record<string, string> = {
+      'a': '𝔞', 'b': '𝔟', 'c': '𝔠', 'd': '𝔡', 'e': '𝔢', 'f': '𝔣', 'g': '𝔤', 'h': '𝔥', 'i': '𝔦', 'j': '𝔧', 'k': '𝔨', 'l': '𝔩', 'm': '𝔪', 'n': '𝔫', 'o': '𝔬', 'p': '𝔭', 'q': '𝔮', 'r': '𝔯', 's': '𝔰', 't': '𝔱', 'u': '𝔲', 'v': '𝔳', 'w': '𝔴', 'x': '𝔵', 'y': '𝔶', 'z': '𝔷',
+      'A': '𝔄', 'B': '𝔅', 'C': '𝔞', 'D': '𝔇', 'E': '𝔈', 'F': '𝔉', 'G': '𝔊', 'H': 'ℌ', 'I': 'ℑ', 'J': '𝔍', 'K': '𝔎', 'L': '𝔏', 'M': '𝔐', 'N': '𝔑', 'O': '𝔒', 'P': '𝔓', 'Q': '𝔔', 'R': 'ℜ', 'S': '𝔖', 'T': '𝔗', 'U': '𝔘', 'V': '𝔙', 'W': '𝔚', 'X': '𝔛', 'Y': '𝔜', 'Z': 'ℨ'
+    };
+    return map[char] || char;
+  })},
+
+  // Additional Mathematical Variants
+  { name: "Rounded Bold", category: "rounded", transform: (text) => text.replace(/[a-zA-Z0-9]/g, (char) => {
+    const map: Record<string, string> = {
+      'a': 'ค', 'b': '๒', 'c': 'ς', 'd': '๔', 'e': 'є', 'f': 'Ŧ', 'g': 'ﻮ', 'h': 'ђ', 'i': 'เ', 'j': 'ן', 'k': 'к', 'l': 'ɭ', 'm': '๓', 'n': 'ภ', 'o': '๏', 'p': 'ק', 'q': 'ợ', 'r': 'г', 's': 'ร', 't': 'Շ', 'u': 'ย', 'v': 'ש', 'w': 'ฬ', 'x': 'א', 'y': 'ץ', 'z': 'չ',
+      'A': 'ค', 'B': '๒', 'C': 'ς', 'D': '๔', 'E': 'є', 'F': 'Ŧ', 'G': 'ﻮ', 'H': 'ђ', 'I': 'เ', 'J': 'ן', 'K': 'к', 'L': 'ɭ', 'M': '๓', 'N': 'ภ', 'O': '๏', 'P': 'ק', 'Q': 'ợ', 'R': 'г', 'S': 'ร', 'T': 'Շ', 'U': 'ย', 'V': 'ש', 'W': 'ฬ', 'X': 'א', 'Y': 'ץ', 'Z': 'չ',
+      '0': '໐', '1': '໑', '2': '໒', '3': '໓', '4': '໔', '5': '໕', '6': '໖', '7': '໗', '8': '໘', '9': '໙'
+    };
+    return map[char] || char;
+  })},
+
+  // Stylish Bold
+  { name: "Stylish Bold", category: "stylish", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => {
+    const map: Record<string, string> = {
+      'a': 'α', 'b': 'в', 'c': 'c', 'd': 'đ', 'e': 'є', 'f': 'ƒ', 'g': 'g', 'h': 'н', 'i': 'ι', 'j': 'נ', 'k': 'к', 'l': 'ℓ', 'm': 'м', 'n': 'η', 'o': 'σ', 'p': 'ρ', 'q': 'q', 'r': 'я', 's': 'ѕ', 't': 'т', 'u': 'υ', 'v': 'ν', 'w': 'ω', 'x': 'χ', 'y': 'у', 'z': 'z',
+      'A': 'Α', 'B': 'Β', 'C': 'C', 'D': 'Đ', 'E': 'Є', 'F': 'Ƒ', 'G': 'G', 'H': 'Η', 'I': 'Ι', 'J': 'נ', 'K': 'Κ', 'L': 'Ł', 'M': 'Μ', 'N': 'Η', 'O': 'Ο', 'P': 'Ρ', 'Q': 'Q', 'R': 'Я', 'S': 'Ѕ', 'T': 'Τ', 'U': 'Υ', 'V': 'Ν', 'W': 'Ω', 'X': 'Χ', 'Y': 'Υ', 'Z': 'Z'
+    };
+    return map[char] || char;
+  })},
+
+  // Fire Text
+  { name: "Fire Text", category: "fire", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => {
+    const fireChars = ['🔥', '🌟', '⭐', '✨', '💫'];
+    return char + fireChars[Math.floor(Math.random() * fireChars.length)];
+  })},
+
+  // Ice Text
+  { name: "Ice Text", category: "ice", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => {
+    const iceChars = ['❄️', '🧊', '💎', '🔷', '🔹'];
+    return char + iceChars[Math.floor(Math.random() * iceChars.length)];
+  })},
+
+  // Lightning Text
+  { name: "Lightning Text", category: "lightning", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => {
+    const lightningChars = ['⚡', '🌩️', '⚡', '💥', '✨'];
+    return char + lightningChars[Math.floor(Math.random() * lightningChars.length)];
+  })},
+
+  // Bubble Letter
+  { name: "Bubble Letter", category: "bubble", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => {
+    const map: Record<string, string> = {
+      'a': 'ᵃ', 'b': 'ᵇ', 'c': 'ᶜ', 'd': 'ᵈ', 'e': 'ᵉ', 'f': 'ᶠ', 'g': 'ᵍ', 'h': 'ʰ', 'i': 'ⁱ', 'j': 'ʲ', 'k': 'ᵏ', 'l': 'ˡ', 'm': 'ᵐ', 'n': 'ⁿ', 'o': 'ᵒ', 'p': 'ᵖ', 'q': 'q', 'r': 'ʳ', 's': 'ˢ', 't': 'ᵗ', 'u': 'ᵘ', 'v': 'ᵛ', 'w': 'ʷ', 'x': 'ˣ', 'y': 'ʸ', 'z': 'ᶻ',
+      'A': 'ᴬ', 'B': 'ᴮ', 'C': 'ᶜ', 'D': 'ᴰ', 'E': 'ᴱ', 'F': 'ᶠ', 'G': 'ᴳ', 'H': 'ᴴ', 'I': 'ᴵ', 'J': 'ᴶ', 'K': 'ᴷ', 'L': 'ᴸ', 'M': 'ᴹ', 'N': 'ᴺ', 'O': 'ᴼ', 'P': 'ᴾ', 'Q': 'Q', 'R': 'ᴿ', 'S': 'ˢ', 'T': 'ᵀ', 'U': 'ᵁ', 'V': 'ⱽ', 'W': 'ᵂ', 'X': 'ˣ', 'Y': 'ʸ', 'Z': 'ᶻ'
+    };
+    return '○' + map[char] + '○';
+  })},
+
+  // Neon Style
+  { name: "Neon Style", category: "neon", transform: (text) => text.split('').map(char => '▫️' + char + '▫️').join('') },
+
+  // Galaxy Style
+  { name: "Galaxy Style", category: "galaxy", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => {
+    const galaxyChars = ['✨', '🌟', '⭐', '💫', '🌠'];
+    return galaxyChars[Math.floor(Math.random() * galaxyChars.length)] + char + galaxyChars[Math.floor(Math.random() * galaxyChars.length)];
+  })},
+
+  // Shadow Bold
+  { name: "Shadow Bold", category: "shadow", transform: (text) => text.split('').map(char => char + '🌑').join('') },
+
+  // Glow Effect
+  { name: "Glow Effect", category: "glow", transform: (text) => text.split('').map(char => '✨' + char + '✨').join('') },
+
+  // Diamond Style
+  { name: "Diamond Style", category: "diamond", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '💎' + char + '💎') },
+
+  // Crown Style
+  { name: "Crown Style", category: "crown", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '👑' + char + '👑') },
+
+  // Heart Style
+  { name: "Heart Style", category: "heart", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '💖' + char + '💖') },
+
+  // Star Border
+  { name: "Star Border", category: "star", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '⭐' + char + '⭐') },
+
+  // Moon Style
+  { name: "Moon Style", category: "moon", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🌙' + char + '🌙') },
+
+  // Sun Style
+  { name: "Sun Style", category: "sun", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '☀️' + char + '☀️') },
+
+  // Arrow Style
+  { name: "Arrow Style", category: "arrow", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '➤' + char + '➤') },
+
+  // Music Style
+  { name: "Music Style", category: "music", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🎵' + char + '🎵') },
+
+  // Gaming Style
+  { name: "Gaming Style", category: "gaming", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🎮' + char + '🎮') },
+
+  // Tech Style
+  { name: "Tech Style", category: "tech", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '⚡' + char + '⚡') },
+
+  // Cyber Style
+  { name: "Cyber Style", category: "cyber", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🔸' + char + '🔸') },
+
+  // Matrix Style
+  { name: "Matrix Style", category: "matrix", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🟢' + char + '🟢') },
+
+  // Retro Style
+  { name: "Retro Style", category: "retro", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '📼' + char + '📼') },
+
+  // Vintage Style
+  { name: "Vintage Style", category: "vintage", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🏺' + char + '🏺') },
+
+  // Modern Style
+  { name: "Modern Style", category: "modern", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🔲' + char + '🔲') },
+
+  // Minimal Style
+  { name: "Minimal Style", category: "minimal", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '◦' + char + '◦') },
+
+  // Elegant Style
+  { name: "Elegant Style", category: "elegant", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '✦' + char + '✦') },
+
+  // Luxury Style
+  { name: "Luxury Style", category: "luxury", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '💍' + char + '💍') },
+
+  // Royal Style
+  { name: "Royal Style", category: "royal", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🏰' + char + '🏰') },
+
+  // Warrior Style
+  { name: "Warrior Style", category: "warrior", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '⚔️' + char + '⚔️') },
+
+  // Angel Style
+  { name: "Angel Style", category: "angel", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '👼' + char + '👼') },
+
+  // Devil Style
+  { name: "Devil Style", category: "devil", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '😈' + char + '😈') },
+
+  // Ghost Style
+  { name: "Ghost Style", category: "ghost", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '👻' + char + '👻') },
+
+  // Skull Style
+  { name: "Skull Style", category: "skull", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '💀' + char + '💀') },
+
+  // Robot Style
+  { name: "Robot Style", category: "robot", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🤖' + char + '🤖') },
+
+  // Alien Style
+  { name: "Alien Style", category: "alien", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '👽' + char + '👽') },
+
+  // Space Style
+  { name: "Space Style", category: "space", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🚀' + char + '🚀') },
+
+  // Ocean Style
+  { name: "Ocean Style", category: "ocean", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🌊' + char + '🌊') },
+
+  // Forest Style
+  { name: "Forest Style", category: "forest", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🌲' + char + '🌲') },
+
+  // Mountain Style
+  { name: "Mountain Style", category: "mountain", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🏔️' + char + '🏔️') },
+
+  // Desert Style
+  { name: "Desert Style", category: "desert", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🏜️' + char + '🏜️') },
+
+  // Jungle Style
+  { name: "Jungle Style", category: "jungle", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🌴' + char + '🌴') },
+
+  // City Style
+  { name: "City Style", category: "city", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🏙️' + char + '🏙️') },
+
+  // Wild Style
+  { name: "Wild Style", category: "wild", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🦁' + char + '🦁') },
+
+  // Dragon Style
+  { name: "Dragon Style", category: "dragon", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🐉' + char + '🐉') },
+
+  // Phoenix Style
+  { name: "Phoenix Style", category: "phoenix", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🔥🦅🔥' + char + '🔥🦅🔥') },
+
+  // Thunder Style
+  { name: "Thunder Style", category: "thunder", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '⛈️' + char + '⛈️') },
+
+  // Storm Style
+  { name: "Storm Style", category: "storm", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🌪️' + char + '🌪️') },
+
+  // Tornado Style
+  { name: "Tornado Style", category: "tornado", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🌀' + char + '🌀') },
+
+  // Rainbow Style
+  { name: "Rainbow Style", category: "rainbow", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🌈' + char + '🌈') },
+
+  // Flower Style
+  { name: "Flower Style", category: "flower", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🌸' + char + '🌸') },
+
+  // Butterfly Style
+  { name: "Butterfly Style", category: "butterfly", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🦋' + char + '🦋') },
+
+  // Crystal Style
+  { name: "Crystal Style", category: "crystal", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '💎🔹💎' + char + '💎🔹💎') },
+
+  // Magic Style
+  { name: "Magic Style", category: "magic", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🪄✨🪄' + char + '🪄✨🪄') },
+
+  // Wizard Style
+  { name: "Wizard Style", category: "wizard", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🧙‍♂️' + char + '🧙‍♂️') },
+
+  // Ninja Style
+  { name: "Ninja Style", category: "ninja", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🥷' + char + '🥷') },
+
+  // Pirate Style
+  { name: "Pirate Style", category: "pirate", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🏴‍☠️' + char + '🏴‍☠️') },
+
+  // Viking Style
+  { name: "Viking Style", category: "viking", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '⚔️🛡️⚔️' + char + '⚔️🛡️⚔️') },
+
+  // Knight Style
+  { name: "Knight Style", category: "knight", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🏰⚔️🏰' + char + '🏰⚔️🏰') },
+
+  // Samurai Style
+  { name: "Samurai Style", category: "samurai", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🗾⚔️🗾' + char + '🗾⚔️🗾') },
+
+  // Gladiator Style
+  { name: "Gladiator Style", category: "gladiator", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🏛️⚔️🏛️' + char + '🏛️⚔️🏛️') },
+
+  // Spartan Style
+  { name: "Spartan Style", category: "spartan", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🛡️⚔️🛡️' + char + '🛡️⚔️🛡️') },
+
+  // Aztec Style
+  { name: "Aztec Style", category: "aztec", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🏺🔺🏺' + char + '🏺🔺🏺') },
+
+  // Egyptian Style
+  { name: "Egyptian Style", category: "egyptian", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🔺⚱️🔺' + char + '🔺⚱️🔺') },
+
+  // Greek Style Ancient
+  { name: "Greek Ancient", category: "ancient", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🏛️🏺🏛️' + char + '🏛️🏺🏛️') },
+
+  // Roman Style
+  { name: "Roman Style", category: "roman-style", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '🏛️🦅🏛️' + char + '🏛️🦅🏛️') }
 ];
 
 export default function FancyTextGenerator() {
