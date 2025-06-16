@@ -708,6 +708,64 @@ export class DatabaseStorage implements IStorage {
     const result = await db.delete(siteBranding).where(eq(siteBranding.id, id));
     return (result.rowCount || 0) > 0;
   }
+
+  // Tool Articles Management
+  async getToolArticle(toolId: number): Promise<ToolArticle | undefined> {
+    try {
+      const [article] = await db.select().from(toolArticles).where(eq(toolArticles.toolId, toolId));
+      return article;
+    } catch (error) {
+      console.error("Error fetching tool article:", error);
+      return undefined;
+    }
+  }
+
+  async getAllToolArticles(): Promise<ToolArticle[]> {
+    try {
+      return await db.select().from(toolArticles).orderBy(desc(toolArticles.createdAt));
+    } catch (error) {
+      console.error("Error fetching tool articles:", error);
+      return [];
+    }
+  }
+
+  async createToolArticle(article: InsertToolArticle): Promise<ToolArticle> {
+    try {
+      const [newArticle] = await db.insert(toolArticles).values({
+        ...article,
+        updatedAt: new Date()
+      }).returning();
+      return newArticle;
+    } catch (error) {
+      console.error("Error creating tool article:", error);
+      throw error;
+    }
+  }
+
+  async updateToolArticle(toolId: number, article: Partial<InsertToolArticle>): Promise<ToolArticle> {
+    try {
+      const [updatedArticle] = await db.update(toolArticles)
+        .set({
+          ...article,
+          updatedAt: new Date()
+        })
+        .where(eq(toolArticles.toolId, toolId))
+        .returning();
+      return updatedArticle;
+    } catch (error) {
+      console.error("Error updating tool article:", error);
+      throw error;
+    }
+  }
+
+  async deleteToolArticle(toolId: number): Promise<void> {
+    try {
+      await db.delete(toolArticles).where(eq(toolArticles.toolId, toolId));
+    } catch (error) {
+      console.error("Error deleting tool article:", error);
+      throw error;
+    }
+  }
 }
 
 export const storage = new DatabaseStorage();

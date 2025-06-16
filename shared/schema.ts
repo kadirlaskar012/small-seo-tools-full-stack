@@ -247,6 +247,33 @@ export const insertSiteBrandingSchema = createInsertSchema(siteBranding).omit({
 export type SiteBranding = typeof siteBranding.$inferSelect;
 export type InsertSiteBranding = z.infer<typeof insertSiteBrandingSchema>;
 
+// Tool Articles for SEO-optimized content below each tool
+export const toolArticles = pgTable("tool_articles", {
+  id: serial("id").primaryKey(),
+  toolId: integer("tool_id").references(() => tools.id).notNull(),
+  title: text("title").notNull(),
+  content: text("content").notNull(), // WordPress-style HTML content
+  excerpt: text("excerpt"), // Meta description for SEO
+  metaTitle: text("meta_title"),
+  metaDescription: text("meta_description"),
+  metaKeywords: text("meta_keywords"),
+  schemaMarkup: text("schema_markup"), // JSON-LD schema
+  isPublished: boolean("is_published").default(true),
+  publishedAt: timestamp("published_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertToolArticleSchema = createInsertSchema(toolArticles).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type ToolArticle = typeof toolArticles.$inferSelect;
+export type InsertToolArticle = z.infer<typeof insertToolArticleSchema>;
+
 export type ToolWithCategory = Tool & { category: Category };
 export type ToolWithUsage = Tool & { category: Category; usageCount?: number };
 export type ToolWithIcon = Tool & { category: Category; icon?: ToolIcon };
+export type ToolWithArticle = Tool & { category: Category; article?: ToolArticle };
