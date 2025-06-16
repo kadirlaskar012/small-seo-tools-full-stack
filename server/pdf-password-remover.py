@@ -688,9 +688,11 @@ def main():
                 }))
                 return
             except Exception as e:
+                import traceback
                 print(json.dumps({
                     "success": False,
-                    "error": f"Processing failed: {str(e)}"
+                    "error": f"Processing failed: {str(e)}",
+                    "traceback": traceback.format_exc()
                 }))
                 return
         
