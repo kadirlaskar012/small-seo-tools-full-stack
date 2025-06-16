@@ -2077,10 +2077,10 @@ print(json.dumps(result))
         }
       }, 30000); // 30 seconds
 
-      // Call smart PDF cracker that adapts to encryption level
+      // Call hybrid PDF processor that prioritizes content preservation
       const { spawn } = await import("child_process");
-      let pythonProcess = spawn("python3", ["server/smart-pdf-cracker.py"], {
-        timeout: 30000 // Kill process after 30 seconds
+      let pythonProcess = spawn("python3", ["server/hybrid-pdf-processor.py"], {
+        timeout: 45000 // Kill process after 45 seconds
       });
 
       let output = "";
@@ -2119,7 +2119,7 @@ print(json.dumps(result))
 
         try {
           if (code !== 0) {
-            console.error("Smart PDF cracker failed:", error);
+            console.error("Hybrid PDF processor failed:", error);
             
             if (!res.headersSent) {
               return res.json({
