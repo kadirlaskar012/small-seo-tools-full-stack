@@ -740,6 +740,15 @@ export const NEW_TOOLS_DATA: Record<string, any[]> = {
       metaDescription: "Convert image DPI and resolution instantly. Free online tool to optimize images for print and web display.",
       keywords: "image dpi converter, change image resolution, dpi changer, image resolution converter, print optimization",
       code: `<div>Image DPI Converter Tool</div>`
+    },
+    {
+      title: "Profile Picture Maker",
+      slug: "profile-picture-maker",
+      description: "Create stunning profile pictures with advanced editing tools, styles, and effects",
+      metaTitle: "Profile Picture Maker - Create Stunning Profile Pictures Online",
+      metaDescription: "Professional profile picture maker with advanced editing tools. Apply styles, backgrounds, borders, and effects. Download high-quality images instantly.",
+      keywords: "profile picture maker, avatar creator, image editor, photo editor, profile photo, social media images",
+      code: `<ProfilePictureMaker />`
     }
   ],
   "converter-tools": [
