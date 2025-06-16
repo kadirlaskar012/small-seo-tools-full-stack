@@ -246,143 +246,76 @@ class PDFPasswordRemover:
         # Remove duplicates and test passwords
         unique_passwords = list(dict.fromkeys(passwords_to_try))
         
-        # Try passwords in batches for better performance
-        print(f"Attempting {len(unique_passwords)} password combinations...")
+        # Quick test of highest probability passwords first
+        priority_passwords = [
+            "", "123456", "password", "123456789", "12345678", "12345", "qwerty", 
+            "abc123", "111111", "admin", "password1", "123", "1234", "12345"
+        ]
         
-        for i, pwd in enumerate(unique_passwords[:10000]):  # Increased limit for stronger cracking
-            if i % 500 == 0:
-                print(f"Progress: {i}/{len(unique_passwords[:10000])} passwords tested...")
-            
+        print("Testing highest probability passwords...")
+        for pwd in priority_passwords:
             if self._test_password(input_path, pwd):
-                print(f"SUCCESS: Password found after {i+1} attempts: {pwd}")
+                print(f"SUCCESS: Found password immediately: '{pwd}'")
                 return pwd
         
-        # If common passwords fail, try advanced brute force
-        print("Common passwords failed. Attempting advanced brute force...")
-        return self._advanced_brute_force(input_path)
+        # Test optimized password list (limited to 2000 for speed)
+        print(f"Testing {min(len(unique_passwords), 2000)} optimized passwords...")
+        
+        for i, pwd in enumerate(unique_passwords[:2000]):
+            if i % 200 == 0:
+                print(f"Progress: {i}/{min(len(unique_passwords), 2000)} passwords tested...")
+            
+            if self._test_password(input_path, pwd):
+                print(f"SUCCESS: Password found after {i+1} attempts: '{pwd}'")
+                return pwd
+        
+        # Quick brute force for very short passwords only
+        print("Attempting quick brute force for 1-4 character passwords...")
+        return self._quick_brute_force(input_path)
     
-    def _advanced_brute_force(self, input_path: str) -> Optional[str]:
-        """Advanced brute force attack with intelligent pattern generation"""
+    def _quick_brute_force(self, input_path: str) -> Optional[str]:
+        """Fast brute force for very short passwords only (1-4 characters)"""
         import string
         import itertools
         
-        # Character sets for brute force
-        lowercase = string.ascii_lowercase
-        uppercase = string.ascii_uppercase
+        # Character sets for quick brute force
         digits = string.digits
-        symbols = "!@#$%^&*()_+-=[]{}|;:,.<>?"
+        lowercase = string.ascii_lowercase
         
-        # Common combinations to try first
-        common_sets = [
-            digits,  # Numeric only
-            lowercase,  # Lowercase only
-            uppercase,  # Uppercase only
-            lowercase + digits,  # Alphanumeric lowercase
-            uppercase + digits,  # Alphanumeric uppercase
-            lowercase + uppercase,  # Letters only
-            lowercase + uppercase + digits,  # Alphanumeric mixed
-            digits + "!@#$",  # Numbers with common symbols
-            lowercase + "123",  # Letters with common numbers
-        ]
-        
-        # Try lengths 1-8 systematically
-        for length in range(1, 9):
-            print(f"Trying brute force length {length}...")
+        # Only try very short passwords to save time
+        for length in range(1, 5):  # 1-4 characters only
+            print(f"Quick brute force length {length}...")
             
-            for charset in common_sets:
-                attempts = 0
-                max_attempts_per_set = 1000  # Limit per charset to prevent infinite loops
+            # Try digits first (fastest)
+            attempts = 0
+            for password_tuple in itertools.product(digits, repeat=length):
+                password = ''.join(password_tuple)
+                attempts += 1
                 
-                for password_tuple in itertools.product(charset, repeat=length):
+                if self._test_password(input_path, password):
+                    print(f"QUICK BRUTE FORCE SUCCESS: Found password '{password}'")
+                    return password
+                
+                # Limit attempts to prevent timeout
+                if attempts > 500:
+                    break
+            
+            # Try lowercase if digits failed and length is 3 or less
+            if length <= 3:
+                attempts = 0
+                for password_tuple in itertools.product(lowercase, repeat=length):
                     password = ''.join(password_tuple)
                     attempts += 1
                     
-                    if attempts > max_attempts_per_set:
-                        break
-                    
                     if self._test_password(input_path, password):
-                        print(f"BRUTE FORCE SUCCESS: Found password '{password}' (length {length})")
+                        print(f"QUICK BRUTE FORCE SUCCESS: Found password '{password}'")
                         return password
                     
-                    # Progress indicator for longer attempts
-                    if attempts % 100 == 0:
-                        print(f"  Brute force progress: {attempts}/{max_attempts_per_set} (length {length})")
+                    # Limit attempts to prevent timeout
+                    if attempts > 200:
+                        break
         
-        # Dictionary attack with modifications
-        print("Attempting dictionary attack with modifications...")
-        return self._dictionary_attack_with_modifications(input_path)
-    
-    def _dictionary_attack_with_modifications(self, input_path: str) -> Optional[str]:
-        """Dictionary attack with common password modifications"""
-        
-        # Extended word list
-        word_list = [
-            "password", "admin", "user", "guest", "test", "root", "welcome", "login",
-            "secret", "master", "private", "public", "company", "office", "work",
-            "document", "file", "data", "info", "secure", "access", "unlock",
-            "open", "free", "temp", "demo", "sample", "example", "backup",
-            "archive", "export", "import", "print", "view", "read", "write",
-            "edit", "copy", "move", "delete", "save", "load", "new", "old",
-            "draft", "final", "version", "update", "change", "modify", "fix"
-        ]
-        
-        # Common years and numbers
-        years = list(range(1950, 2031))
-        common_numbers = ["123", "456", "789", "000", "111", "222", "333", "444", 
-                         "555", "666", "777", "888", "999", "12", "34", "56", "78", "90"]
-        
-        # Common symbols and patterns
-        symbols = ["!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-", "_", 
-                  "+", "=", "[", "]", "{", "}", "|", "\\", ":", ";", "\"", "'", 
-                  "<", ">", ",", ".", "?", "/"]
-        
-        modifications = []
-        
-        for word in word_list:
-            # Base word variations
-            modifications.extend([
-                word, word.upper(), word.title(), word.capitalize()
-            ])
-            
-            # Add years
-            for year in years:
-                modifications.extend([
-                    f"{word}{year}", f"{word.title()}{year}", f"{year}{word}",
-                    f"{word}{str(year)[2:]}", f"{str(year)[2:]}{word}"
-                ])
-            
-            # Add common numbers
-            for num in common_numbers:
-                modifications.extend([
-                    f"{word}{num}", f"{num}{word}", f"{word.title()}{num}"
-                ])
-            
-            # Add symbols
-            for symbol in symbols[:10]:  # Limit symbols to most common
-                modifications.extend([
-                    f"{word}{symbol}", f"{symbol}{word}", f"{word}{symbol}123",
-                    f"{word}123{symbol}", f"{symbol}{word}123"
-                ])
-            
-            # Character substitutions (leet speak)
-            leet_word = word
-            leet_word = leet_word.replace('a', '@').replace('e', '3').replace('i', '1')
-            leet_word = leet_word.replace('o', '0').replace('s', '$').replace('t', '7')
-            modifications.extend([leet_word, leet_word.upper(), leet_word.title()])
-        
-        # Remove duplicates and test
-        unique_modifications = list(dict.fromkeys(modifications))
-        print(f"Testing {len(unique_modifications)} dictionary modifications...")
-        
-        for i, pwd in enumerate(unique_modifications):
-            if i % 200 == 0:
-                print(f"Dictionary progress: {i}/{len(unique_modifications)}")
-            
-            if self._test_password(input_path, pwd):
-                print(f"DICTIONARY SUCCESS: Found password '{pwd}'")
-                return pwd
-        
-        print("All password cracking attempts exhausted.")
+        print("Password cracking failed - unable to find password within time limit.")
         return None
     
     def _test_password(self, input_path: str, password: str) -> bool:

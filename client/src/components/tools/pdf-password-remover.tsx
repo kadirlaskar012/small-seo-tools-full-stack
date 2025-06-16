@@ -112,14 +112,12 @@ export function PDFPasswordRemover() {
       const formData = new FormData();
       formData.append('pdf', selectedFile);
 
-      // Advanced progress tracking with comprehensive stages
+      // Fast progress tracking for 30-second processing
       const stages = [
         "Uploading PDF file...",
-        "Analyzing PDF security and encryption...", 
-        "Testing common password patterns...",
-        "Attempting advanced dictionary attack...",
-        "Running intelligent brute force...",
-        "Trying character substitutions...",
+        "Analyzing PDF security...", 
+        "Testing priority passwords...",
+        "Running optimized cracking...",
         "Finalizing unlocked PDF..."
       ];
 
