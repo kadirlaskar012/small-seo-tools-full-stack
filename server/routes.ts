@@ -2054,6 +2054,105 @@ print(json.dumps(result))
     }
   });
 
+  // PDF Password Remover Tool
+  app.post("/api/tools/pdf-password-remover", pdfUpload.single('pdf'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ 
+          success: false,
+          error: "PDF file is required" 
+        });
+      }
+
+      const password = req.body.password || "";
+      const pdfBuffer = req.file.buffer;
+
+      // Call Python script for PDF password removal
+      const { spawn } = await import("child_process");
+      const pythonProcess = spawn("python3", ["server/pdf-password-remover.py"]);
+
+      let output = "";
+      let error = "";
+
+      // Send PDF data and password to Python script
+      pythonProcess.stdin.write(JSON.stringify({
+        pdf_data: pdfBuffer.toString('base64'),
+        password: password
+      }));
+      pythonProcess.stdin.end();
+
+      pythonProcess.stdout.on("data", (data) => {
+        output += data.toString();
+      });
+
+      pythonProcess.stderr.on("data", (data) => {
+        error += data.toString();
+      });
+
+      pythonProcess.on("close", (code) => {
+        try {
+          if (code !== 0) {
+            console.error("Python script error:", error);
+            return res.status(500).json({
+              success: false,
+              error: "PDF processing failed"
+            });
+          }
+
+          const result = JSON.parse(output);
+          
+          if (result.success && result.output_data) {
+            // Convert base64 data to downloadable URL
+            const outputBuffer = Buffer.from(result.output_data, 'base64');
+            const filename = `unlocked_${Date.now()}.pdf`;
+            const outputPath = path.join(__dirname, '../temp', filename);
+            
+            // Ensure temp directory exists
+            const tempDir = path.dirname(outputPath);
+            if (!fs.existsSync(tempDir)) {
+              fs.mkdirSync(tempDir, { recursive: true });
+            }
+            
+            fs.writeFileSync(outputPath, outputBuffer);
+            
+            // Create download URL
+            const downloadUrl = `/api/download/temp/${filename}`;
+            
+            // Remove the base64 data from response and add download URL
+            delete result.output_data;
+            result.output_url = downloadUrl;
+            
+            // Clean up file after 10 minutes
+            setTimeout(() => {
+              try {
+                if (fs.existsSync(outputPath)) {
+                  fs.unlinkSync(outputPath);
+                }
+              } catch (e) {
+                console.error("Error cleaning up temp file:", e);
+              }
+            }, 10 * 60 * 1000);
+          }
+
+          res.json(result);
+        } catch (parseError) {
+          console.error("Failed to parse Python output:", parseError);
+          res.status(500).json({
+            success: false,
+            error: "Failed to process PDF response"
+          });
+        }
+      });
+
+    } catch (error) {
+      console.error("PDF password remover error:", error);
+      res.status(500).json({
+        success: false,
+        error: "Internal server error"
+      });
+    }
+  });
+
   app.post("/api/tools/js-obfuscator", async (req, res) => {
     try {
       const { code, level } = req.body;
@@ -3121,6 +3220,28 @@ print(json.dumps(result))
     } catch (error) {
       console.error('Error deleting tool article:', error);
       res.status(500).json({ message: 'Failed to delete article' });
+    }
+  });
+
+  // Download endpoint for temporary files
+  app.get('/api/download/temp/:filename', (req, res) => {
+    try {
+      const filename = req.params.filename;
+      const filePath = path.join(__dirname, '../temp', filename);
+      
+      if (!fs.existsSync(filePath)) {
+        return res.status(404).json({ error: 'File not found' });
+      }
+
+      res.download(filePath, (err) => {
+        if (err) {
+          console.error('Download error:', err);
+          res.status(500).json({ error: 'Download failed' });
+        }
+      });
+    } catch (error) {
+      console.error('Download endpoint error:', error);
+      res.status(500).json({ error: 'Internal server error' });
     }
   });
 

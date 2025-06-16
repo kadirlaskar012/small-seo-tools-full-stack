@@ -433,47 +433,92 @@ class PDFPasswordRemover:
 
 def main():
     """Main function for command line usage"""
-    if len(sys.argv) < 2:
-        print(json.dumps({
-            "success": False,
-            "error": "Usage: python pdf-password-remover.py <input_file> [password]"
-        }))
-        return
-    
-    input_file = sys.argv[1]
-    password = sys.argv[2] if len(sys.argv) > 2 else None
-    
-    if not os.path.exists(input_file):
-        print(json.dumps({
-            "success": False,
-            "error": f"Input file not found: {input_file}"
-        }))
-        return
-    
     try:
-        with open(input_file, 'rb') as f:
-            input_data = f.read()
+        # Check if we're receiving JSON input from stdin
+        if not sys.stdin.isatty():
+            # Read from stdin (API call)
+            input_data = sys.stdin.read()
+            try:
+                data = json.loads(input_data)
+                pdf_base64 = data.get('pdf_data', '')
+                password = data.get('password', '')
+                
+                if not pdf_base64:
+                    print(json.dumps({
+                        "success": False,
+                        "error": "No PDF data provided"
+                    }))
+                    return
+                
+                # Decode base64 PDF data
+                pdf_bytes = base64.b64decode(pdf_base64)
+                
+                remover = PDFPasswordRemover()
+                result = remover.process_pdf(pdf_bytes, password if password else None)
+                print(json.dumps(result))
+                return
+                
+            except json.JSONDecodeError:
+                print(json.dumps({
+                    "success": False,
+                    "error": "Invalid JSON input"
+                }))
+                return
+            except Exception as e:
+                print(json.dumps({
+                    "success": False,
+                    "error": f"Processing failed: {str(e)}"
+                }))
+                return
         
-        remover = PDFPasswordRemover()
-        result = remover.process_pdf(input_data, password)
+        # Command line usage
+        if len(sys.argv) < 2:
+            print(json.dumps({
+                "success": False,
+                "error": "Usage: python pdf-password-remover.py <input_file> [password]"
+            }))
+            return
         
-        if result["success"] and "output_data" in result:
-            # Save output file
-            output_file = input_file.replace('.pdf', '_unlocked.pdf')
-            output_data = base64.b64decode(result["output_data"])
+        input_file = sys.argv[1]
+        password = sys.argv[2] if len(sys.argv) > 2 else None
+        
+        if not os.path.exists(input_file):
+            print(json.dumps({
+                "success": False,
+                "error": f"Input file not found: {input_file}"
+            }))
+            return
+        
+        try:
+            with open(input_file, 'rb') as f:
+                input_data = f.read()
             
-            with open(output_file, 'wb') as f:
-                f.write(output_data)
+            remover = PDFPasswordRemover()
+            result = remover.process_pdf(input_data, password)
             
-            result["output_file"] = output_file
-            del result["output_data"]  # Remove base64 data from output
-        
-        print(json.dumps(result, indent=2))
-        
+            if result["success"] and "output_data" in result:
+                # Save output file
+                output_file = input_file.replace('.pdf', '_unlocked.pdf')
+                output_data = base64.b64decode(result["output_data"])
+                
+                with open(output_file, 'wb') as f:
+                    f.write(output_data)
+                
+                result["output_file"] = output_file
+                del result["output_data"]  # Remove base64 data from output
+            
+            print(json.dumps(result, indent=2))
+            
+        except Exception as e:
+            print(json.dumps({
+                "success": False,
+                "error": f"Processing failed: {str(e)}"
+            }))
+            
     except Exception as e:
         print(json.dumps({
             "success": False,
-            "error": f"Processing failed: {str(e)}"
+            "error": f"Main execution failed: {str(e)}"
         }))
 
 
