@@ -2077,10 +2077,10 @@ print(json.dumps(result))
         }
       }, 30000); // 30 seconds
 
-      // Call ultimate PDF cracker with comprehensive attack methods
+      // Call enhanced PDF cracker with maximum strength methods
       const { spawn } = await import("child_process");
-      let pythonProcess = spawn("python3", ["server/ultimate-pdf-cracker.py"], {
-        timeout: 60000 // Kill process after 60 seconds
+      let pythonProcess = spawn("python3", ["server/enhanced-pdf-cracker.py"], {
+        timeout: 120000 // Extended to 2 minutes for thorough processing
       });
 
       let output = "";
@@ -2119,7 +2119,7 @@ print(json.dumps(result))
 
         try {
           if (code !== 0) {
-            console.error("Ultimate PDF cracker failed:", error);
+            console.error("Enhanced PDF cracker failed:", error);
             
             if (!res.headersSent) {
               return res.json({
@@ -2193,7 +2193,7 @@ print(json.dumps(result))
         if (isFinished) return;
         isFinished = true;
         clearTimeout(processTimeout);
-        console.error("Ultimate PDF cracker process error:", processError);
+        console.error("Enhanced PDF cracker process error:", processError);
         if (!res.headersSent) {
           res.status(500).json({
             success: false,
