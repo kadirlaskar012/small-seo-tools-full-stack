@@ -356,63 +356,12 @@ export const TOOL_ICON_MAP: Record<string, any> = {
   "csv-to-json": Shuffle
 };
 
-// Function to get icon for a tool with smart fallback matching
+// Import custom tool icons
+import { getCustomToolIcon } from './custom-tool-icons';
+
+// Function to get icon for a tool - now returns custom SVG icons
 export function getToolIcon(toolSlug: string) {
-  // Direct match first
-  if (TOOL_ICON_MAP[toolSlug]) {
-    return TOOL_ICON_MAP[toolSlug];
-  }
-  
-  // Pattern-based fallback matching
-  const slug = toolSlug.toLowerCase();
-  
-  if (slug.includes('calculator')) return Calculator;
-  if (slug.includes('converter')) return ArrowLeftRight;
-  if (slug.includes('generator')) return Zap;
-  if (slug.includes('checker')) return CheckCircle;
-  if (slug.includes('analyzer')) return BarChart3;
-  if (slug.includes('validator')) return Shield;
-  if (slug.includes('optimizer')) return TrendingUp;
-  if (slug.includes('extractor')) return Download;
-  if (slug.includes('formatter')) return Code;
-  if (slug.includes('counter')) return Hash;
-  if (slug.includes('editor')) return Edit;
-  if (slug.includes('viewer')) return Eye;
-  if (slug.includes('password')) return Key;
-  if (slug.includes('pdf')) return FileText;
-  if (slug.includes('image')) return Image;
-  if (slug.includes('text')) return Type;
-  if (slug.includes('seo')) return Search;
-  if (slug.includes('speed')) return Zap;
-  if (slug.includes('security') || slug.includes('secure')) return Shield;
-  if (slug.includes('link')) return Link;
-  if (slug.includes('meta')) return Code;
-  if (slug.includes('robot')) return Settings;
-  if (slug.includes('redirect')) return ArrowLeftRight;
-  if (slug.includes('schema')) return Database;
-  if (slug.includes('notepad') || slug.includes('note')) return Edit;
-  if (slug.includes('duplicate')) return Scissors;
-  if (slug.includes('frequency')) return BarChart3;
-  if (slug.includes('slug')) return Link;
-  if (slug.includes('jwt')) return Unlock;
-  if (slug.includes('regex')) return Code;
-  if (slug.includes('obfuscator')) return Shield;
-  if (slug.includes('profile')) return User;
-  if (slug.includes('background')) return Layers;
-  if (slug.includes('dpi')) return Settings;
-  if (slug.includes('ocr')) return Eye;
-  if (slug.includes('webp') || slug.includes('jpg')) return ArrowLeftRight;
-  if (slug.includes('csv') || slug.includes('json')) return ArrowLeftRight;
-  if (slug.includes('html') || slug.includes('markdown')) return Code;
-  if (slug.includes('date')) return Calendar;
-  if (slug.includes('age')) return Clock;
-  if (slug.includes('percentage')) return Percent;
-  if (slug.includes('geo')) return MapPin;
-  if (slug.includes('domain')) return Globe;
-  if (slug.includes('adsense')) return AlertCircle;
-  
-  // Default fallback
-  return Wrench;
+  return getCustomToolIcon(toolSlug);
 }
 
 // Function to get all available icons for the icon picker
