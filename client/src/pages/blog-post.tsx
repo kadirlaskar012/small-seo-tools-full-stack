@@ -6,9 +6,15 @@ import { Button } from "@/components/ui/button";
 import type { BlogPost } from "@shared/schema";
 import SEOHead from "@/components/seo-head";
 import { AlertCircle, Calendar, Clock, Home, ChevronRight } from "lucide-react";
+import { useEffect } from "react";
 
 export default function BlogPost() {
   const { slug } = useParams();
+
+  // Scroll to top when component mounts or slug changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [slug]);
 
   const { data: post, isLoading, error } = useQuery<BlogPost>({
     queryKey: [`/api/blog/${slug}`],

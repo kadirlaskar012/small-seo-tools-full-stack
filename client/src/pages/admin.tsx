@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,6 +18,11 @@ import { Combine, FileText, Settings, TrendingUp, Globe, FolderOpen, Database, I
 
 export default function Admin() {
   const [activeTab, setActiveTab] = useState("tools");
+
+  // Scroll to top when component mounts
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const { data: tools = [] } = useQuery<ToolWithCategory[]>({
     queryKey: ["/api/tools"],
