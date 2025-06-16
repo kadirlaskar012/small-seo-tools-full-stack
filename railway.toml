@@ -1,0 +1,22 @@
+[build]
+builder = "nixpacks"
+
+[deploy]
+startCommand = "npm start"
+healthcheckPath = "/api/health"
+healthcheckTimeout = 300
+restartPolicyType = "on_failure"
+
+[[services]]
+name = "backend"
+
+[services.source]
+repo = "your-username/your-backend-repo"
+branch = "main"
+
+[services.variables]
+NODE_ENV = "production"
+PORT = "5000"
+
+[services.domains]
+generate = true
