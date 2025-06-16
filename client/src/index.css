@@ -132,12 +132,13 @@
   
   /* Enhanced tool cards */
   .tool-card {
-    @apply bg-card border border-border/60 backdrop-blur-sm rounded-xl p-6 transition-all duration-300;
+    @apply bg-card border border-border backdrop-blur-sm rounded-xl p-6 transition-all duration-300;
     background: linear-gradient(145deg, hsl(var(--card)) 0%, hsl(var(--muted)) 100%);
     box-shadow: 
       0 1px 3px 0 rgba(0, 0, 0, 0.1),
       0 1px 2px 0 rgba(0, 0, 0, 0.06),
       0 0 0 1px rgba(255, 255, 255, 0.05);
+    border-color: hsl(var(--border) / 0.6);
   }
   
   .tool-card:hover {
@@ -150,7 +151,12 @@
   }
 
   .tool-card-mobile {
-    @apply bg-card rounded-xl border border-border/60 p-4 flex items-center justify-between hover:bg-accent/50 transition-all duration-300;
+    @apply bg-card rounded-xl border border-border p-4 flex items-center justify-between hover:bg-accent transition-all duration-300;
+    border-color: hsl(var(--border) / 0.6);
+  }
+  
+  .tool-card-mobile:hover {
+    background-color: hsl(var(--accent) / 0.5);
   }
   
   /* Glass morphism */
