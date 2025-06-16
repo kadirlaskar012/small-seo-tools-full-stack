@@ -10,7 +10,7 @@ import { Search, ArrowRight, Combine, ChevronRight } from "lucide-react";
 import type { Category, ToolWithCategory, BlogPost } from "@shared/schema";
 import SEOHead from "@/components/seo-head";
 import { ToolLogo } from "@/components/ui/tool-logo";
-import { generateUniqueIcon, getCategoryIcon, getToolIcon } from "@/lib/ai-generated-icons";
+import { getCategoryIcon } from "@/lib/ai-generated-icons";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
