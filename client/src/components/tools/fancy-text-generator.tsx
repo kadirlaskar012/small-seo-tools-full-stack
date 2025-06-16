@@ -21,6 +21,67 @@ const EMOJI_SYMBOLS = [
 ];
 
 const FONT_STYLES: FontStyle[] = [
+  // === COMPLEX DECORATIVE FRAMES (TOP PRIORITY) ===
+  // Ultimate Gaming Legends
+  { name: "Joker Style", category: "decorative-premium", transform: (text) => `꧁༒☬☠${text}☠︎☬༒꧂` },
+  { name: "Lucky Style", category: "decorative-premium", transform: (text) => `꧁༺${text}༻꧂` },
+  { name: "Death Knight", category: "decorative-premium", transform: (text) => `꧁༒☠︎${text}☠︎༒꧂` },
+  { name: "Crown Royal", category: "decorative-premium", transform: (text) => `꧁♛◊${text}◊♛꧂` },
+  { name: "Shadow Warrior", category: "decorative-premium", transform: (text) => `꧁◈⚔${text}⚔◈꧂` },
+  { name: "Fire Dragon", category: "decorative-premium", transform: (text) => `꧁🔥🐉${text}🐉🔥꧂` },
+  { name: "Lightning Storm", category: "decorative-premium", transform: (text) => `꧁⚡☬${text}☬⚡꧂` },
+  { name: "Mystical Frame", category: "decorative-premium", transform: (text) => `꧁☬⚡︎${text}⚡︎☬꧂` },
+  { name: "Dark Magic", category: "decorative-premium", transform: (text) => `꧁◈☬༒${text}༒☬◈꧂` },
+  { name: "Ancient Runes", category: "decorative-premium", transform: (text) => `꧁ᚱᚢᚾᛖ${text}ᚱᚢᚾᛖ꧂` },
+  
+  // Royal Collection
+  { name: "Demon Lord", category: "decorative-premium", transform: (text) => `꧁༺☠︎⚡${text}⚡☠︎༻꧂` },
+  { name: "Angel Wings", category: "decorative-premium", transform: (text) => `꧁༒☪☬${text}☬☪༒꧂` },
+  { name: "Skull Crown", category: "decorative-premium", transform: (text) => `꧁☠︎♛⚔${text}⚔♛☠︎꧂` },
+  { name: "Gothic Cross", category: "decorative-premium", transform: (text) => `꧁✠☬†${text}†☬✠꧂` },
+  { name: "Vampire Lord", category: "decorative-premium", transform: (text) => `꧁༒⚰️🦇${text}🦇⚰️༒꧂` },
+  { name: "Phoenix Fire", category: "decorative-premium", transform: (text) => `꧁🔥🦅✨${text}✨🦅🔥꧂` },
+  { name: "Thunder God", category: "decorative-premium", transform: (text) => `꧁⚡👑⚡${text}⚡👑⚡꧂` },
+  { name: "Blood Moon", category: "decorative-premium", transform: (text) => `꧁☾☬☠︎${text}☠︎☬☾꧂` },
+  { name: "Crystal Sword", category: "decorative-premium", transform: (text) => `꧁◆⚔💎${text}💎⚔◆꧂` },
+  { name: "Frost King", category: "decorative-premium", transform: (text) => `꧁❅👑❄️${text}❄️👑❅꧂` },
+  
+  // Ultimate Warriors
+  { name: "Shadow Blade", category: "decorative-premium", transform: (text) => `꧁◈⚔︎⚡${text}⚡⚔︎◈꧂` },
+  { name: "Divine Light", category: "decorative-premium", transform: (text) => `꧁✨☪✨${text}✨☪✨꧂` },
+  { name: "War Chief", category: "decorative-premium", transform: (text) => `꧁⚔🛡️⚔${text}⚔🛡️⚔꧂` },
+  { name: "Mystic Portal", category: "decorative-premium", transform: (text) => `꧁🌀✨🔮${text}🔮✨🌀꧂` },
+  { name: "Dragon Slayer", category: "decorative-premium", transform: (text) => `꧁⚔🐉⚡${text}⚡🐉⚔꧂` },
+  { name: "Void Walker", category: "decorative-premium", transform: (text) => `꧁◉☬⚫${text}⚫☬◉꧂` },
+  { name: "Star Guardian", category: "decorative-premium", transform: (text) => `꧁⭐✨🌟${text}🌟✨⭐꧂` },
+  { name: "Shadow Emperor", category: "decorative-premium", transform: (text) => `꧁👑⚫🖤${text}🖤⚫👑꧂` },
+  { name: "Fire Serpent", category: "decorative-premium", transform: (text) => `꧁🔥🐍⚡${text}⚡🐍🔥꧂` },
+  { name: "Ice Phoenix", category: "decorative-premium", transform: (text) => `꧁❄️🦅💎${text}💎🦅❄️꧂` },
+  
+  // NEW COMPLEX FRAMES
+  { name: "Chaos Master", category: "decorative-premium", transform: (text) => `꧁☬⚡༒🔥${text}🔥༒⚡☬꧂` },
+  { name: "Eternal Flame", category: "decorative-premium", transform: (text) => `꧁🔥☬⚡👑${text}👑⚡☬🔥꧂` },
+  { name: "Soul Reaper", category: "decorative-premium", transform: (text) => `꧁💀⚰️☠︎${text}☠︎⚰️💀꧂` },
+  { name: "Cosmic Emperor", category: "decorative-premium", transform: (text) => `꧁🌌👑⭐${text}⭐👑🌌꧂` },
+  { name: "Storm Bringer", category: "decorative-premium", transform: (text) => `꧁⛈️⚡🌪️${text}🌪️⚡⛈️꧂` },
+  { name: "Ice Emperor", category: "decorative-premium", transform: (text) => `꧁❄️👑💎${text}💎👑❄️꧂` },
+  { name: "Fire Demon", category: "decorative-premium", transform: (text) => `꧁🔥😈⚡${text}⚡😈🔥꧂` },
+  { name: "Galaxy Lord", category: "decorative-premium", transform: (text) => `꧁🌌🌟✨${text}✨🌟🌌꧂` },
+  { name: "Blood Warrior", category: "decorative-premium", transform: (text) => `꧁⚔🩸⚡${text}⚡🩸⚔꧂` },
+  { name: "Cosmic Mage", category: "decorative-premium", transform: (text) => `꧁🌌✨🔮${text}🔮✨🌌꧂` },
+  { name: "Thunder Warrior", category: "decorative-premium", transform: (text) => `꧁⚡⚔👹${text}👹⚔⚡꧂` },
+  { name: "Dark Sorcerer", category: "decorative-premium", transform: (text) => `꧁🌙☬🔮${text}🔮☬🌙꧂` },
+  { name: "Flame Guardian", category: "decorative-premium", transform: (text) => `꧁🔥🛡️⚔${text}⚔🛡️🔥꧂` },
+  { name: "Night Hunter", category: "decorative-premium", transform: (text) => `꧁🌙🏹⚡${text}⚡🏹🌙꧂` },
+  { name: "Crystal Mage", category: "decorative-premium", transform: (text) => `꧁💎🔮✨${text}✨🔮💎꧂` },
+  { name: "Storm King", category: "decorative-premium", transform: (text) => `꧁👑⛈️⚡${text}⚡⛈️👑꧂` },
+  { name: "Shadow Hunter", category: "decorative-premium", transform: (text) => `꧁🌑🏹☬${text}☬🏹🌑꧂` },
+  { name: "Inferno Master", category: "decorative-premium", transform: (text) => `꧁🔥👹💀${text}💀👹🔥꧂` },
+  { name: "Arctic Wolf", category: "decorative-premium", transform: (text) => `꧁❄️🐺⚡${text}⚡🐺❄️꧂` },
+  { name: "Phantom Knight", category: "decorative-premium", transform: (text) => `꧁👻⚔👑${text}👑⚔👻꧂` },
+  { name: "Celestial Guard", category: "decorative-premium", transform: (text) => `꧁⭐🛡️✨${text}✨🛡️⭐꧂` },
+
+  // === REGULAR UNICODE FONTS (LOWER PRIORITY) ===
   // Mathematical Bold
   { name: "Mathematical Bold", category: "bold", transform: (text) => text.replace(/[a-zA-Z0-9]/g, (char) => {
     const map: Record<string, string> = {
@@ -1055,6 +1116,22 @@ export default function FancyTextGenerator() {
     setInputText(prev => prev + symbol);
   };
 
+  const copySymbol = async (symbol: string) => {
+    try {
+      await navigator.clipboard.writeText(symbol);
+      toast({
+        title: "Symbol Copied!",
+        description: `${symbol} copied to clipboard.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Copy Failed",
+        description: "Failed to copy symbol to clipboard.",
+        variant: "destructive",
+      });
+    }
+  };
+
   const exampleNames = [
     "ProGamer",
     "ShadowHunter", 
@@ -1075,6 +1152,9 @@ export default function FancyTextGenerator() {
           <CardTitle className="text-lg flex items-center gap-2">
             Special Symbols
           </CardTitle>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Click to add to text • Shift+Click or Right-click to copy symbol
+          </p>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-8 sm:grid-cols-12 md:grid-cols-16 lg:grid-cols-20 gap-2">
@@ -1083,8 +1163,19 @@ export default function FancyTextGenerator() {
                 key={`special-${index}`}
                 variant="outline"
                 size="sm"
-                onClick={() => insertSymbol(symbol)}
-                className="h-10 w-10 p-0 text-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"
+                onClick={(e) => {
+                  if (e.shiftKey) {
+                    copySymbol(symbol);
+                  } else {
+                    insertSymbol(symbol);
+                  }
+                }}
+                onContextMenu={(e) => {
+                  e.preventDefault();
+                  copySymbol(symbol);
+                }}
+                className="h-10 w-10 p-0 text-lg hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors cursor-pointer"
+                title={`Click to add • Shift+Click or Right-click to copy`}
               >
                 {symbol}
               </Button>
@@ -1097,6 +1188,9 @@ export default function FancyTextGenerator() {
       <Card className="bg-gradient-to-r from-pink-50 to-orange-50 dark:from-pink-900/20 dark:to-orange-900/20 border-pink-200 dark:border-pink-800">
         <CardHeader>
           <CardTitle className="text-lg">Emoji Styling</CardTitle>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Click to add to text • Shift+Click or Right-click to copy emoji
+          </p>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-8 sm:grid-cols-12 md:grid-cols-16 lg:grid-cols-20 gap-2">
@@ -1105,8 +1199,19 @@ export default function FancyTextGenerator() {
                 key={`emoji-${index}`}
                 variant="outline"
                 size="sm"
-                onClick={() => insertSymbol(emoji)}
-                className="h-10 w-10 p-0 text-lg hover:bg-pink-100 dark:hover:bg-pink-900/50 transition-colors"
+                onClick={(e) => {
+                  if (e.shiftKey) {
+                    copySymbol(emoji);
+                  } else {
+                    insertSymbol(emoji);
+                  }
+                }}
+                onContextMenu={(e) => {
+                  e.preventDefault();
+                  copySymbol(emoji);
+                }}
+                className="h-10 w-10 p-0 text-lg hover:bg-pink-100 dark:hover:bg-pink-900/50 transition-colors cursor-pointer"
+                title={`Click to add • Shift+Click or Right-click to copy`}
               >
                 {emoji}
               </Button>
