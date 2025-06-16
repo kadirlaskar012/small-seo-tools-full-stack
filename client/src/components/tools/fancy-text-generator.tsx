@@ -925,7 +925,101 @@ const FONT_STYLES: FontStyle[] = [
   { name: "Greek Ancient", category: "ancient", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '♔' + char + '♔') },
 
   // Roman Style
-  { name: "Roman Style", category: "roman-style", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '⚜' + char + '⚜') }
+  { name: "Roman Style", category: "roman-style", transform: (text) => text.replace(/[a-zA-Z]/g, (char) => '⚜' + char + '⚜') },
+
+  // Additional Complex Decorative Styles
+  // Mystical Frame
+  { name: "Mystical Frame", category: "mystical", transform: (text) => `꧁☬⚡︎${text}⚡︎☬꧂` },
+
+  // Death Knight
+  { name: "Death Knight", category: "death-knight", transform: (text) => `꧁༒☠︎${text}☠︎༒꧂` },
+
+  // Royal Crown
+  { name: "Royal Crown", category: "royal-crown", transform: (text) => `꧁♛◊${text}◊♛꧂` },
+
+  // Shadow Warrior
+  { name: "Shadow Warrior", category: "shadow-warrior", transform: (text) => `꧁◈⚔${text}⚔◈꧂` },
+
+  // Fire Dragon
+  { name: "Fire Dragon", category: "fire-dragon", transform: (text) => `꧁🔥🐉${text}🐉🔥꧂` },
+
+  // Ice Crystal
+  { name: "Ice Crystal", category: "ice-crystal", transform: (text) => `꧁❅◊${text}◊❅꧂` },
+
+  // Lightning Storm
+  { name: "Lightning Storm", category: "lightning-storm", transform: (text) => `꧁⚡☬${text}☬⚡꧂` },
+
+  // Ancient Runes
+  { name: "Ancient Runes", category: "ancient-runes", transform: (text) => `꧁ᚱᚢᚾᛖ${text}ᚱᚢᚾᛖ꧂` },
+
+  // Demon Lord
+  { name: "Demon Lord", category: "demon-lord", transform: (text) => `꧁༺☠︎⚡${text}⚡☠︎༻꧂` },
+
+  // Angel Wings
+  { name: "Angel Wings", category: "angel-wings", transform: (text) => `꧁༒☪☬${text}☬☪༒꧂` },
+
+  // Skull Crown
+  { name: "Skull Crown", category: "skull-crown", transform: (text) => `꧁☠︎♛⚔${text}⚔♛☠︎꧂` },
+
+  // Gothic Cross
+  { name: "Gothic Cross", category: "gothic-cross", transform: (text) => `꧁✠☬†${text}†☬✠꧂` },
+
+  // Vampire Lord
+  { name: "Vampire Lord", category: "vampire-lord", transform: (text) => `꧁༒⚰️🦇${text}🦇⚰️༒꧂` },
+
+  // Phoenix Fire
+  { name: "Phoenix Fire", category: "phoenix-fire", transform: (text) => `꧁🔥🦅✨${text}✨🦅🔥꧂` },
+
+  // Dark Magic
+  { name: "Dark Magic", category: "dark-magic", transform: (text) => `꧁◈☬༒${text}༒☬◈꧂` },
+
+  // Thunder God
+  { name: "Thunder God", category: "thunder-god", transform: (text) => `꧁⚡👑⚡${text}⚡👑⚡꧂` },
+
+  // Blood Moon
+  { name: "Blood Moon", category: "blood-moon", transform: (text) => `꧁☾☬☠︎${text}☠︎☬☾꧂` },
+
+  // Crystal Sword
+  { name: "Crystal Sword", category: "crystal-sword", transform: (text) => `꧁◆⚔💎${text}💎⚔◆꧂` },
+
+  // Frost King
+  { name: "Frost King", category: "frost-king", transform: (text) => `꧁❅👑❄️${text}❄️👑❅꧂` },
+
+  // Shadow Blade
+  { name: "Shadow Blade", category: "shadow-blade", transform: (text) => `꧁◈⚔︎⚡${text}⚡⚔︎◈꧂` },
+
+  // Divine Light
+  { name: "Divine Light", category: "divine-light", transform: (text) => `꧁✨☪✨${text}✨☪✨꧂` },
+
+  // War Chief
+  { name: "War Chief", category: "war-chief", transform: (text) => `꧁⚔🛡️⚔${text}⚔🛡️⚔꧂` },
+
+  // Mystic Portal
+  { name: "Mystic Portal", category: "mystic-portal", transform: (text) => `꧁🌀✨🔮${text}🔮✨🌀꧂` },
+
+  // Dragon Slayer
+  { name: "Dragon Slayer", category: "dragon-slayer", transform: (text) => `꧁⚔🐉⚡${text}⚡🐉⚔꧂` },
+
+  // Void Walker
+  { name: "Void Walker", category: "void-walker", transform: (text) => `꧁◉☬⚫${text}⚫☬◉꧂` },
+
+  // Star Guardian
+  { name: "Star Guardian", category: "star-guardian", transform: (text) => `꧁⭐✨🌟${text}🌟✨⭐꧂` },
+
+  // Shadow Emperor
+  { name: "Shadow Emperor", category: "shadow-emperor", transform: (text) => `꧁👑⚫🖤${text}🖤⚫👑꧂` },
+
+  // Fire Serpent
+  { name: "Fire Serpent", category: "fire-serpent", transform: (text) => `꧁🔥🐍⚡${text}⚡🐍🔥꧂` },
+
+  // Ice Phoenix
+  { name: "Ice Phoenix", category: "ice-phoenix", transform: (text) => `꧁❄️🦅💎${text}💎🦅❄️꧂` },
+
+  // Blood Warrior
+  { name: "Blood Warrior", category: "blood-warrior", transform: (text) => `꧁⚔🩸⚡${text}⚡🩸⚔꧂` },
+
+  // Cosmic Mage
+  { name: "Cosmic Mage", category: "cosmic-mage", transform: (text) => `꧁🌌✨🔮${text}🔮✨🌌꧂` }
 ];
 
 export default function FancyTextGenerator() {
