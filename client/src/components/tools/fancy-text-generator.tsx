@@ -28,7 +28,7 @@ const FONT_STYLES: FontStyle[] = [
   { name: "Death Knight", category: "decorative-premium", transform: (text) => `꧁༒☠︎${text}☠︎༒꧂` },
   { name: "Crown Royal", category: "decorative-premium", transform: (text) => `꧁♛◊${text}◊♛꧂` },
   { name: "Shadow Warrior", category: "decorative-premium", transform: (text) => `꧁◈⚔${text}⚔◈꧂` },
-  { name: "Fire Dragon", category: "decorative-premium", transform: (text) => `꧁🔥🐉${text}🐉🔥꧂` },
+  { name: "Fire Dragon", category: "decorative-premium", transform: (text) => `꧁☬⚔${text}⚔☬꧂` },
   { name: "Lightning Storm", category: "decorative-premium", transform: (text) => `꧁⚡☬${text}☬⚡꧂` },
   { name: "Mystical Frame", category: "decorative-premium", transform: (text) => `꧁☬⚡︎${text}⚡︎☬꧂` },
   { name: "Dark Magic", category: "decorative-premium", transform: (text) => `꧁◈☬༒${text}༒☬◈꧂` },
@@ -39,45 +39,45 @@ const FONT_STYLES: FontStyle[] = [
   { name: "Angel Wings", category: "decorative-premium", transform: (text) => `꧁༒☪☬${text}☬☪༒꧂` },
   { name: "Skull Crown", category: "decorative-premium", transform: (text) => `꧁☠︎♛⚔${text}⚔♛☠︎꧂` },
   { name: "Gothic Cross", category: "decorative-premium", transform: (text) => `꧁✠☬†${text}†☬✠꧂` },
-  { name: "Vampire Lord", category: "decorative-premium", transform: (text) => `꧁༒⚰️🦇${text}🦇⚰️༒꧂` },
-  { name: "Phoenix Fire", category: "decorative-premium", transform: (text) => `꧁🔥🦅✨${text}✨🦅🔥꧂` },
-  { name: "Thunder God", category: "decorative-premium", transform: (text) => `꧁⚡👑⚡${text}⚡👑⚡꧂` },
+  { name: "Vampire Lord", category: "decorative-premium", transform: (text) => `꧁༒☬☠${text}☠☬༒꧂` },
+  { name: "Phoenix Fire", category: "decorative-premium", transform: (text) => `꧁⚡☬✨${text}✨☬⚡꧂` },
+  { name: "Thunder God", category: "decorative-premium", transform: (text) => `꧁⚡♛⚡${text}⚡♛⚡꧂` },
   { name: "Blood Moon", category: "decorative-premium", transform: (text) => `꧁☾☬☠︎${text}☠︎☬☾꧂` },
-  { name: "Crystal Sword", category: "decorative-premium", transform: (text) => `꧁◆⚔💎${text}💎⚔◆꧂` },
-  { name: "Frost King", category: "decorative-premium", transform: (text) => `꧁❅👑❄️${text}❄️👑❅꧂` },
+  { name: "Crystal Sword", category: "decorative-premium", transform: (text) => `꧁◆⚔◆${text}◆⚔◆꧂` },
+  { name: "Frost King", category: "decorative-premium", transform: (text) => `꧁❅♛❅${text}❅♛❅꧂` },
   
   // Ultimate Warriors
   { name: "Shadow Blade", category: "decorative-premium", transform: (text) => `꧁◈⚔︎⚡${text}⚡⚔︎◈꧂` },
   { name: "Divine Light", category: "decorative-premium", transform: (text) => `꧁✨☪✨${text}✨☪✨꧂` },
-  { name: "War Chief", category: "decorative-premium", transform: (text) => `꧁⚔🛡️⚔${text}⚔🛡️⚔꧂` },
-  { name: "Mystic Portal", category: "decorative-premium", transform: (text) => `꧁🌀✨🔮${text}🔮✨🌀꧂` },
-  { name: "Dragon Slayer", category: "decorative-premium", transform: (text) => `꧁⚔🐉⚡${text}⚡🐉⚔꧂` },
-  { name: "Void Walker", category: "decorative-premium", transform: (text) => `꧁◉☬⚫${text}⚫☬◉꧂` },
-  { name: "Star Guardian", category: "decorative-premium", transform: (text) => `꧁⭐✨🌟${text}🌟✨⭐꧂` },
-  { name: "Shadow Emperor", category: "decorative-premium", transform: (text) => `꧁👑⚫🖤${text}🖤⚫👑꧂` },
-  { name: "Fire Serpent", category: "decorative-premium", transform: (text) => `꧁🔥🐍⚡${text}⚡🐍🔥꧂` },
-  { name: "Ice Phoenix", category: "decorative-premium", transform: (text) => `꧁❄️🦅💎${text}💎🦅❄️꧂` },
+  { name: "War Chief", category: "decorative-premium", transform: (text) => `꧁⚔♛⚔${text}⚔♛⚔꧂` },
+  { name: "Mystic Portal", category: "decorative-premium", transform: (text) => `꧁◈✨◈${text}◈✨◈꧂` },
+  { name: "Dragon Slayer", category: "decorative-premium", transform: (text) => `꧁⚔☬⚡${text}⚡☬⚔꧂` },
+  { name: "Void Walker", category: "decorative-premium", transform: (text) => `꧁◉☬◉${text}◉☬◉꧂` },
+  { name: "Star Guardian", category: "decorative-premium", transform: (text) => `꧁✦✨✦${text}✦✨✦꧂` },
+  { name: "Shadow Emperor", category: "decorative-premium", transform: (text) => `꧁♛◈♛${text}♛◈♛꧂` },
+  { name: "Fire Serpent", category: "decorative-premium", transform: (text) => `꧁☬⚡☬${text}☬⚡☬꧂` },
+  { name: "Ice Phoenix", category: "decorative-premium", transform: (text) => `꧁❅◆❅${text}❅◆❅꧂` },
   
   // NEW COMPLEX FRAMES
-  { name: "Chaos Master", category: "decorative-premium", transform: (text) => `꧁☬⚡༒🔥${text}🔥༒⚡☬꧂` },
-  { name: "Eternal Flame", category: "decorative-premium", transform: (text) => `꧁🔥☬⚡👑${text}👑⚡☬🔥꧂` },
-  { name: "Soul Reaper", category: "decorative-premium", transform: (text) => `꧁💀⚰️☠︎${text}☠︎⚰️💀꧂` },
-  { name: "Cosmic Emperor", category: "decorative-premium", transform: (text) => `꧁🌌👑⭐${text}⭐👑🌌꧂` },
-  { name: "Storm Bringer", category: "decorative-premium", transform: (text) => `꧁⛈️⚡🌪️${text}🌪️⚡⛈️꧂` },
-  { name: "Ice Emperor", category: "decorative-premium", transform: (text) => `꧁❄️👑💎${text}💎👑❄️꧂` },
-  { name: "Fire Demon", category: "decorative-premium", transform: (text) => `꧁🔥😈⚡${text}⚡😈🔥꧂` },
-  { name: "Galaxy Lord", category: "decorative-premium", transform: (text) => `꧁🌌🌟✨${text}✨🌟🌌꧂` },
-  { name: "Blood Warrior", category: "decorative-premium", transform: (text) => `꧁⚔🩸⚡${text}⚡🩸⚔꧂` },
-  { name: "Cosmic Mage", category: "decorative-premium", transform: (text) => `꧁🌌✨🔮${text}🔮✨🌌꧂` },
-  { name: "Thunder Warrior", category: "decorative-premium", transform: (text) => `꧁⚡⚔👹${text}👹⚔⚡꧂` },
-  { name: "Dark Sorcerer", category: "decorative-premium", transform: (text) => `꧁🌙☬🔮${text}🔮☬🌙꧂` },
-  { name: "Flame Guardian", category: "decorative-premium", transform: (text) => `꧁🔥🛡️⚔${text}⚔🛡️🔥꧂` },
-  { name: "Night Hunter", category: "decorative-premium", transform: (text) => `꧁🌙🏹⚡${text}⚡🏹🌙꧂` },
-  { name: "Crystal Mage", category: "decorative-premium", transform: (text) => `꧁💎🔮✨${text}✨🔮💎꧂` },
-  { name: "Storm King", category: "decorative-premium", transform: (text) => `꧁👑⛈️⚡${text}⚡⛈️👑꧂` },
-  { name: "Shadow Hunter", category: "decorative-premium", transform: (text) => `꧁🌑🏹☬${text}☬🏹🌑꧂` },
-  { name: "Inferno Master", category: "decorative-premium", transform: (text) => `꧁🔥👹💀${text}💀👹🔥꧂` },
-  { name: "Arctic Wolf", category: "decorative-premium", transform: (text) => `꧁❄️🐺⚡${text}⚡🐺❄️꧂` },
+  { name: "Chaos Master", category: "decorative-premium", transform: (text) => `꧁☬⚡༒${text}༒⚡☬꧂` },
+  { name: "Eternal Flame", category: "decorative-premium", transform: (text) => `꧁⚡☬♛${text}♛☬⚡꧂` },
+  { name: "Soul Reaper", category: "decorative-premium", transform: (text) => `꧁☠☬☠︎${text}☠︎☬☠꧂` },
+  { name: "Cosmic Emperor", category: "decorative-premium", transform: (text) => `꧁✦♛✦${text}✦♛✦꧂` },
+  { name: "Storm Bringer", category: "decorative-premium", transform: (text) => `꧁⚡☬⚡${text}⚡☬⚡꧂` },
+  { name: "Ice Emperor", category: "decorative-premium", transform: (text) => `꧁❅♛◆${text}◆♛❅꧂` },
+  { name: "Fire Demon", category: "decorative-premium", transform: (text) => `꧁☬༒⚡${text}⚡༒☬꧂` },
+  { name: "Galaxy Lord", category: "decorative-premium", transform: (text) => `꧁✦✨✦${text}✦✨✦꧂` },
+  { name: "Blood Warrior", category: "decorative-premium", transform: (text) => `꧁⚔☬⚡${text}⚡☬⚔꧂` },
+  { name: "Cosmic Mage", category: "decorative-premium", transform: (text) => `꧁✦✨◈${text}◈✨✦꧂` },
+  { name: "Thunder Warrior", category: "decorative-premium", transform: (text) => `꧁⚡⚔☬${text}☬⚔⚡꧂` },
+  { name: "Dark Sorcerer", category: "decorative-premium", transform: (text) => `꧁☾☬◈${text}◈☬☾꧂` },
+  { name: "Flame Guardian", category: "decorative-premium", transform: (text) => `꧁☬♛⚔${text}⚔♛☬꧂` },
+  { name: "Night Hunter", category: "decorative-premium", transform: (text) => `꧁☾⚡☬${text}☬⚡☾꧂` },
+  { name: "Crystal Mage", category: "decorative-premium", transform: (text) => `꧁◆✨◆${text}◆✨◆꧂` },
+  { name: "Storm King", category: "decorative-premium", transform: (text) => `꧁♛⚡♛${text}♛⚡♛꧂` },
+  { name: "Shadow Hunter", category: "decorative-premium", transform: (text) => `꧁☾☬◈${text}◈☬☾꧂` },
+  { name: "Inferno Master", category: "decorative-premium", transform: (text) => `꧁☬༒☠${text}☠༒☬꧂` },
+  { name: "Arctic Wolf", category: "decorative-premium", transform: (text) => `꧁❅⚡❅${text}❅⚡❅꧂` },
   { name: "Phantom Knight", category: "decorative-premium", transform: (text) => `꧁👻⚔👑${text}👑⚔👻꧂` },
   { name: "Celestial Guard", category: "decorative-premium", transform: (text) => `꧁⭐🛡️✨${text}✨🛡️⭐꧂` },
 
@@ -1267,18 +1267,18 @@ export default function FancyTextGenerator() {
             </Badge>
           </div>
           
-          <div className="grid gap-3 sm:gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3">
             {filteredStyles.map((style, index) => {
               const convertedText = style.transform(inputText);
               return (
                 <Card 
                   key={`${style.name}-${style.category}-${index}`} 
-                  className="group hover:shadow-lg transition-all duration-200 border-l-4 border-l-blue-500 hover:border-l-purple-500"
+                  className="group hover:shadow-md transition-all duration-200 border-l-2 border-l-blue-500 hover:border-l-purple-500"
                 >
-                  <CardContent className="p-4 sm:p-6">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                      <div className="flex-1 min-w-0 space-y-3">
-                        <div className="flex flex-wrap items-center gap-2">
+                  <CardContent className="p-3 sm:p-4">
+                    <div className="space-y-2">
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <div className="flex flex-wrap items-center gap-1">
                           <Badge variant="outline" className="text-xs font-medium">
                             {style.name}
                           </Badge>
@@ -1286,19 +1286,19 @@ export default function FancyTextGenerator() {
                             {style.category}
                           </Badge>
                         </div>
-                        <div className="text-lg sm:text-xl font-mono break-all leading-relaxed p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border">
-                          {convertedText}
-                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => copyToClipboard(convertedText, style.name)}
+                          className="flex-shrink-0 group-hover:bg-blue-50 group-hover:border-blue-300 dark:group-hover:bg-blue-900/20 transition-colors"
+                        >
+                          <Copy className="h-3 w-3 mr-1" />
+                          Copy
+                        </Button>
                       </div>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => copyToClipboard(convertedText, style.name)}
-                        className="flex-shrink-0 group-hover:bg-blue-50 group-hover:border-blue-300 dark:group-hover:bg-blue-900/20 transition-colors"
-                      >
-                        <Copy className="h-4 w-4 mr-2" />
-                        Copy
-                      </Button>
+                      <div className="text-sm sm:text-base font-mono break-all leading-relaxed p-2 bg-gray-50 dark:bg-gray-800 rounded-md border">
+                        {convertedText}
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
