@@ -682,6 +682,15 @@ export const NEW_TOOLS_DATA: Record<string, any[]> = {
       metaDescription: "Write, edit, save, and share your notes instantly with this modern and elegant online notepad tool with rich text features.",
       keywords: "online notepad, text editor, rich text editor, note taking, auto save notepad, modern notepad",
       code: `<div>Smart Modern Notepad Tool</div>`
+    },
+    {
+      title: "Fancy Text Generator",
+      slug: "fancy-text-generator",
+      description: "Create stunning fancy text with 100+ unique Unicode fonts and decorative styles. Perfect for Instagram, BGMI, FreeFire usernames, and social media profiles with instant copy functionality.",
+      metaTitle: "Fancy Text Generator - Stylish Name Maker for Instagram & Gaming",
+      metaDescription: "Generate fancy text with 100+ Unicode fonts and decorative styles. Create stylish names for Instagram, BGMI, FreeFire, Discord with symbols and special characters. Copy instantly!",
+      keywords: "fancy text generator, stylish name generator, Instagram fonts, BGMI name generator, free fire stylish names, Unicode fonts, copy paste fancy text, decorative text styles",
+      code: `<div>Fancy Text Generator Tool</div>`
     }
   ],
   "pdf-tools": [
