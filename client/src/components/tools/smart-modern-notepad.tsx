@@ -308,15 +308,6 @@ export function SmartModernNotepad() {
 
   return (
     <div className={`w-full max-w-7xl mx-auto space-y-6 ${currentTheme.bg} ${currentTheme.text} min-h-screen transition-all duration-300`}>
-      <div className="text-center space-y-2 p-6">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          📝 Smart Modern Notepad
-        </h1>
-        <p className="text-muted-foreground">
-          Write, edit, save, and share your notes instantly with this modern and elegant online notepad tool
-        </p>
-      </div>
-
       {/* Toolbar */}
       <Card className={`shadow-lg ${currentTheme.border}`}>
         <CardHeader className="pb-3">

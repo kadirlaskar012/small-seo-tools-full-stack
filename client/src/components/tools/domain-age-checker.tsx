@@ -157,17 +157,7 @@ export function DomainAgeChecker() {
   return (
     <div className="space-y-6">
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Calendar className="h-5 w-5" />
-            Domain Age Checker
-          </CardTitle>
-          <CardDescription>
-            Check domain registration age, expiration dates, and WHOIS information. 
-            Get detailed timeline analysis with registrar and nameserver details.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 pt-6">
           <div className="space-y-2">
             <Label htmlFor="domain-input" className="text-sm font-medium">
               Domain Name

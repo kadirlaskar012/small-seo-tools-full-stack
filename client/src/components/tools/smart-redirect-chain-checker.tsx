@@ -227,27 +227,9 @@ export function SmartRedirectChainChecker() {
 
   return (
     <div className={`w-full max-w-6xl mx-auto space-y-6 ${isDarkMode ? 'dark' : ''}`}>
-      <div className="text-center space-y-2">
-        <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          Smart Redirect Chain Checker
-        </h2>
-        <p className="text-muted-foreground">
-          Analyze HTTP redirect chains with comprehensive insights and visual flow mapping
-        </p>
-      </div>
-
       {/* URL Input Section */}
       <Card className="shadow-lg">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <LinkIcon className="h-5 w-5 text-blue-500" />
-            URL Analysis
-          </CardTitle>
-          <CardDescription>
-            Enter any URL to check its complete redirect chain and identify potential issues
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 pt-6">
           <div className="flex gap-2">
             <div className="flex-1">
               <Label htmlFor="url" className="sr-only">URL to analyze</Label>

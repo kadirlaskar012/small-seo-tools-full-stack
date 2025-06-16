@@ -174,18 +174,9 @@ export default function BacklinkChecker() {
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      {/* Header Section */}
+      {/* Input Section */}
       <Card className="bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-950 dark:to-blue-950 border-indigo-200 dark:border-indigo-800">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-indigo-900 dark:text-indigo-100 flex items-center justify-center gap-2">
-            <LinkIcon className="h-6 w-6" />
-            Backlink Checker
-          </CardTitle>
-          <p className="text-indigo-700 dark:text-indigo-300 text-lg">
-            Analyze your website's backlink profile and discover link opportunities
-          </p>
-        </CardHeader>
-        <CardContent>
+        <CardContent className="pt-6">
           <div className="space-y-4">
             <div>
               <Label htmlFor="url" className="text-sm font-medium">Website URL</Label>

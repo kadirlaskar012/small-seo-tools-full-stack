@@ -208,17 +208,9 @@ export default function ProfilePictureMaker() {
 
   return (
     <div className={`min-h-screen transition-colors duration-300 ${isDarkMode ? 'dark bg-gray-900' : 'bg-gray-50'}`}>
-      {/* Header */}
+      {/* Header with controls */}
       <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4 sm:p-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center max-w-7xl mx-auto gap-4">
-          <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-              <Target className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
-              Profile Picture Maker
-            </h1>
-            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">Create stunning profile pictures with advanced editing tools</p>
-          </div>
-          
           <div className="flex items-center gap-2 sm:gap-3">
             <Button variant="outline" size="sm" onClick={() => setIsDarkMode(!isDarkMode)}>
               {isDarkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}

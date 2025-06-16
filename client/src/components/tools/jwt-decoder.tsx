@@ -85,17 +85,7 @@ export function JWTDecoder() {
   return (
     <div className="space-y-6">
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Eye className="h-5 w-5" />
-            JWT Token Decoder
-          </CardTitle>
-          <CardDescription>
-            Decode and inspect JWT (JSON Web Token) header and payload without verification. 
-            Perfect for debugging and understanding token structure.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 pt-6">
           <div className="space-y-2">
             <Label htmlFor="jwt-input" className="text-sm font-medium">
               JWT Token

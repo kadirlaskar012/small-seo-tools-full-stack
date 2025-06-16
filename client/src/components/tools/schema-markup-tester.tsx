@@ -293,27 +293,9 @@ export function SchemaMarkupTester() {
 
   return (
     <div className="w-full max-w-6xl mx-auto space-y-6">
-      <div className="text-center space-y-2">
-        <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          Schema Markup Tester
-        </h2>
-        <p className="text-muted-foreground">
-          Validate and analyze structured data from web pages or HTML content
-        </p>
-      </div>
-
       {/* Input Section */}
       <Card className="shadow-lg">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Search className="h-5 w-5 text-blue-500" />
-            Schema Validation Input
-          </CardTitle>
-          <CardDescription>
-            Enter a URL or paste HTML content to extract and validate schema markup
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+        <CardContent className="pt-6">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="url" className="flex items-center gap-2">
