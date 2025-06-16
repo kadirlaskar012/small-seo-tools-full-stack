@@ -3047,6 +3047,67 @@ print(json.dumps(result))
     }
   });
 
+  // Tool Articles API routes
+  app.get('/api/tools/:toolId/article', async (req, res) => {
+    try {
+      const toolId = parseInt(req.params.toolId);
+      const article = await storage.getToolArticle(toolId);
+      
+      if (!article) {
+        return res.status(404).json({ message: 'Article not found' });
+      }
+      
+      res.json(article);
+    } catch (error) {
+      console.error('Error fetching tool article:', error);
+      res.status(500).json({ message: 'Failed to fetch article' });
+    }
+  });
+
+  app.get('/api/admin/tool-articles', async (req, res) => {
+    try {
+      const articles = await storage.getAllToolArticles();
+      res.json(articles);
+    } catch (error) {
+      console.error('Error fetching tool articles:', error);
+      res.status(500).json({ message: 'Failed to fetch articles' });
+    }
+  });
+
+  app.post('/api/admin/tool-articles', async (req, res) => {
+    try {
+      const articleData = req.body;
+      const article = await storage.createToolArticle(articleData);
+      res.json(article);
+    } catch (error) {
+      console.error('Error creating tool article:', error);
+      res.status(500).json({ message: 'Failed to create article' });
+    }
+  });
+
+  app.put('/api/admin/tool-articles/:toolId', async (req, res) => {
+    try {
+      const toolId = parseInt(req.params.toolId);
+      const updateData = req.body;
+      const article = await storage.updateToolArticle(toolId, updateData);
+      res.json(article);
+    } catch (error) {
+      console.error('Error updating tool article:', error);
+      res.status(500).json({ message: 'Failed to update article' });
+    }
+  });
+
+  app.delete('/api/admin/tool-articles/:toolId', async (req, res) => {
+    try {
+      const toolId = parseInt(req.params.toolId);
+      await storage.deleteToolArticle(toolId);
+      res.json({ message: 'Article deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting tool article:', error);
+      res.status(500).json({ message: 'Failed to delete article' });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
