@@ -12,7 +12,6 @@ export default function Navbar() {
 
   const navigation = [
     { name: "Home", href: "/" },
-    { name: "Tools", href: "/#tools-section" },
     { name: "Blog", href: "/blog" },
     { name: "About", href: "/about" },
   ];
