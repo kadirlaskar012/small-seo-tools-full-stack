@@ -292,7 +292,7 @@ export function PDFPasswordRemover() {
                 </div>
                 <div className="flex items-start space-x-3">
                   <div className="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">2</div>
-                  <p>Our tool automatically tries 2000+ common passwords</p>
+                  <p>Our tool automatically tries 3000+ common passwords and patterns</p>
                 </div>
                 <div className="flex items-start space-x-3">
                   <div className="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">3</div>
@@ -303,7 +303,7 @@ export function PDFPasswordRemover() {
               <Alert>
                 <Shield className="h-4 w-4" />
                 <AlertDescription>
-                  <strong>100% Automatic:</strong> No password entry required. Our advanced cracking algorithms work automatically to unlock your PDF.
+                  <strong>Enhanced Algorithm:</strong> Advanced dictionary attack with 3000+ passwords, case variations, leet speak substitutions, and brute force patterns.
                 </AlertDescription>
               </Alert>
 
