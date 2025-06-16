@@ -2077,9 +2077,9 @@ print(json.dumps(result))
         }
       }, 30000); // 30 seconds
 
-      // Call Node.js PDF processor using QPDF and PDF-lib
+      // Call pikepdf processor - the most powerful Python PDF library
       const { spawn } = await import("child_process");
-      let nodeProcess = spawn("node", ["server/node-pdf-processor.js"], {
+      let pythonProcess = spawn("python3", ["server/pikepdf-processor.py"], {
         timeout: 60000 // Kill process after 60 seconds
       });
 
@@ -2087,13 +2087,13 @@ print(json.dumps(result))
       let error = "";
       let isFinished = false;
 
-      // Send PDF data and password to Node.js script
+      // Send PDF data and password to Python script
       try {
-        nodeProcess.stdin.write(JSON.stringify({
+        pythonProcess.stdin.write(JSON.stringify({
           pdf_data: pdfBuffer.toString('base64'),
           password: password
         }));
-        nodeProcess.stdin.end();
+        pythonProcess.stdin.end();
       } catch (writeError) {
         clearTimeout(processTimeout);
         return res.status(500).json({
@@ -2102,15 +2102,15 @@ print(json.dumps(result))
         });
       }
 
-      nodeProcess.stdout.on("data", (data) => {
+      pythonProcess.stdout.on("data", (data) => {
         output += data.toString();
       });
 
-      nodeProcess.stderr.on("data", (data) => {
+      pythonProcess.stderr.on("data", (data) => {
         error += data.toString();
       });
 
-      nodeProcess.on("close", async (code) => {
+      pythonProcess.on("close", async (code) => {
         if (isFinished) return;
         isFinished = true;
         clearTimeout(processTimeout);
@@ -2119,7 +2119,7 @@ print(json.dumps(result))
 
         try {
           if (code !== 0) {
-            console.error("Node.js PDF processor failed:", error);
+            console.error("pikepdf processor failed:", error);
             
             if (!res.headersSent) {
               return res.json({
@@ -2189,11 +2189,11 @@ print(json.dumps(result))
         }
       });
 
-      nodeProcess.on("error", (processError) => {
+      pythonProcess.on("error", (processError) => {
         if (isFinished) return;
         isFinished = true;
         clearTimeout(processTimeout);
-        console.error("Node.js process error:", processError);
+        console.error("pikepdf process error:", processError);
         if (!res.headersSent) {
           res.status(500).json({
             success: false,
