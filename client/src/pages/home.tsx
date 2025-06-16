@@ -70,32 +70,63 @@ export default function Home() {
       />
       
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary to-primary/80 text-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">The Ultimate Online Tools</h1>
-          <p className="text-xl md:text-2xl text-primary-foreground/90 mb-8 max-w-3xl mx-auto">
-            Powerful, fast, and easy-to-use tools for all your digital needs. No registration required.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <div className="relative w-full max-w-md">
-              <Input
-                type="text"
-                placeholder="Search tools..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 py-3 text-foreground"
-              />
-              <Search className="absolute left-4 top-3 h-5 w-5 text-muted-foreground" />
+      <section className="relative overflow-hidden">
+        {/* Background with gradient and patterns */}
+        <div className="absolute inset-0 gradient-bg"></div>
+        <div className="absolute inset-0 dot-pattern opacity-20"></div>
+        
+        <div className="relative py-20 lg:py-32">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div className="animate-fade-in">
+              <h1 className="text-5xl md:text-7xl font-bold mb-8 text-white">
+                The Ultimate 
+                <span className="block gradient-text bg-gradient-to-r from-white to-blue-200">
+                  Online Tools
+                </span>
+              </h1>
+              <p className="text-xl md:text-2xl text-white/90 mb-12 max-w-4xl mx-auto leading-relaxed">
+                Powerful, fast, and easy-to-use tools for all your digital needs. 
+                <span className="block mt-2 font-medium">No registration required. Always free.</span>
+              </p>
             </div>
-            <Button 
-              variant="secondary" 
-              size="lg"
-              className="flex items-center gap-2"
-              onClick={() => document.getElementById('tools-section')?.scrollIntoView({ behavior: 'smooth' })}
-            >
-              <Combine className="h-5 w-5" />
-              Browse All Tools
-            </Button>
+            
+            <div className="animate-slide-up flex flex-col sm:flex-row gap-6 justify-center items-center max-w-2xl mx-auto">
+              <div className="relative w-full max-w-lg">
+                <Input
+                  type="text"
+                  placeholder="Search tools..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-14 pr-6 py-4 text-lg bg-white/95 backdrop-blur-sm border-0 shadow-2xl rounded-2xl focus:ring-4 focus:ring-white/20"
+                />
+                <Search className="absolute left-5 top-4 h-6 w-6 text-muted-foreground" />
+              </div>
+              <Button 
+                size="lg"
+                className="btn-gradient px-8 py-4 text-lg font-semibold rounded-2xl shadow-2xl"
+                onClick={() => document.getElementById('tools-section')?.scrollIntoView({ behavior: 'smooth' })}
+              >
+                <Combine className="h-6 w-6 mr-2" />
+                Browse All Tools
+                <ArrowRight className="h-5 w-5 ml-2" />
+              </Button>
+            </div>
+            
+            {/* Stats */}
+            <div className="animate-scale-in mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+              <div className="glass rounded-2xl p-6 text-center">
+                <div className="text-3xl font-bold text-white mb-2">{tools.length}+</div>
+                <div className="text-white/80">Premium Tools</div>
+              </div>
+              <div className="glass rounded-2xl p-6 text-center">
+                <div className="text-3xl font-bold text-white mb-2">100%</div>
+                <div className="text-white/80">Free Forever</div>
+              </div>
+              <div className="glass rounded-2xl p-6 text-center">
+                <div className="text-3xl font-bold text-white mb-2">0</div>
+                <div className="text-white/80">Registration Required</div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
