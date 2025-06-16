@@ -194,355 +194,143 @@ import {
   Flower2,
   Leaf,
   Apple,
-  Cherry
+  Cherry,
+  Split,
+  Merge,
+  Gauge,
+  Zap as Lightning,
+  Quote,
+  Library,
+  Focus,
+  MoreHorizontal as Multiply,
+  Minus as Divide,
+  Check as Equal,
+  Timer as Stopwatch
 } from "lucide-react";
 
-// Tool icon mapping based on tool name patterns and functionality
+// Tool icon mapping based on actual tools in database
 export const TOOL_ICON_MAP: Record<string, any> = {
-  // SEO Tools
+  // SEO & Analysis Tools
   "seo-score-checker": Search,
-  "page-speed-test": Zap,
+  "meta-tags-analyzer": Code,
   "keyword-density-checker": Hash,
-  "meta-tag-analyzer": Code,
-  "robots-txt-generator": Settings,
-  "sitemap-generator": Globe,
   "backlink-checker": Link,
-  "domain-authority-checker": Shield,
-  "google-serp-checker": TrendingUp,
-  "social-media-preview": Share,
-  "structured-data-tester": Database,
-  "website-analyzer": BarChart3,
-  "competitor-analysis": Target,
-  "local-seo-checker": MapPin,
-  "mobile-friendly-test": Smartphone,
-  "ssl-checker": Lock,
-  "whois-lookup": Info,
-  "dns-lookup": Server,
-  "redirect-checker": ArrowLeftRight,
-  "broken-link-checker": AlertCircle,
-  "canonical-url-checker": Link,
-  "hreflang-checker": Globe,
-  "schema-markup-generator": Code,
-  "open-graph-generator": Share,
-  "twitter-card-generator": Share,
-  "favicon-generator": Image,
-  "url-structure-analyzer": Folder,
-  "content-gap-analysis": Eye,
-  "rank-tracker": TrendingUp,
-  "serp-simulator": Monitor,
-  "keyword-planner": Target,
-  "search-volume-checker": BarChart3,
+  "page-speed-checker": Zap,
+  "advanced-page-speed-checker": Activity,
+  "robots-txt-generator": Settings,
+  "redirect-chain-checker": ArrowLeftRight,
+  "schema-markup-tester": Database,
+  "google-pagespeed-insights": TrendingUp,
+  "safe-browsing-checker": Shield,
+  "ip-geolocation-finder": MapPin,
+  "domain-age-checker": Calendar,
+  "adsense-ban-checker": AlertCircle,
 
-  // Text Tools
-  "word-counter": Counter,
-  "character-counter": Type,
+  // Text & Content Tools
   "text-case-converter": Type,
-  "text-reverser": RefreshCw,
-  "duplicate-line-remover": Scissors,
-  "text-to-slug": Link,
-  "lorem-ipsum-generator": FileText,
-  "text-diff-checker": ArrowUpDown,
-  "text-encoder-decoder": Code,
-  "password-generator": Key,
-  "hash-generator": Hash,
-  "qr-code-generator": Grid,
-  "barcode-generator": List,
-  "text-to-speech": Volume2,
-  "speech-to-text": Mic,
-  "language-detector": Globe,
-  "text-translator": Globe,
-  "readability-checker": BookOpen,
-  "plagiarism-checker": Eye,
-  "grammar-checker": CheckCircle,
-  "spell-checker": PenTool,
-  "text-summarizer": Minimize,
-  "text-extractor": Download,
-  "regex-tester": Code,
-  "markdown-to-html": Code,
-  "html-to-markdown": Code,
-  "json-formatter": Code,
-  "xml-formatter": Code,
-  "csv-to-json": ArrowLeftRight,
-  "json-to-csv": ArrowLeftRight,
-  "url-encoder": Code,
+  "word-counter": FileText,
+  "smart-modern-notepad": Edit,
+  "remove-duplicate-lines": Scissors,
+  "word-frequency-counter": BarChart3,
+  "character-frequency-counter": Hash,
+  "slug-generator": Link,
+  "jwt-decoder": Unlock,
+  "regex-generator": Code,
+  "js-obfuscator": Shield,
 
-  // PDF Tools
-  "pdf-merger": Merge,
-  "pdf-splitter": Split,
-  "pdf-compressor": Minimize,
-  "pdf-to-word": FileText,
-  "word-to-pdf": FileText,
-  "pdf-to-excel": Table,
-  "excel-to-pdf": Table,
-  "pdf-to-powerpoint": FileImage,
-  "powerpoint-to-pdf": FileImage,
-  "pdf-to-image": Image,
-  "image-to-pdf": Image,
+  // PDF Tools  
   "pdf-password-remover": Unlock,
-  "pdf-password-protector": Lock,
-  "pdf-page-rotator": RotateCw,
   "pdf-page-extractor": Download,
-  "pdf-watermark-adder": Layers,
-  "pdf-watermark-remover": Eraser,
-  "pdf-text-extractor": FileText,
-  "pdf-form-filler": Edit,
-  "pdf-optimizer": Settings,
-  "pdf-reader": BookOpen,
-  "pdf-editor": Edit,
-  "pdf-annotator": PenTool,
-  "pdf-signature": Pen,
-  "pdf-bookmarks": Bookmark,
-  "pdf-metadata-editor": Settings,
-  "pdf-page-numberer": Hash,
-  "pdf-table-extractor": Table,
-  "pdf-ocr": Eye,
-  "pdf-validator": CheckCircle,
-  "pdf-repair": Wrench,
-  "pdf-thumbnail-generator": Image,
 
-  // Image Tools
-  "image-compressor": Minimize,
-  "image-resizer": Maximize,
-  "image-cropper": Crop,
-  "image-rotator": RotateCw,
-  "image-format-converter": ArrowLeftRight,
+  // Image & Media Tools
+  "profile-picture-maker": User,
   "background-remover": Layers,
-  "image-upscaler": TrendingUp,
-  "photo-editor": Edit,
-  "image-filter": Filter,
-  "color-picker": Pipette,
-  "image-to-text": FileText,
-  "watermark-adder": Layers,
-  "watermark-remover": Eraser,
-  "image-optimizer": Settings,
-  "thumbnail-generator": Image,
-  "favicon-creator": Image,
-  "logo-maker": Palette,
-  "meme-generator": Image,
-  "collage-maker": Grid,
-  "image-merger": Merge,
-  "image-splitter": Split,
-  "noise-remover": Filter,
-  "blur-effect": Blur,
-  "sharpen-effect": Focus,
-  "brightness-adjuster": Sun,
-  "contrast-adjuster": Contrast,
-  "saturation-adjuster": Palette,
-  "hue-adjuster": Rainbow,
-  "grayscale-converter": Filter,
-  "sepia-effect": Filter,
-  "vintage-effect": Camera,
-  "cartoon-effect": Brush,
+  "image-dpi-converter": Settings,
+  "image-to-text-ocr": Eye,
+  "webp-to-jpg-converter": ArrowLeftRight,
 
-  // Converter Tools
-  "unit-converter": ArrowLeftRight,
-  "currency-converter": DollarSign,
-  "temperature-converter": Thermometer,
-  "length-converter": ArrowLeftRight,
-  "weight-converter": ArrowUpDown,
-  "area-converter": Grid,
-  "volume-converter": Droplet,
-  "speed-converter": Zap,
-  "time-converter": Clock,
-  "angle-converter": Compass,
-  "pressure-converter": Gauge,
-  "energy-converter": Lightning,
-  "power-converter": Plug,
-  "frequency-converter": Radio,
-  "data-converter": Database,
-  "file-converter": ArrowLeftRight,
-  "audio-converter": Headphones,
-  "video-converter": Video,
-  "document-converter": FileText,
-  "spreadsheet-converter": Table,
-  "presentation-converter": FileImage,
-  "ebook-converter": BookOpen,
-  "archive-converter": Archive,
-  "font-converter": Type,
-  "color-converter": Palette,
-  "coordinate-converter": MapPin,
-  "timezone-converter": Globe,
-  "date-converter": Calendar,
-  "number-base-converter": Calculator,
-  "encoding-converter": Code,
-  "compression-converter": Minimize,
-  "vector-converter": Edit,
+  // Data & Conversion Tools
+  "csv-to-json-converter": ArrowLeftRight,
+  "html-to-markdown-converter": Code,
 
-  // Code Tools
-  "code-formatter": Code,
-  "code-minifier": Minimize,
-  "code-beautifier": Palette,
-  "syntax-highlighter": Paintbrush,
-  "code-validator": CheckCircle,
-  "html-validator": Code,
-  "css-validator": Palette,
-  "javascript-validator": Code,
-  "json-validator": Database,
-  "xml-validator": Code,
-  "sql-formatter": Database,
-  "regex-builder": Code,
-  "color-palette-generator": Palette,
-  "gradient-generator": Rainbow,
-  "css-generator": Palette,
-  "html-generator": Code,
-  "meta-tag-generator": Code,
-  "robots-txt-validator": Settings,
-  "htaccess-generator": Settings,
-  "api-tester": Zap,
-  "webhook-tester": Link,
-  "cors-tester": Shield,
-  "http-status-checker": Info,
-  "port-scanner": Search,
-  "ping-test": Activity,
-  "traceroute": Route,
-  "network-scanner": Wifi,
-  "ip-geolocation": MapPin,
-  "user-agent-parser": Info,
-  "base64-encoder": Code,
-  "url-shortener": Link,
-
-  // Website Tools
-  "website-screenshot": Camera,
-  "website-downloader": Download,
-  "website-monitor": Monitor,
-  "uptime-checker": Activity,
-  "performance-test": TrendingUp,
-  "security-scan": Shield,
-  "malware-scanner": Shield,
-  "vulnerability-scanner": AlertCircle,
-  "ssl-certificate-checker": Lock,
-  "domain-expiry-checker": Calendar,
-  "hosting-checker": Server,
-  "cdn-checker": Cloud,
-  "email-validator": Mail,
-  "spam-checker": Shield,
-  "blacklist-checker": AlertCircle,
-  "reputation-checker": Star,
-  "social-share-counter": Share,
-  "analytics-checker": BarChart3,
-  "cookie-scanner": Settings,
-  "privacy-policy-generator": FileText,
-  "terms-generator": FileText,
-  "gdpr-checker": Shield,
-  "accessibility-checker": Eye,
-  "w3c-validator": CheckCircle,
-  "microdata-checker": Database,
-  "amp-validator": Zap,
-  "pagespeed-insights": TrendingUp,
-  "lighthouse-checker": Search,
-  "core-web-vitals": Activity,
-  "browser-compatibility": Monitor,
-  "responsive-design-checker": Smartphone,
-  "mobile-usability": Smartphone,
-
-  // Writing & Grammar Tools
-  "grammar-fixer": CheckCircle,
-  "spell-corrector": PenTool,
-  "punctuation-checker": Type,
-  "style-checker": Edit,
-  "tone-analyzer": Heart,
-  "readability-scorer": BookOpen,
-  "writing-assistant": PenTool,
-  "content-optimizer": TrendingUp,
-  "headline-analyzer": Type,
-  "meta-description-optimizer": FileText,
-  "article-spinner": RefreshCw,
-  "content-rewriter": Edit,
-  "paraphrasing-tool": RefreshCw,
-  "sentence-rephraser": ArrowLeftRight,
-  "synonym-finder": BookOpen,
-  "antonym-finder": ArrowUpDown,
-  "rhyme-finder": Music,
-  "alliteration-generator": Type,
-  "acronym-generator": Hash,
-  "name-generator": User,
-  "title-generator": Type,
-  "slogan-generator": Award,
-  "blog-idea-generator": Brain,
-  "essay-topic-generator": BookOpen,
-  "research-assistant": Search,
-  "citation-generator": Quote,
-  "bibliography-maker": Library,
-  "plagiarism-detector": Eye,
-  "content-analyzer": BarChart3,
-  "keyword-extractor": Target,
-  "topic-extractor": Tag,
-  "sentiment-analyzer": Heart,
-
-  // AI Tools
-  "ai-writer": Brain,
-  "ai-chatbot": Brain,
-  "ai-translator": Globe,
-  "ai-summarizer": Minimize,
-  "ai-analyzer": BarChart3,
-  "ai-generator": Zap,
-  "ai-optimizer": TrendingUp,
-  "machine-learning": Brain,
-  "neural-network": Brain,
-  "deep-learning": Brain,
-  "natural-language": Type,
-  "text-classification": Tag,
-  "sentiment-analysis": Heart,
-  "entity-recognition": Target,
-  "topic-modeling": Grid,
-  "language-detection": Globe,
-  "speech-recognition": Mic,
-  "image-recognition": Eye,
-  "object-detection": Target,
-  "face-recognition": User,
-  "ocr-scanner": Eye,
-  "document-parser": FileText,
-  "data-extraction": Download,
-  "pattern-recognition": Search,
-  "anomaly-detection": AlertCircle,
-  "predictive-analytics": TrendingUp,
-  "recommendation-engine": Star,
-  "personalization": User,
-  "automation": Settings,
-  "workflow-optimizer": TrendingUp,
-  "decision-support": CheckCircle,
-  "smart-assistant": Brain,
-
-  // Math & Calculation Tools
-  "calculator": Calculator,
-  "scientific-calculator": Calculator,
-  "graphing-calculator": LineChart,
-  "matrix-calculator": Grid,
-  "equation-solver": Calculator,
-  "derivative-calculator": TrendingUp,
-  "integral-calculator": AreaChart,
-  "limit-calculator": Target,
-  "statistics-calculator": BarChart3,
-  "probability-calculator": Percent,
-  "combination-calculator": Shuffle,
-  "permutation-calculator": ArrowLeftRight,
-  "fraction-calculator": Calculator,
+  // Calculation Tools
+  "date-difference-calculator": Calendar,
+  "age-in-months-calculator": Clock,
   "percentage-calculator": Percent,
-  "ratio-calculator": ArrowLeftRight,
-  "proportion-calculator": Calculator,
-  "area-calculator": Grid,
-  "volume-calculator": Droplet,
-  "perimeter-calculator": Square,
-  "circumference-calculator": Calculator,
-  "triangle-calculator": Calculator,
-  "circle-calculator": Calculator,
-  "rectangle-calculator": Square,
-  "square-calculator": Square,
-  "polygon-calculator": Grid,
-  "coordinate-calculator": MapPin,
-  "distance-calculator": Route,
-  "midpoint-calculator": Target,
-  "slope-calculator": TrendingUp,
-  "angle-calculator": Compass,
-  "trigonometry-calculator": Calculator,
-  "logarithm-calculator": TrendingUp,
-  "exponential-calculator": TrendingUp,
+
+  // Fallback patterns for unmatched tools
+  "calculator": Calculator,
+  "converter": ArrowLeftRight,
+  "generator": Zap,
+  "checker": CheckCircle,
+  "analyzer": BarChart3,
+  "validator": Shield,
+  "optimizer": TrendingUp,
+  "extractor": Download,
+  "formatter": Code,
+  "counter": Hash,
+  "editor": Edit,
+  "viewer": Eye,
+  "tool": Wrench,
 };
 
-// Function to get icon for a tool
+// Function to get icon for a tool with smart fallback matching
 export function getToolIcon(toolSlug: string) {
-  const icon = TOOL_ICON_MAP[toolSlug];
-  return icon || Wrench; // Default icon if not found
+  // Direct match first
+  if (TOOL_ICON_MAP[toolSlug]) {
+    return TOOL_ICON_MAP[toolSlug];
+  }
+  
+  // Pattern-based fallback matching
+  const slug = toolSlug.toLowerCase();
+  
+  if (slug.includes('calculator')) return Calculator;
+  if (slug.includes('converter')) return ArrowLeftRight;
+  if (slug.includes('generator')) return Zap;
+  if (slug.includes('checker')) return CheckCircle;
+  if (slug.includes('analyzer')) return BarChart3;
+  if (slug.includes('validator')) return Shield;
+  if (slug.includes('optimizer')) return TrendingUp;
+  if (slug.includes('extractor')) return Download;
+  if (slug.includes('formatter')) return Code;
+  if (slug.includes('counter')) return Hash;
+  if (slug.includes('editor')) return Edit;
+  if (slug.includes('viewer')) return Eye;
+  if (slug.includes('password')) return Key;
+  if (slug.includes('pdf')) return FileText;
+  if (slug.includes('image')) return Image;
+  if (slug.includes('text')) return Type;
+  if (slug.includes('seo')) return Search;
+  if (slug.includes('speed')) return Zap;
+  if (slug.includes('security') || slug.includes('secure')) return Shield;
+  if (slug.includes('link')) return Link;
+  if (slug.includes('meta')) return Code;
+  if (slug.includes('robot')) return Settings;
+  if (slug.includes('redirect')) return ArrowLeftRight;
+  if (slug.includes('schema')) return Database;
+  if (slug.includes('notepad') || slug.includes('note')) return Edit;
+  if (slug.includes('duplicate')) return Scissors;
+  if (slug.includes('frequency')) return BarChart3;
+  if (slug.includes('slug')) return Link;
+  if (slug.includes('jwt')) return Unlock;
+  if (slug.includes('regex')) return Code;
+  if (slug.includes('obfuscator')) return Shield;
+  if (slug.includes('profile')) return User;
+  if (slug.includes('background')) return Layers;
+  if (slug.includes('dpi')) return Settings;
+  if (slug.includes('ocr')) return Eye;
+  if (slug.includes('webp') || slug.includes('jpg')) return ArrowLeftRight;
+  if (slug.includes('csv') || slug.includes('json')) return ArrowLeftRight;
+  if (slug.includes('html') || slug.includes('markdown')) return Code;
+  if (slug.includes('date')) return Calendar;
+  if (slug.includes('age')) return Clock;
+  if (slug.includes('percentage')) return Percent;
+  if (slug.includes('geo')) return MapPin;
+  if (slug.includes('domain')) return Globe;
+  if (slug.includes('adsense')) return AlertCircle;
+  
+  // Default fallback
+  return Wrench;
 }
 
 // Function to get all available icons for the icon picker
@@ -564,13 +352,13 @@ export function getAllIcons() {
     Edit, Scissors, Crop, RotateCw, Filter, Palette,
     
     // Math
-    Plus, Minus, Multiply, Divide, Percent, Equal,
+    Plus, Minus, MoreHorizontal, Calculator, Percent, Check,
     
     // Communication
     Mail, Phone, Share, Users, User,
     
     // Time
-    Calendar, Clock, Timer, Stopwatch,
+    Calendar, Clock, Timer,
     
     // Status
     CheckCircle, AlertCircle, Info, Star, Award,
@@ -592,13 +380,13 @@ export function getAllIcons() {
 // Categories for icon picker
 export const ICON_CATEGORIES = {
   basic: ['Search', 'FileText', 'Image', 'Code', 'Globe', 'PenTool', 'Brain', 'Calculator'],
-  actions: ['Zap', 'Eye', 'Shield', 'Link', 'Settings', 'Wrench', 'Target', 'TrendingUp'],
+  actions: ['Zap', 'Eye', 'Shield', 'Link', 'Settings', 'Wrench', 'Target'],
   media: ['Camera', 'Video', 'Music', 'Volume2', 'Mic', 'Headphones'],
   files: ['Download', 'Upload', 'Archive', 'Folder', 'Save', 'Copy'],
   editing: ['Edit', 'Scissors', 'Crop', 'RotateCw', 'Filter', 'Palette'],
-  math: ['Plus', 'Minus', 'Multiply', 'Divide', 'Percent', 'Equal'],
+  math: ['Plus', 'Minus', 'MoreHorizontal', 'Calculator', 'Percent', 'Check'],
   communication: ['Mail', 'Phone', 'Share', 'Users', 'User'],
-  time: ['Calendar', 'Clock', 'Timer', 'Stopwatch'],
+  time: ['Calendar', 'Clock', 'Timer'],
   status: ['CheckCircle', 'AlertCircle', 'Info', 'Star', 'Award'],
   navigation: ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Home'],
   tech: ['Database', 'Server', 'Cloud', 'Wifi', 'Monitor', 'Smartphone'],
