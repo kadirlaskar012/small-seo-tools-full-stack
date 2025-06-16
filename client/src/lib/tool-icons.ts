@@ -434,7 +434,7 @@ export function getAllIcons() {
     Edit, Scissors, Crop, RotateCw, Filter, Palette,
     
     // Math
-    Plus, Minus, MoreHorizontal, Calculator, Percent, Check,
+    Plus, Minus, X, Calculator, Percent, Equal,
     
     // Communication
     Mail, Phone, Share, Users, User,
@@ -452,10 +452,15 @@ export function getAllIcons() {
     Database, Server, Cloud, Wifi, Monitor, Smartphone,
     
     // Business
-    TrendingUp, BarChart3, PieChart, DollarSign, CreditCard,
+    BarChart3, PieChart, DollarSign, CreditCard,
     
     // Design
     Paintbrush, Brush, Layers, Grid, Type, Rainbow,
+    
+    // New Attractive Icons
+    Sparkles, Rocket, Gem, Crown, Wand2, Flame, Trophy, Medal,
+    Telescope, Microscope, Fingerprint, Focus, Glasses, Scan,
+    Crosshair, Radar, KeyRound, ShieldCheck, Unlock, Lock,
   };
 }
 
@@ -466,14 +471,15 @@ export const ICON_CATEGORIES = {
   media: ['Camera', 'Video', 'Music', 'Volume2', 'Mic', 'Headphones'],
   files: ['Download', 'Upload', 'Archive', 'Folder', 'Save', 'Copy'],
   editing: ['Edit', 'Scissors', 'Crop', 'RotateCw', 'Filter', 'Palette'],
-  math: ['Plus', 'Minus', 'MoreHorizontal', 'Calculator', 'Percent', 'Check'],
+  math: ['Plus', 'Minus', 'X', 'Calculator', 'Percent', 'Equal'],
   communication: ['Mail', 'Phone', 'Share', 'Users', 'User'],
   time: ['Calendar', 'Clock', 'Timer'],
   status: ['CheckCircle', 'AlertCircle', 'Info', 'Star', 'Award'],
   navigation: ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Home'],
   tech: ['Database', 'Server', 'Cloud', 'Wifi', 'Monitor', 'Smartphone'],
-  business: ['TrendingUp', 'BarChart3', 'PieChart', 'DollarSign', 'CreditCard'],
+  business: ['BarChart3', 'PieChart', 'DollarSign', 'CreditCard'],
   design: ['Paintbrush', 'Brush', 'Layers', 'Grid', 'Type', 'Rainbow'],
+  premium: ['Sparkles', 'Rocket', 'Gem', 'Crown', 'Wand2', 'Flame', 'Trophy', 'Medal'],
 };
 
 // Function to get icon name from component
