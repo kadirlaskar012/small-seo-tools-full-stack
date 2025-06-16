@@ -128,14 +128,14 @@ export function PDFPasswordRemover() {
             clearInterval(progressInterval);
             return 90;
           }
-          const newProgress = prev + 8;
-          if (newProgress > currentStage * 13 && currentStage < stages.length - 1) {
+          const newProgress = prev + 15;
+          if (newProgress > currentStage * 20 && currentStage < stages.length - 1) {
             currentStage++;
             setProcessingStage(stages[currentStage]);
           }
           return newProgress;
         });
-      }, 3000); // Update every 3 seconds for 3-minute processing
+      }, 1000); // Update every 1 second for 30-second processing
 
       const response = await fetch('/api/tools/pdf-password-remover', {
         method: 'POST',
@@ -456,13 +456,13 @@ export function PDFPasswordRemover() {
             <div className="flex items-start gap-3">
               <Info className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
               <div className="space-y-2">
-                <h4 className="font-medium text-blue-900 dark:text-blue-100">Advanced PDF Password Cracking Engine</h4>
+                <h4 className="font-medium text-blue-900 dark:text-blue-100">Ultra-Fast PDF Password Cracking Engine</h4>
                 <div className="text-sm text-blue-800 dark:text-blue-200 space-y-1">
-                  <p>• <strong>10,000+</strong> password combinations tested automatically using multiple attack vectors</p>
-                  <p>• <strong>Multi-stage attack:</strong> Common patterns → Dictionary attack → Intelligent brute force → Character substitution</p>
-                  <p>• <strong>Smart patterns:</strong> Names+years, phone numbers, dates, keyboard sequences, business terms</p>
-                  <p>• <strong>3-minute processing</strong> with comprehensive password attempts for maximum success rate</p>
-                  <p>• <strong>Multiple libraries:</strong> pikepdf, PyPDF2, PyMuPDF for maximum compatibility across PDF types</p>
+                  <p>• <strong>Priority testing:</strong> Most common passwords tested first for instant results</p>
+                  <p>• <strong>Optimized cracking:</strong> 2000+ high-probability passwords tested within 30 seconds</p>
+                  <p>• <strong>Smart patterns:</strong> Current dates, recent years, common sequences, business terms</p>
+                  <p>• <strong>Quick brute force:</strong> 1-4 character passwords cracked using intelligent algorithms</p>
+                  <p>• <strong>Multiple libraries:</strong> pikepdf, PyPDF2, PyMuPDF for maximum compatibility</p>
                   <p>• <strong>All encryption:</strong> 40-bit RC4, 128-bit RC4, 128/256-bit AES, owner/user permissions</p>
                   <p>• <strong>Security:</strong> Server-side processing, files automatically deleted after processing</p>
                 </div>
