@@ -11,6 +11,7 @@ dependencies = [
     "html2text>=2025.4.15",
     "httpx>=0.28.1",
     "markdownify>=1.1.0",
+    "numpy>=2.3.0",
     "passlib>=1.7.4",
     "pillow>=11.2.1",
     "pydantic>=2.11.7",

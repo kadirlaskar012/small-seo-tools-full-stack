@@ -26,6 +26,7 @@ import { SafeBrowsingChecker } from "@/components/tools/safe-browsing-checker";
 import { IPGeolocationFinder } from "@/components/tools/ip-geolocation-finder";
 import { DomainAgeChecker } from "@/components/tools/domain-age-checker";
 import { AdSenseBanChecker } from "@/components/tools/adsense-ban-checker";
+import ProfilePictureMaker from "@/components/tools/profile-picture-maker";
 import type { ToolWithCategory } from "@shared/schema";
 import SEOHead from "@/components/seo-head";
 import { AlertCircle, Home, ChevronRight, ChevronDown, ChevronUp, Search } from "lucide-react";
@@ -162,6 +163,8 @@ export default function Tool() {
         return <DomainAgeChecker />;
       case "adsense-ban-checker":
         return <AdSenseBanChecker />;
+      case "profile-picture-maker":
+        return <ProfilePictureMaker />;
       default:
         return (
           <Card>

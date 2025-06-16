@@ -2974,6 +2974,79 @@ print(json.dumps(result))
     }
   });
 
+  // Profile Picture Maker
+  app.post('/api/tools/profile-picture-maker', upload.single('image'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ 
+          success: false, 
+          error: "Image file is required" 
+        });
+      }
+
+      const options = JSON.parse(req.body.options || '{}');
+
+      // Save uploaded file temporarily
+      const tempFilePath = path.join(__dirname, `temp_${Date.now()}_${req.file.originalname}`);
+      fs.writeFileSync(tempFilePath, req.file.buffer);
+
+      try {
+        const optionsJson = JSON.stringify(options).replace(/"/g, '\\"');
+        const result = await exec(`python3 ${path.join(__dirname, 'profile-picture-maker.py')} "${tempFilePath}" "${optionsJson}"`);
+        const data = JSON.parse(result.stdout);
+        res.json(data);
+      } finally {
+        // Clean up temp file
+        if (fs.existsSync(tempFilePath)) {
+          fs.unlinkSync(tempFilePath);
+        }
+      }
+    } catch (error) {
+      console.error("Profile Picture Maker error:", error);
+      res.status(500).json({ 
+        success: false, 
+        error: "Failed to process profile picture" 
+      });
+    }
+  });
+
+  // Profile Picture Practice Sheet Generator
+  app.post('/api/tools/profile-picture-practice-sheet', upload.single('image'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ 
+          success: false, 
+          error: "Image file is required" 
+        });
+      }
+
+      const options = JSON.parse(req.body.options || '{}');
+      options.generate_practice_sheet = true;
+
+      // Save uploaded file temporarily
+      const tempFilePath = path.join(__dirname, `temp_${Date.now()}_${req.file.originalname}`);
+      fs.writeFileSync(tempFilePath, req.file.buffer);
+
+      try {
+        const optionsJson = JSON.stringify(options).replace(/"/g, '\\"');
+        const result = await exec(`python3 ${path.join(__dirname, 'profile-picture-maker.py')} "${tempFilePath}" "${optionsJson}"`);
+        const data = JSON.parse(result.stdout);
+        res.json(data);
+      } finally {
+        // Clean up temp file
+        if (fs.existsSync(tempFilePath)) {
+          fs.unlinkSync(tempFilePath);
+        }
+      }
+    } catch (error) {
+      console.error("Profile Picture Practice Sheet error:", error);
+      res.status(500).json({ 
+        success: false, 
+        error: "Failed to generate practice sheet" 
+      });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
