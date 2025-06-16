@@ -292,7 +292,7 @@ export default function Tool() {
                           {isCategoryExpanded && (
                             <div className="mt-2 space-y-1 pl-4">
                               {categoryTools.slice(0, 5).map((categoryTool) => (
-                                <Link key={categoryTool.id} href={`/tools/${categoryTool.slug}`} className="block">
+                                <Link key={categoryTool.id} href={`/${categoryTool.slug}`} className="block">
                                   <div className="border border-gray-200 dark:border-gray-600 rounded p-2 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                                     <h5 className="font-medium text-xs text-gray-900 dark:text-white truncate">
                                       {categoryTool.title}
@@ -331,7 +331,7 @@ export default function Tool() {
                 {popularExpanded && (
                   <div className="mt-3 space-y-2">
                     {popularTools.map((popularTool, index) => (
-                      <Link key={popularTool.id} href={`/tools/${popularTool.slug}`} className="block">
+                      <Link key={popularTool.id} href={`/${popularTool.slug}`} className="block">
                         <div className="border border-gray-200 dark:border-gray-600 rounded p-2 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                           <div className="flex items-center gap-2">
                             <span className="text-xs font-bold text-gray-500 dark:text-gray-400 w-3">
@@ -410,7 +410,7 @@ export default function Tool() {
             
             <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
               {similarTools.slice(0, 6).map((similarTool) => (
-                <Link key={similarTool.id} href={`/tools/${similarTool.slug}`}>
+                <Link key={similarTool.id} href={`/${similarTool.slug}`}>
                   <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-3 hover:shadow-md transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-600 cursor-pointer text-center">
                     <div className="flex items-center justify-center mx-auto mb-2">
                       <ToolLogo 

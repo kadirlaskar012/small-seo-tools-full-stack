@@ -205,7 +205,7 @@ export default function AdminArticles() {
                     <Button 
                       size="sm" 
                       variant="outline"
-                      onClick={() => window.open(`/tools/${tool?.slug}`, '_blank')}
+                      onClick={() => window.open(`/${tool?.slug}`, '_blank')}
                     >
                       <Eye className="h-4 w-4" />
                     </Button>
