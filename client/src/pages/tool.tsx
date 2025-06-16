@@ -38,6 +38,11 @@ export default function Tool() {
   const { slug } = useParams();
   const queryClient = useQueryClient();
   
+  // Scroll to top when component mounts or slug changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [slug]);
+  
   // State for collapsible sections
   const [categoriesExpanded, setCategoriesExpanded] = useState(true); // Categories expanded by default
   const [popularExpanded, setPopularExpanded] = useState(false);
