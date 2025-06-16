@@ -2077,23 +2077,23 @@ print(json.dumps(result))
         }
       }, 30000); // 30 seconds
 
-      // Call hybrid PDF processor that prioritizes content preservation
+      // Call Node.js PDF processor using QPDF and PDF-lib
       const { spawn } = await import("child_process");
-      let pythonProcess = spawn("python3", ["server/hybrid-pdf-processor.py"], {
-        timeout: 45000 // Kill process after 45 seconds
+      let nodeProcess = spawn("node", ["server/node-pdf-processor.js"], {
+        timeout: 60000 // Kill process after 60 seconds
       });
 
       let output = "";
       let error = "";
       let isFinished = false;
 
-      // Send PDF data and password to Python script
+      // Send PDF data and password to Node.js script
       try {
-        pythonProcess.stdin.write(JSON.stringify({
+        nodeProcess.stdin.write(JSON.stringify({
           pdf_data: pdfBuffer.toString('base64'),
           password: password
         }));
-        pythonProcess.stdin.end();
+        nodeProcess.stdin.end();
       } catch (writeError) {
         clearTimeout(processTimeout);
         return res.status(500).json({
@@ -2102,15 +2102,15 @@ print(json.dumps(result))
         });
       }
 
-      pythonProcess.stdout.on("data", (data) => {
+      nodeProcess.stdout.on("data", (data) => {
         output += data.toString();
       });
 
-      pythonProcess.stderr.on("data", (data) => {
+      nodeProcess.stderr.on("data", (data) => {
         error += data.toString();
       });
 
-      pythonProcess.on("close", async (code) => {
+      nodeProcess.on("close", async (code) => {
         if (isFinished) return;
         isFinished = true;
         clearTimeout(processTimeout);
@@ -2119,7 +2119,7 @@ print(json.dumps(result))
 
         try {
           if (code !== 0) {
-            console.error("Hybrid PDF processor failed:", error);
+            console.error("Node.js PDF processor failed:", error);
             
             if (!res.headersSent) {
               return res.json({
@@ -2189,11 +2189,11 @@ print(json.dumps(result))
         }
       });
 
-      pythonProcess.on("error", (processError) => {
+      nodeProcess.on("error", (processError) => {
         if (isFinished) return;
         isFinished = true;
         clearTimeout(processTimeout);
-        console.error("Python process error:", processError);
+        console.error("Node.js process error:", processError);
         if (!res.headersSent) {
           res.status(500).json({
             success: false,
