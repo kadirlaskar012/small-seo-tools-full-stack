@@ -1053,34 +1053,34 @@ const FONT_STYLES: FontStyle[] = [
   { name: "Divine Light", category: "divine-light", transform: (text) => `꧁✨☪✨${text}✨☪✨꧂` },
 
   // War Chief
-  { name: "War Chief", category: "war-chief", transform: (text) => `꧁⚔🛡️⚔${text}⚔🛡️⚔꧂` },
+  { name: "War Chief Style", category: "war-chief", transform: (text) => `꧁⚔🛡️⚔${text}⚔🛡️⚔꧂` },
 
   // Mystic Portal
   { name: "Mystic Portal", category: "mystic-portal", transform: (text) => `꧁🌀✨🔮${text}🔮✨🌀꧂` },
 
   // Dragon Slayer
-  { name: "Dragon Slayer", category: "dragon-slayer", transform: (text) => `꧁⚔🐉⚡${text}⚡🐉⚔꧂` },
+  { name: "Dragon Slayer Style", category: "dragon-slayer", transform: (text) => `꧁⚔🐉⚡${text}⚡🐉⚔꧂` },
 
   // Void Walker
-  { name: "Void Walker", category: "void-walker", transform: (text) => `꧁◉☬⚫${text}⚫☬◉꧂` },
+  { name: "Void Walker Style", category: "void-walker", transform: (text) => `꧁◉☬⚫${text}⚫☬◉꧂` },
 
   // Star Guardian
-  { name: "Star Guardian", category: "star-guardian", transform: (text) => `꧁⭐✨🌟${text}🌟✨⭐꧂` },
+  { name: "Star Guardian Style", category: "star-guardian", transform: (text) => `꧁⭐✨🌟${text}🌟✨⭐꧂` },
 
   // Shadow Emperor
-  { name: "Shadow Emperor", category: "shadow-emperor", transform: (text) => `꧁👑⚫🖤${text}🖤⚫👑꧂` },
+  { name: "Shadow Emperor Style", category: "shadow-emperor", transform: (text) => `꧁👑⚫🖤${text}🖤⚫👑꧂` },
 
   // Fire Serpent
-  { name: "Fire Serpent", category: "fire-serpent", transform: (text) => `꧁🔥🐍⚡${text}⚡🐍🔥꧂` },
+  { name: "Fire Serpent Style", category: "fire-serpent", transform: (text) => `꧁🔥🐍⚡${text}⚡🐍🔥꧂` },
 
   // Ice Phoenix
-  { name: "Ice Phoenix", category: "ice-phoenix", transform: (text) => `꧁❄️🦅💎${text}💎🦅❄️꧂` },
+  { name: "Ice Phoenix Style", category: "ice-phoenix", transform: (text) => `꧁❄️🦅💎${text}💎🦅❄️꧂` },
 
   // Blood Warrior
-  { name: "Blood Warrior", category: "blood-warrior", transform: (text) => `꧁⚔🩸⚡${text}⚡🩸⚔꧂` },
+  { name: "Blood Warrior Style", category: "blood-warrior", transform: (text) => `꧁⚔🩸⚡${text}⚡🩸⚔꧂` },
 
   // Cosmic Mage
-  { name: "Cosmic Mage", category: "cosmic-mage", transform: (text) => `꧁🌌✨🔮${text}🔮✨🌌꧂` }
+  { name: "Cosmic Mage Style", category: "cosmic-mage", transform: (text) => `꧁🌌✨🔮${text}🔮✨🌌꧂` }
 ];
 
 export default function FancyTextGenerator() {
@@ -1268,11 +1268,11 @@ export default function FancyTextGenerator() {
           </div>
           
           <div className="grid gap-3 sm:gap-4">
-            {filteredStyles.map((style) => {
+            {filteredStyles.map((style, index) => {
               const convertedText = style.transform(inputText);
               return (
                 <Card 
-                  key={style.name} 
+                  key={`${style.name}-${style.category}-${index}`} 
                   className="group hover:shadow-lg transition-all duration-200 border-l-4 border-l-blue-500 hover:border-l-purple-500"
                 >
                   <CardContent className="p-4 sm:p-6">
