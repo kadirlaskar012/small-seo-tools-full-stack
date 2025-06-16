@@ -121,19 +121,27 @@ export default function ProfilePictureMaker() {
       formData.append('image', selectedFile);
       formData.append('options', JSON.stringify(options));
 
-      const response = await apiRequest('/api/tools/profile-picture-maker/process', {
+      const response = await fetch('/api/tools/profile-picture-maker/process', {
         method: 'POST',
         body: formData,
+        credentials: 'include',
       });
 
-      if (response.success && response.image_url) {
-        setResultUrl(response.image_url);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Processing failed');
+      }
+
+      const result = await response.json();
+      
+      if (result.success && result.image_url) {
+        setResultUrl(result.image_url);
         toast({
           title: "Success!",
           description: "Profile picture processed successfully",
         });
       } else {
-        throw new Error(response.error || 'Processing failed');
+        throw new Error(result.error || 'Processing failed');
       }
     } catch (error: any) {
       toast({
