@@ -1,6 +1,5 @@
 import React, { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -15,8 +14,6 @@ import {
   Shield,
   AlertTriangle,
   CheckCircle,
-  Eye,
-  EyeOff,
   Trash2,
   Info
 } from "lucide-react";
@@ -45,65 +42,55 @@ export function PDFPasswordRemover() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [processingStage, setProcessingStage] = useState("");
-  const [passwordHint, setPasswordHint] = useState("");
-  const [showPasswordInput, setShowPasswordInput] = useState(false);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      if (file.type !== 'application/pdf') {
-        toast({
-          title: "Invalid File Type",
-          description: "Please select a PDF file.",
-          variant: "destructive",
-        });
-        return;
-      }
-
+    if (file && file.type === "application/pdf") {
       if (file.size > 50 * 1024 * 1024) {
         toast({
           title: "File Too Large",
-          description: "Please select a PDF file smaller than 50MB.",
+          description: "Please select a PDF file under 50MB",
           variant: "destructive",
         });
         return;
       }
-
-      setSelectedFile(file);
-      setResult(null);
-    }
-  };
-
-  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    const file = event.dataTransfer.files[0];
-    if (file && file.type === 'application/pdf') {
       setSelectedFile(file);
       setResult(null);
     } else {
       toast({
         title: "Invalid File",
-        description: "Please drop a PDF file.",
+        description: "Please select a valid PDF file",
         variant: "destructive",
       });
     }
   };
 
-  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+  const handleDragOver = (event: React.DragEvent) => {
     event.preventDefault();
   };
 
-  const removePassword = async () => {
-    if (!selectedFile) {
-      toast({
-        title: "No File Selected",
-        description: "Please select a PDF file first.",
-        variant: "destructive",
-      });
-      return;
+  const handleDrop = (event: React.DragEvent) => {
+    event.preventDefault();
+    const file = event.dataTransfer.files[0];
+    if (file && file.type === "application/pdf") {
+      if (file.size > 50 * 1024 * 1024) {
+        toast({
+          title: "File Too Large",
+          description: "Please select a PDF file under 50MB",
+          variant: "destructive",
+        });
+        return;
+      }
+      setSelectedFile(file);
+      setResult(null);
     }
+  };
+
+  const removePassword = async () => {
+    if (!selectedFile) return;
 
     setIsProcessing(true);
     setUploadProgress(0);
@@ -113,34 +100,25 @@ export function PDFPasswordRemover() {
     try {
       const formData = new FormData();
       formData.append('pdf', selectedFile);
-      if (passwordHint) {
-        formData.append('password', passwordHint);
-      }
 
       // Fast progress tracking for 30-second processing
       const stages = [
         "Uploading PDF file...",
-        "Analyzing PDF security...", 
-        "Testing priority passwords...",
-        "Running optimized cracking...",
+        "Analyzing PDF security...",
+        "Testing common passwords...",
+        "Trying password patterns...",
+        "Advanced password cracking...",
         "Finalizing unlocked PDF..."
       ];
 
       let currentStage = 0;
       const progressInterval = setInterval(() => {
-        setUploadProgress(prev => {
-          if (prev >= 90) {
-            clearInterval(progressInterval);
-            return 90;
-          }
-          const newProgress = prev + 15;
-          if (newProgress > currentStage * 20 && currentStage < stages.length - 1) {
-            currentStage++;
-            setProcessingStage(stages[currentStage]);
-          }
-          return newProgress;
-        });
-      }, 1000); // Update every 1 second for 30-second processing
+        currentStage++;
+        if (currentStage < stages.length) {
+          setProcessingStage(stages[currentStage]);
+          setUploadProgress(Math.min(90, (currentStage / stages.length) * 100));
+        }
+      }, 5000); // Update every 5 seconds
 
       const response = await fetch('/api/tools/pdf-password-remover', {
         method: 'POST',
@@ -148,10 +126,10 @@ export function PDFPasswordRemover() {
       });
 
       clearInterval(progressInterval);
-      setUploadProgress(100);
-      setProcessingStage("Processing complete!");
-
+      
       const data = await response.json();
+      setUploadProgress(100);
+      setProcessingStage("Complete!");
       setResult(data);
 
       if (data.success) {
@@ -160,31 +138,21 @@ export function PDFPasswordRemover() {
           description: `PDF unlocked! ${data.pages_count} pages processed in ${data.processing_time}s`,
         });
       } else {
-        // Handle specific password cracking failure
-        if (data.error === "Password cracking failed" || data.error?.includes("strong password")) {
-          setShowPasswordInput(true);
-          toast({
-            title: "Strong Password Detected",
-            description: data.message || "Please provide the exact password to unlock this PDF",
-            variant: "destructive",
-          });
-        } else {
-          toast({
-            title: "Password Removal Failed",
-            description: data.error || "Failed to remove password protection",
-            variant: "destructive",
-          });
-        }
+        toast({
+          title: "Password Removal Failed",
+          description: data.error || "Failed to remove password protection",
+          variant: "destructive",
+        });
       }
     } catch (error) {
       console.error("PDF password removal error:", error);
       setResult({
         success: false,
-        error: "Network error occurred. Please try again.",
+        error: "Network error occurred during processing"
       });
       toast({
         title: "Processing Error",
-        description: "Failed to process PDF. Please try again.",
+        description: "A network error occurred. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -194,28 +162,20 @@ export function PDFPasswordRemover() {
     }
   };
 
-  const downloadUnlockedPDF = () => {
-    if (result?.output_url) {
-      const link = document.createElement('a');
-      link.href = result.output_url;
-      link.download = `unlocked_${selectedFile?.name || 'document.pdf'}`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      toast({
-        title: "Download Started",
-        description: "Your unlocked PDF is being downloaded.",
-      });
-    }
-  };
-
   const clearFile = () => {
     setSelectedFile(null);
     setResult(null);
-    setPassword("");
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
+    }
+  };
+
+  const downloadFile = () => {
+    if (result?.output_url) {
+      const link = document.createElement('a');
+      link.href = result.output_url;
+      link.download = selectedFile?.name?.replace(/\.pdf$/i, '_unlocked.pdf') || 'unlocked.pdf';
+      link.click();
     }
   };
 
@@ -281,26 +241,6 @@ export function PDFPasswordRemover() {
                 )}
               </div>
 
-              {/* Password Input Field */}
-              {(showPasswordInput || selectedFile) && (
-                <div className="space-y-2">
-                  <Label htmlFor="password-hint" className="text-sm font-medium">
-                    Password (optional)
-                  </Label>
-                  <Input
-                    id="password-hint"
-                    type="password"
-                    placeholder="Enter password if known..."
-                    value={passwordHint}
-                    onChange={(e) => setPasswordHint(e.target.value)}
-                    className="w-full"
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Leave empty to try automatic password cracking
-                  </p>
-                </div>
-              )}
-
               {/* Process Button */}
               {selectedFile && (
                 <Button
@@ -338,163 +278,167 @@ export function PDFPasswordRemover() {
               )}
             </div>
 
-            {/* Results Section */}
+            {/* Instructions */}
             <div className="space-y-4">
-              <Label className="text-base font-medium">Processing Results</Label>
+              <h3 className="text-lg font-semibold flex items-center">
+                <Info className="h-5 w-5 mr-2 text-blue-500" />
+                How It Works
+              </h3>
               
-              {!result && !isProcessing && (
-                <div className="border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-lg p-8 text-center">
-                  <Shield className="h-12 w-12 mx-auto text-gray-400" />
-                  <p className="text-gray-500 mt-2">Results will appear here</p>
+              <div className="space-y-3 text-sm">
+                <div className="flex items-start space-x-3">
+                  <div className="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">1</div>
+                  <p>Upload your password-protected PDF file</p>
                 </div>
-              )}
-
-              {result && (
-                <div className="space-y-4">
-                  {result.success ? (
-                    <Alert className="border-green-200 bg-green-50 dark:bg-green-950">
-                      <CheckCircle className="h-4 w-4 text-green-600" />
-                      <AlertDescription className="text-green-800 dark:text-green-200">
-                        <strong>Password Removed Successfully!</strong>
-                        <br />
-                        {result.message || "PDF is now unlocked and ready for download."}
-                      </AlertDescription>
-                    </Alert>
-                  ) : (
-                    <div className="space-y-3">
-                      <Alert className="border-red-200 bg-red-50 dark:bg-red-950">
-                        <AlertTriangle className="h-4 w-4 text-red-600" />
-                        <AlertDescription className="text-red-800 dark:text-red-200">
-                          <strong>
-                            {result.error === "Password cracking failed" 
-                              ? "Strong Password Detected" 
-                              : "Password Removal Failed"}
-                          </strong>
-                          <br />
-                          {result.message || result.error || "Unable to remove password protection."}
-                        </AlertDescription>
-                      </Alert>
-                      
-                      {result.error === "Password cracking failed" && (
-                        <div className="bg-orange-50 dark:bg-orange-950 border border-orange-200 dark:border-orange-800 rounded-lg p-4">
-                          <div className="flex items-start gap-2">
-                            <Info className="h-4 w-4 text-orange-600 dark:text-orange-400 mt-0.5 flex-shrink-0" />
-                            <div className="text-sm text-orange-800 dark:text-orange-200">
-                              <p className="font-medium mb-2">What to try next:</p>
-                              <ul className="space-y-1 text-xs">
-                                <li>• Enter the exact password above and try again</li>
-                                <li>• Check for typos, spaces, or special characters</li>
-                                <li>• Try variations like: Name2024, Company123!, Date-Format</li>
-                                <li>• Consider if password contains mixed case or symbols</li>
-                                <li>• Contact the PDF creator if password is unknown</li>
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {result.success && (
-                    <div className="space-y-3">
-                      {/* File Info */}
-                      <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 space-y-2">
-                        <h4 className="font-medium flex items-center gap-2">
-                          <FileText className="h-4 w-4" />
-                          PDF Information
-                        </h4>
-                        <div className="grid grid-cols-2 gap-4 text-sm">
-                          <div>
-                            <span className="text-muted-foreground">Pages:</span>
-                            <p className="font-medium">{result.pages_count || 'N/A'}</p>
-                          </div>
-                          <div>
-                            <span className="text-muted-foreground">Processing Time:</span>
-                            <p className="font-medium">{result.processing_time || 0}s</p>
-                          </div>
-                          {result.file_size_original && (
-                            <div>
-                              <span className="text-muted-foreground">Original Size:</span>
-                              <p className="font-medium">{formatFileSize(result.file_size_original)}</p>
-                            </div>
-                          )}
-                          {result.file_size_output && (
-                            <div>
-                              <span className="text-muted-foreground">Output Size:</span>
-                              <p className="font-medium">{formatFileSize(result.file_size_output)}</p>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Security Info */}
-                      {result.security_info && (
-                        <div className="bg-blue-50 dark:bg-blue-950 rounded-lg p-4 space-y-2">
-                          <h4 className="font-medium flex items-center gap-2">
-                            <Shield className="h-4 w-4" />
-                            Security Information
-                          </h4>
-                          <div className="space-y-1 text-sm">
-                            <div className="flex items-center gap-2">
-                              {result.security_info.was_password_protected ? (
-                                <Lock className="h-3 w-3 text-red-500" />
-                              ) : (
-                                <Unlock className="h-3 w-3 text-green-500" />
-                              )}
-                              <span>
-                                {result.security_info.was_password_protected 
-                                  ? "Was password protected" 
-                                  : "No password protection found"}
-                              </span>
-                            </div>
-                            {result.security_info.permissions_removed && result.security_info.permissions_removed.length > 0 && (
-                              <div>
-                                <span className="text-muted-foreground">Restrictions removed:</span>
-                                <div className="flex flex-wrap gap-1 mt-1">
-                                  {result.security_info.permissions_removed.map((permission, index) => (
-                                    <Badge key={index} variant="secondary" className="text-xs">
-                                      {permission}
-                                    </Badge>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Download Button */}
-                      <Button onClick={downloadUnlockedPDF} className="w-full">
-                        <Download className="h-4 w-4 mr-2" />
-                        Download Unlocked PDF
-                      </Button>
-                    </div>
-                  )}
+                <div className="flex items-start space-x-3">
+                  <div className="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">2</div>
+                  <p>Our tool automatically tries 2000+ common passwords</p>
                 </div>
-              )}
-            </div>
-          </div>
-
-          {/* Information Section */}
-          <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-950 rounded-lg">
-            <div className="flex items-start gap-3">
-              <Info className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
-              <div className="space-y-2">
-                <h4 className="font-medium text-blue-900 dark:text-blue-100">Ultra-Fast PDF Password Cracking Engine</h4>
-                <div className="text-sm text-blue-800 dark:text-blue-200 space-y-1">
-                  <p>• <strong>Priority testing:</strong> Most common passwords tested first for instant results</p>
-                  <p>• <strong>Optimized cracking:</strong> 2000+ high-probability passwords tested within 30 seconds</p>
-                  <p>• <strong>Smart patterns:</strong> Current dates, recent years, common sequences, business terms</p>
-                  <p>• <strong>Quick brute force:</strong> 1-4 character passwords cracked using intelligent algorithms</p>
-                  <p>• <strong>Multiple libraries:</strong> pikepdf, PyPDF2, PyMuPDF for maximum compatibility</p>
-                  <p>• <strong>All encryption:</strong> 40-bit RC4, 128-bit RC4, 128/256-bit AES, owner/user permissions</p>
-                  <p>• <strong>Security:</strong> Server-side processing, files automatically deleted after processing</p>
+                <div className="flex items-start space-x-3">
+                  <div className="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">3</div>
+                  <p>Download your unlocked PDF file instantly</p>
                 </div>
               </div>
+
+              <Alert>
+                <Shield className="h-4 w-4" />
+                <AlertDescription>
+                  <strong>100% Automatic:</strong> No password entry required. Our advanced cracking algorithms work automatically to unlock your PDF.
+                </AlertDescription>
+              </Alert>
+
+              <Alert>
+                <AlertTriangle className="h-4 w-4" />
+                <AlertDescription>
+                  <strong>Processing Time:</strong> Maximum 30 seconds per file. Complex passwords may require longer processing.
+                </AlertDescription>
+              </Alert>
             </div>
           </div>
         </CardContent>
       </Card>
+
+      {/* Results Section */}
+      {result && (
+        <Card>
+          <CardContent className="pt-6">
+            {result.success ? (
+              <div className="space-y-4">
+                <div className="flex items-center space-x-2">
+                  <CheckCircle className="h-6 w-6 text-green-500" />
+                  <h3 className="text-lg font-semibold text-green-700 dark:text-green-400">
+                    Password Removed Successfully!
+                  </h3>
+                </div>
+                
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="text-center p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                    <p className="text-2xl font-bold text-green-600 dark:text-green-400">
+                      {result.pages_count}
+                    </p>
+                    <p className="text-sm text-muted-foreground">Pages</p>
+                  </div>
+                  <div className="text-center p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                    <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                      {result.processing_time}s
+                    </p>
+                    <p className="text-sm text-muted-foreground">Time</p>
+                  </div>
+                  <div className="text-center p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                    <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+                      {result.file_size_original ? formatFileSize(result.file_size_original) : 'N/A'}
+                    </p>
+                    <p className="text-sm text-muted-foreground">Original</p>
+                  </div>
+                  <div className="text-center p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+                    <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">
+                      {result.file_size_output ? formatFileSize(result.file_size_output) : 'N/A'}
+                    </p>
+                    <p className="text-sm text-muted-foreground">Unlocked</p>
+                  </div>
+                </div>
+
+                {result.security_info && (
+                  <div className="space-y-2">
+                    <h4 className="font-medium">Security Information</h4>
+                    <div className="space-y-1 text-sm">
+                      <div className="flex items-center justify-between">
+                        <span>Was Password Protected:</span>
+                        <Badge variant={result.security_info.was_password_protected ? "destructive" : "secondary"}>
+                          {result.security_info.was_password_protected ? "Yes" : "No"}
+                        </Badge>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span>Had User Password:</span>
+                        <Badge variant={result.security_info.had_user_password ? "destructive" : "secondary"}>
+                          {result.security_info.had_user_password ? "Yes" : "No"}
+                        </Badge>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span>Had Owner Password:</span>
+                        <Badge variant={result.security_info.had_owner_password ? "destructive" : "secondary"}>
+                          {result.security_info.had_owner_password ? "Yes" : "No"}
+                        </Badge>
+                      </div>
+                      {result.security_info.permissions_removed?.length > 0 && (
+                        <div>
+                          <span>Permissions Removed:</span>
+                          <div className="flex flex-wrap gap-1 mt-1">
+                            {result.security_info.permissions_removed.map((permission, index) => (
+                              <Badge key={index} variant="outline" className="text-xs">
+                                {permission}
+                              </Badge>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                <Button onClick={downloadFile} className="w-full">
+                  <Download className="h-4 w-4 mr-2" />
+                  Download Unlocked PDF
+                </Button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="flex items-center space-x-2">
+                  <AlertTriangle className="h-6 w-6 text-red-500" />
+                  <h3 className="text-lg font-semibold text-red-700 dark:text-red-400">
+                    Password Removal Failed
+                  </h3>
+                </div>
+                
+                <Alert variant="destructive">
+                  <Lock className="h-4 w-4" />
+                  <AlertDescription>
+                    {result.error || "Unable to crack the password automatically. The PDF may have a very strong or complex password."}
+                  </AlertDescription>
+                </Alert>
+
+                <div className="text-sm space-y-2">
+                  <p><strong>Common reasons for failure:</strong></p>
+                  <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+                    <li>Very strong or complex password (not in our 2000+ password dictionary)</li>
+                    <li>PDF uses advanced encryption methods</li>
+                    <li>Password contains special characters or unusual patterns</li>
+                    <li>File corruption or incomplete upload</li>
+                  </ul>
+                </div>
+
+                <Button 
+                  onClick={() => setResult(null)} 
+                  variant="outline" 
+                  className="w-full"
+                >
+                  Try Another PDF File
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }
