@@ -2077,10 +2077,10 @@ print(json.dumps(result))
         }
       }, 30000); // 30 seconds
 
-      // Call ultimate PDF cracker with improved content preservation
+      // Call smart PDF cracker that adapts to encryption level
       const { spawn } = await import("child_process");
-      let pythonProcess = spawn("python3", ["server/ultimate-pdf-cracker.py"], {
-        timeout: 25000 // Kill process after 25 seconds
+      let pythonProcess = spawn("python3", ["server/smart-pdf-cracker.py"], {
+        timeout: 30000 // Kill process after 30 seconds
       });
 
       let output = "";
@@ -2115,105 +2115,16 @@ print(json.dumps(result))
         isFinished = true;
         clearTimeout(processTimeout);
 
-        const tryContentPreservingFallback = async () => {
-          console.log("Trying content-preserving PDF cracker as fallback...");
-          const contentProcess = spawn("python3", ["server/content-preserving-pdf-cracker.py"], {
-            timeout: 15000
-          });
-          
-          let contentOutput = "";
-          let contentError = "";
-          
-          try {
-            contentProcess.stdin.write(JSON.stringify({
-              pdf_data: pdfBuffer.toString('base64')
-            }));
-            contentProcess.stdin.end();
-          } catch (writeError) {
-            return null;
-          }
-          
-          return new Promise((resolve) => {
-            contentProcess.stdout.on("data", (data) => {
-              contentOutput += data.toString();
-            });
-            
-            contentProcess.stderr.on("data", (data) => {
-              contentError += data.toString();
-            });
-            
-            contentProcess.on("close", (contentCode) => {
-              if (contentCode === 0 && contentOutput.trim()) {
-                try {
-                  const contentResult = JSON.parse(contentOutput);
-                  if (contentResult.success) {
-                    resolve(contentResult);
-                    return;
-                  }
-                } catch (e) {}
-              }
-              resolve(null);
-            });
-            
-            contentProcess.on("error", () => {
-              resolve(null);
-            });
-          });
-        };
+
 
         try {
           if (code !== 0) {
-            console.error("Ultimate PDF cracker failed:", error);
-            
-            // Try ultimate fallback
-            const fallbackResult = await tryContentPreservingFallback();
-            if (fallbackResult && !res.headersSent) {
-              // Process fallback result same as main result
-              if (fallbackResult.output_data) {
-                const outputBuffer = Buffer.from(fallbackResult.output_data, 'base64');
-                const filename = `unlocked_${Date.now()}.pdf`;
-                const outputPath = path.join(__dirname, '../temp', filename);
-                
-                const tempDir = path.dirname(outputPath);
-                if (!fs.existsSync(tempDir)) {
-                  fs.mkdirSync(tempDir, { recursive: true });
-                }
-                
-                fs.writeFileSync(outputPath, outputBuffer);
-                const downloadUrl = `/api/download/temp/${filename}`;
-                
-                delete fallbackResult.output_data;
-                fallbackResult.output_url = downloadUrl;
-                fallbackResult.message += " (using backup method)";
-                
-                setTimeout(() => {
-                  try {
-                    if (fs.existsSync(outputPath)) {
-                      fs.unlinkSync(outputPath);
-                    }
-                  } catch (e) {
-                    console.error("Error cleaning up temp file:", e);
-                  }
-                }, 10 * 60 * 1000);
-                
-                return res.json(fallbackResult);
-              }
-            }
+            console.error("Smart PDF cracker failed:", error);
             
             if (!res.headersSent) {
-              // Check for specific password cracking failure
-              if (error.includes("password required and common passwords failed") || 
-                  error.includes("Unable to unlock PDF")) {
-                return res.status(400).json({
-                  success: false,
-                  error: "Password cracking failed",
-                  message: "This PDF has a strong password that couldn't be cracked automatically. Please provide the exact password to unlock it.",
-                  suggestion: "Try entering the password manually, or check if it contains special characters, mixed case, or numbers."
-                });
-              }
-              return res.status(500).json({
+              return res.json({
                 success: false,
-                error: "PDF processing failed: " + (error || "Unknown error")
+                message: "Unable to process the PDF. The file may be corrupted or have very strong encryption that cannot be cracked automatically."
               });
             }
             return;
