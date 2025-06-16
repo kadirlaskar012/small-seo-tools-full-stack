@@ -152,6 +152,7 @@ export function PDFPasswordRemover() {
 
       clearInterval(progressInterval);
       setUploadProgress(100);
+      setProcessingStage("Processing complete!");
 
       const data = await response.json();
       setResult(data);
@@ -182,6 +183,7 @@ export function PDFPasswordRemover() {
     } finally {
       setIsProcessing(false);
       setUploadProgress(0);
+      setProcessingStage("");
     }
   };
 
@@ -330,11 +332,16 @@ export function PDFPasswordRemover() {
 
               {/* Progress Bar */}
               {isProcessing && (
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <Progress value={uploadProgress} className="h-2" />
-                  <p className="text-sm text-center text-muted-foreground">
-                    {uploadProgress < 100 ? "Uploading..." : "Processing PDF..."}
-                  </p>
+                  <div className="text-sm text-center space-y-1">
+                    <p className="text-muted-foreground">
+                      {processingStage || "Initializing..."}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {uploadProgress}% complete
+                    </p>
+                  </div>
                 </div>
               )}
             </div>
