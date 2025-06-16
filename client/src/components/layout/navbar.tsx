@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { useMobile } from "@/hooks/use-mobile";
 import { Combine, Menu, Settings } from "lucide-react";
 
@@ -62,6 +62,10 @@ export default function Navbar() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-64">
+                <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+                <SheetDescription className="sr-only">
+                  Access navigation links and admin panel
+                </SheetDescription>
                 <div className="flex flex-col space-y-4 mt-8">
                   <NavItems />
                   <Link href="/admin" onClick={() => setIsOpen(false)}>
