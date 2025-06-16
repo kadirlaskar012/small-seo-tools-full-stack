@@ -27,6 +27,7 @@ import { IPGeolocationFinder } from "@/components/tools/ip-geolocation-finder";
 import { DomainAgeChecker } from "@/components/tools/domain-age-checker";
 import { AdSenseBanChecker } from "@/components/tools/adsense-ban-checker";
 import ProfilePictureMaker from "@/components/tools/profile-picture-maker";
+import { PDFPasswordRemover } from "@/components/tools/pdf-password-remover";
 import type { ToolWithCategory } from "@shared/schema";
 import SEOHead from "@/components/seo-head";
 import { AlertCircle, Home, ChevronRight, ChevronDown, ChevronUp, Search } from "lucide-react";
@@ -170,6 +171,8 @@ export default function Tool() {
         return <AdSenseBanChecker />;
       case "profile-picture-maker":
         return <ProfilePictureMaker />;
+      case "pdf-password-remover":
+        return <PDFPasswordRemover />;
       default:
         return (
           <Card>

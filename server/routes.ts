@@ -33,6 +33,22 @@ const upload = multer({
   }
 });
 
+// Configure multer for PDF uploads (larger file size limit)
+const pdfUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 50 * 1024 * 1024, // 50MB limit for PDFs
+  },
+  fileFilter: (req, file, cb) => {
+    // Allow PDF files
+    if (file.mimetype === 'application/pdf') {
+      cb(null, true);
+    } else {
+      cb(new Error('Only PDF files are allowed'), false);
+    }
+  }
+});
+
 export async function registerRoutes(app: Express): Promise<Server> {
   // Initialize database with default data
   await storage.initializeDefaultData();
