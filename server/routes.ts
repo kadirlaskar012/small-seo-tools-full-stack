@@ -2077,10 +2077,10 @@ print(json.dumps(result))
         }
       }, 30000); // 30 seconds
 
-      // Call Python script for PDF password removal with fallback
+      // Call content-preserving PDF cracker as primary method
       const { spawn } = await import("child_process");
-      let pythonProcess = spawn("python3", ["server/ultimate-pdf-cracker.py"], {
-        timeout: 25000 // Kill process after 25 seconds
+      let pythonProcess = spawn("python3", ["server/content-preserving-pdf-cracker.py"], {
+        timeout: 20000 // Kill process after 20 seconds
       });
 
       let output = "";
@@ -2115,39 +2115,39 @@ print(json.dumps(result))
         isFinished = true;
         clearTimeout(processTimeout);
 
-        const trySimpleFallback = async () => {
-          console.log("Trying simple PDF cracker as fallback...");
-          const simpleProcess = spawn("python3", ["server/simple-pdf-cracker.py"], {
+        const tryUltimateFallback = async () => {
+          console.log("Trying ultimate PDF cracker as fallback...");
+          const ultimateProcess = spawn("python3", ["server/ultimate-pdf-cracker.py"], {
             timeout: 15000
           });
           
-          let simpleOutput = "";
-          let simpleError = "";
+          let ultimateOutput = "";
+          let ultimateError = "";
           
           try {
-            simpleProcess.stdin.write(JSON.stringify({
+            ultimateProcess.stdin.write(JSON.stringify({
               pdf_data: pdfBuffer.toString('base64')
             }));
-            simpleProcess.stdin.end();
+            ultimateProcess.stdin.end();
           } catch (writeError) {
             return null;
           }
           
           return new Promise((resolve) => {
-            simpleProcess.stdout.on("data", (data) => {
-              simpleOutput += data.toString();
+            ultimateProcess.stdout.on("data", (data) => {
+              ultimateOutput += data.toString();
             });
             
-            simpleProcess.stderr.on("data", (data) => {
-              simpleError += data.toString();
+            ultimateProcess.stderr.on("data", (data) => {
+              ultimateError += data.toString();
             });
             
-            simpleProcess.on("close", (simpleCode) => {
-              if (simpleCode === 0 && simpleOutput.trim()) {
+            ultimateProcess.on("close", (ultimateCode) => {
+              if (ultimateCode === 0 && ultimateOutput.trim()) {
                 try {
-                  const simpleResult = JSON.parse(simpleOutput);
-                  if (simpleResult.success) {
-                    resolve(simpleResult);
+                  const ultimateResult = JSON.parse(ultimateOutput);
+                  if (ultimateResult.success) {
+                    resolve(ultimateResult);
                     return;
                   }
                 } catch (e) {}
@@ -2155,7 +2155,7 @@ print(json.dumps(result))
               resolve(null);
             });
             
-            simpleProcess.on("error", () => {
+            ultimateProcess.on("error", () => {
               resolve(null);
             });
           });
@@ -2165,8 +2165,8 @@ print(json.dumps(result))
           if (code !== 0) {
             console.error("Ultimate PDF cracker failed:", error);
             
-            // Try simple fallback
-            const fallbackResult = await trySimpleFallback();
+            // Try ultimate fallback
+            const fallbackResult = await tryUltimateFallback();
             if (fallbackResult && !res.headersSent) {
               // Process fallback result same as main result
               if (fallbackResult.output_data) {
