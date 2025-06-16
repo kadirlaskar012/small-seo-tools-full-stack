@@ -159,24 +159,8 @@ export function AgeInMonthsCalculator() {
 
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6">
-      <div className="text-center space-y-2">
-        <h2 className="text-2xl font-bold">Age in Months Calculator</h2>
-        <p className="text-muted-foreground">
-          Calculate your exact age in years, months, weeks, days, and more with precision
-        </p>
-      </div>
-
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Cake className="h-5 w-5" />
-            Age Calculation
-          </CardTitle>
-          <CardDescription>
-            Enter your birth date to calculate your exact age in various units
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-6 pt-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label htmlFor="birthDate">Birth Date *</Label>

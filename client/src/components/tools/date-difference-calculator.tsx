@@ -114,24 +114,8 @@ export function DateDifferenceCalculator() {
 
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6">
-      <div className="text-center space-y-2">
-        <h2 className="text-2xl font-bold">Date Difference Calculator</h2>
-        <p className="text-muted-foreground">
-          Calculate the exact difference between two dates in years, months, days, and more
-        </p>
-      </div>
-
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Calendar className="h-5 w-5" />
-            Date Selection
-          </CardTitle>
-          <CardDescription>
-            Select the start and end dates to calculate the difference
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-6 pt-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label htmlFor="startDate">Start Date</Label>

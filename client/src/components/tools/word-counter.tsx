@@ -88,16 +88,7 @@ Average words per sentence: ${result.averageWordsPerSentence}`;
   return (
     <div className="space-y-6">
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <FileText className="h-5 w-5" />
-            Word Counter & Text Analyzer
-          </CardTitle>
-          <CardDescription>
-            Count words, characters, sentences, and get detailed text statistics including reading time
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 pt-6">
           <div>
             <Label htmlFor="text-input">Text to Analyze</Label>
             <Textarea

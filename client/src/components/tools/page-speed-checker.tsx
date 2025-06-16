@@ -85,16 +85,7 @@ export function PageSpeedChecker() {
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Zap className="h-5 w-5 text-blue-600" />
-            Page Speed Analyzer
-          </CardTitle>
-          <CardDescription>
-            Analyze website performance with real-time metrics and AI-powered optimization recommendations
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 pt-6">
           <div className="flex gap-4">
             <div className="flex-1">
               <Input

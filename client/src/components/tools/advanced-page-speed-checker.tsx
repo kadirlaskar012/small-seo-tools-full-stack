@@ -234,29 +234,9 @@ export function AdvancedPageSpeedChecker() {
 
   return (
     <div className="w-full max-w-6xl mx-auto p-4 space-y-6">
-      {/* Header */}
-      <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-          Page Speed Test
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-          Analyze your website's performance with Google PageSpeed Insights. 
-          Get detailed metrics, Core Web Vitals, and optimization recommendations.
-        </p>
-      </div>
-
       {/* Input Form */}
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Globe className="h-5 w-5" />
-            Website Speed Analysis
-          </CardTitle>
-          <CardDescription>
-            Enter a URL to analyze its performance, accessibility, and SEO metrics
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+        <CardContent className="pt-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="flex flex-col sm:flex-row gap-3">
               <div className="flex-1">

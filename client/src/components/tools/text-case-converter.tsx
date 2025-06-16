@@ -86,16 +86,7 @@ export default function TextCaseConverter() {
   return (
     <div className="space-y-6">
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Type className="h-5 w-5" />
-            Text Case Converter
-          </CardTitle>
-          <CardDescription>
-            Convert text between different case formats - uppercase, lowercase, title case, camelCase, and more
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 pt-6">
           <div>
             <Label htmlFor="text-input">Text to Convert</Label>
             <Textarea

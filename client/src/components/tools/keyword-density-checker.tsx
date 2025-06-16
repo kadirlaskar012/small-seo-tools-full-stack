@@ -218,18 +218,9 @@ export default function KeywordDensityChecker() {
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      {/* Header Section */}
+      {/* Input Section */}
       <Card className="bg-gradient-to-r from-green-50 to-teal-50 dark:from-green-950 dark:to-teal-950 border-green-200 dark:border-green-800">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-green-900 dark:text-green-100 flex items-center justify-center gap-2">
-            <BarChart3 className="h-6 w-6" />
-            Keyword Density Checker
-          </CardTitle>
-          <p className="text-green-700 dark:text-green-300 text-lg">
-            Analyze keyword density and optimize your content for better SEO performance
-          </p>
-        </CardHeader>
-        <CardContent>
+        <CardContent className="pt-6">
           <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "text" | "url")} className="w-full">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="text" className="flex items-center gap-2">

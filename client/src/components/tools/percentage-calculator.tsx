@@ -205,13 +205,6 @@ export function PercentageCalculator() {
 
   return (
     <div className="w-full max-w-6xl mx-auto space-y-6">
-      <div className="text-center space-y-2">
-        <h2 className="text-2xl font-bold">Percentage Calculator</h2>
-        <p className="text-muted-foreground">
-          Calculate percentages, percentage changes, discounts, markups, and more
-        </p>
-      </div>
-
       <Tabs value={activeCalculation} onValueChange={setActiveCalculation}>
         <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="basic">Basic %</TabsTrigger>
