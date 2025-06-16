@@ -2067,20 +2067,20 @@ print(json.dumps(result))
       const password = req.body.password || "";
       const pdfBuffer = req.file.buffer;
 
-      // Set timeout for the entire process (2 minutes)
+      // Set timeout for the entire process (30 seconds to prevent hanging)
       const processTimeout = setTimeout(() => {
         if (!res.headersSent) {
           res.status(500).json({
             success: false,
-            error: "PDF processing timed out. Please try with a smaller file or simpler password."
+            error: "PDF processing timed out. Tool can only crack simple passwords quickly."
           });
         }
-      }, 120000); // 2 minutes
+      }, 30000); // 30 seconds
 
       // Call Python script for PDF password removal
       const { spawn } = await import("child_process");
       const pythonProcess = spawn("python3", ["server/pdf-password-remover.py"], {
-        timeout: 110000 // Kill process after 110 seconds
+        timeout: 25000 // Kill process after 25 seconds
       });
 
       let output = "";

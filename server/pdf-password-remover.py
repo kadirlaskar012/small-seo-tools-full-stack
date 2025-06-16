@@ -153,171 +153,25 @@ class PDFPasswordRemover:
         return security_info
     
     def try_common_passwords(self, input_path: str) -> Optional[str]:
-        """Try common passwords and patterns with advanced brute force"""
-        # Basic common passwords
+        """Try only the most common passwords - fast and simple"""
+        # Only try the most common passwords to avoid hanging
         common_passwords = [
             "", "123456", "password", "123456789", "12345678", "12345", "1234567", "1234",
             "admin", "qwerty", "abc123", "Password", "123", "1234567890", "000000", "111111",
-            "123123", "654321", "666666", "121212", "123321", "7777777", "101010", "999999",
-            "qwertyuiop", "asdfghjkl", "zxcvbnm", "welcome", "monkey", "dragon", "master",
-            "sunshine", "princess", "letmein", "trustno1", "starwars", "superman", "batman",
-            "freedom", "computer", "michael", "login", "test", "guest", "user", "default"
+            "welcome", "login", "test", "guest", "user", "default", "master", "secret"
         ]
         
-        # Try basic passwords first
-        for pwd in common_passwords:
-            if self._test_password(input_path, pwd):
-                return pwd
+        # Quick numeric patterns
+        for i in range(1980, 2025):  # Just years
+            common_passwords.append(str(i))
         
-        # Advanced password patterns
-        advanced_patterns = []
-        
-        # Date patterns (years, birth years, etc.)
-        current_year = 2024
-        for year in range(1950, current_year + 1):
-            advanced_patterns.extend([
-                str(year), f"01{year}", f"{year}01", f"1{year}", f"{year}1",
-                f"12{year}", f"{year}12", f"31{year}", f"{year}31"
-            ])
-        
-        # Common name + number combinations
-        common_names = [
-            "john", "mary", "michael", "sarah", "david", "lisa", "chris", "anna",
-            "james", "jennifer", "robert", "linda", "william", "elizabeth", "richard",
-            "maria", "charles", "susan", "joseph", "jessica", "thomas", "karen",
-            "daniel", "nancy", "matthew", "betty", "anthony", "helen", "mark", "sandra"
-        ]
-        
-        for name in common_names:
-            for year in range(1950, 2025):
-                advanced_patterns.extend([f"{name}{year}", f"{name.title()}{year}"])
-            for num in range(0, 100):
-                advanced_patterns.extend([f"{name}{num:02d}", f"{name.title()}{num:02d}"])
-        
-        # Company/organization patterns
-        company_patterns = [
-            "company", "corp", "inc", "ltd", "llc", "business", "office", "work",
-            "team", "group", "department", "division", "branch", "project", "file",
-            "document", "report", "data", "info", "secure", "private", "confidential"
-        ]
-        
-        for word in company_patterns:
-            for year in range(2000, 2025):
-                advanced_patterns.extend([f"{word}{year}", f"{word.title()}{year}"])
-            for num in range(1, 100):
-                advanced_patterns.extend([f"{word}{num}", f"{word.title()}{num}"])
-        
-        # Extended numeric patterns
-        for i in range(100, 100000, 111):  # Common patterns like 111, 222, etc.
-            advanced_patterns.append(str(i))
-        
-        # Keyboard patterns
-        keyboard_patterns = [
-            "qwerty", "asdf", "zxcv", "1qaz", "2wsx", "3edc", "qaz123", "wsx234",
-            "qwertyui", "asdfghjk", "zxcvbnm", "147258369", "159753", "741852963"
-        ]
-        
-        for pattern in keyboard_patterns:
-            advanced_patterns.extend([pattern, pattern.upper(), pattern.title()])
+        # Simple variations
+        for base in ["password", "admin", "user"]:
             for i in range(10):
-                advanced_patterns.extend([f"{pattern}{i}", f"{i}{pattern}"])
+                common_passwords.extend([f"{base}{i}", f"{base}123", f"{base}2024"])
         
-        # Simple variations of common words with symbols
-        base_words = ["password", "admin", "user", "test", "guest", "login", "secret", "key"]
-        symbols = ["!", "@", "#", "$", "%", "^", "&", "*"]
-        
-        for word in base_words:
-            # Add variations with symbols
-            for symbol in symbols:
-                advanced_patterns.extend([f"{word}{symbol}", f"{symbol}{word}"])
-            # Add variations with numbers
-            for i in range(100):
-                advanced_patterns.extend([
-                    f"{word}{i}", f"{word}0{i}", f"{i}{word}", f"{word}{i:02d}",
-                    f"{word.title()}{i}", f"{word.upper()}{i}"
-                ])
-        
-        # Phone number patterns (expanded)
-        area_codes = ["123", "555", "000", "111", "999", "201", "212", "310", "415", "650"]
-        for area in area_codes:
-            for exchange in ["123", "456", "789", "000", "111", "555"]:
-                for number in ["1234", "5678", "9999", "0000", "1111"]:
-                    advanced_patterns.extend([
-                        f"{area}{exchange}{number}",
-                        f"{area}-{exchange}-{number}",
-                        f"({area}){exchange}{number}"
-                    ])
-        
-        # Birthday patterns (MMDD, DDMM, MMDDYY, DDMMYY)
-        for month in range(1, 13):
-            for day in range(1, 32):
-                if day <= 28 or (month in [1,3,5,7,8,10,12] and day <= 31) or (month in [4,6,9,11] and day <= 30):
-                    mm = f"{month:02d}"
-                    dd = f"{day:02d}"
-                    advanced_patterns.extend([
-                        f"{mm}{dd}", f"{dd}{mm}",
-                        f"{mm}/{dd}", f"{dd}/{mm}",
-                        f"{mm}-{dd}", f"{dd}-{mm}"
-                    ])
-                    # Add year combinations
-                    for year in range(50, 25, -1):  # 1950-2024 as 2-digit
-                        advanced_patterns.extend([
-                            f"{mm}{dd}{year:02d}", f"{dd}{mm}{year:02d}",
-                            f"{mm}/{dd}/{year:02d}", f"{dd}/{mm}/{year:02d}"
-                        ])
-        
-        # Social Security Number patterns (XXX-XX-XXXX)
-        for area in range(1, 1000, 111):
-            for group in range(1, 100, 11):
-                for serial in range(1, 10000, 1111):
-                    advanced_patterns.append(f"{area:03d}{group:02d}{serial:04d}")
-        
-        # License plate patterns
-        for letter1 in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
-            for letter2 in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
-                for num in range(100, 1000, 111):
-                    advanced_patterns.extend([
-                        f"{letter1}{letter2}{num}",
-                        f"{letter1}{letter2}-{num}",
-                        f"{num}{letter1}{letter2}"
-                    ])
-        
-        # Try advanced patterns in batches to avoid timeouts
-        batch_size = 1000
-        total_batches = len(advanced_patterns) // batch_size + 1
-        
-        for batch_num in range(total_batches):
-            start_idx = batch_num * batch_size
-            end_idx = min((batch_num + 1) * batch_size, len(advanced_patterns))
-            batch = advanced_patterns[start_idx:end_idx]
-            
-            for pwd in batch:
-                if self._test_password(input_path, pwd):
-                    return pwd
-        
-        # Word combinations
-        word_list = ["the", "and", "for", "are", "but", "not", "you", "all", "can", "had", "her", "was", "one", "our", "out", "day", "get", "has", "him", "his", "how", "its", "may", "new", "now", "old", "see", "two", "way", "who", "boy", "did", "man", "men", "put", "say", "she", "too", "use"]
-        
-        for word1 in word_list[:20]:  # Limit to prevent timeout
-            for word2 in word_list[:20]:
-                if word1 != word2:
-                    combinations = [
-                        f"{word1}{word2}", f"{word1.title()}{word2}",
-                        f"{word1}{word2.title()}", f"{word1.title()}{word2.title()}",
-                        f"{word1}_{word2}", f"{word1}-{word2}"
-                    ]
-                    for combo in combinations:
-                        if self._test_password(input_path, combo):
-                            return combo
-                        # Add numbers to combinations
-                        for num in range(10):
-                            test_passwords = [f"{combo}{num}", f"{num}{combo}"]
-                            for test_pwd in test_passwords:
-                                if self._test_password(input_path, test_pwd):
-                                    return test_pwd
-        
-        # Try advanced patterns (limited to prevent timeout)
-        for i, pwd in enumerate(advanced_patterns[:5000]):  # Limit to 5000 attempts
+        # Test only these passwords - no complex patterns
+        for pwd in common_passwords:
             if self._test_password(input_path, pwd):
                 return pwd
         
