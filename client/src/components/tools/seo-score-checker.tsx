@@ -99,18 +99,9 @@ export default function SEOScoreChecker() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      {/* Header Section */}
+      {/* Input Section */}
       <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 border-blue-200 dark:border-blue-800">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-blue-900 dark:text-blue-100 flex items-center justify-center gap-2">
-            <Search className="h-6 w-6" />
-            SEO Score Checker
-          </CardTitle>
-          <p className="text-blue-700 dark:text-blue-300 text-lg">
-            Analyze your website's SEO performance and get actionable insights
-          </p>
-        </CardHeader>
-        <CardContent>
+        <CardContent className="pt-6">
           <div className="space-y-4">
             <div>
               <Label htmlFor="url" className="text-sm font-medium">Website URL</Label>

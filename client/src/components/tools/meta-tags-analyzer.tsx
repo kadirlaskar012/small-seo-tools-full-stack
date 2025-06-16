@@ -135,18 +135,9 @@ ${analysis.customTags.map(tag => `<meta name="${tag.name}" content="${tag.conten
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      {/* Header Section */}
+      {/* Input Section */}
       <Card className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950 dark:to-pink-950 border-purple-200 dark:border-purple-800">
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold text-purple-900 dark:text-purple-100 flex items-center justify-center gap-2">
-            <Tags className="h-6 w-6" />
-            Meta Tags Analyzer
-          </CardTitle>
-          <p className="text-purple-700 dark:text-purple-300 text-lg">
-            Analyze and optimize your website's meta tags for better SEO performance
-          </p>
-        </CardHeader>
-        <CardContent>
+        <CardContent className="pt-6">
           <div className="space-y-4">
             <div>
               <Label htmlFor="url" className="text-sm font-medium">Website URL</Label>

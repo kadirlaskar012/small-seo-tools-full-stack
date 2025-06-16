@@ -257,12 +257,6 @@ export function RobotsTxtGenerator() {
 
   return (
     <div className="w-full max-w-6xl mx-auto space-y-6">
-      <div className="text-center space-y-2">
-        <h2 className="text-2xl font-bold">Robots.txt Generator</h2>
-        <p className="text-muted-foreground">
-          Create a professional robots.txt file for your website to control search engine crawling
-        </p>
-      </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-3">
