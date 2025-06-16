@@ -27,7 +27,7 @@ export function PopularTools({ tools }: PopularToolsProps) {
         {tools.map((tool) => (
           <Link 
             key={tool.id} 
-            href={`/tools/${tool.slug}`}
+            href={`/${tool.slug}`}
             className="block p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 transition-colors"
           >
             <h4 className="text-sm font-medium text-gray-900 dark:text-white">

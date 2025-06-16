@@ -19,7 +19,7 @@ interface ToolCardProps {
 
 export function ToolCard({ tool }: ToolCardProps) {
   return (
-    <Link href={`/tools/${tool.slug}`} className="block">
+    <Link href={`/${tool.slug}`} className="block">
       <div className="tool-card group">
         <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
           {tool.title}

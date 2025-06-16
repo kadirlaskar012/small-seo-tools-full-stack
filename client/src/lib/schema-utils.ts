@@ -151,7 +151,7 @@ export function generateToolSchema(tool: any, category: any): SchemaMarkupConfig
     "@type": SCHEMA_TYPES.WEB_APPLICATION,
     name: tool.title,
     description: tool.description,
-    url: `${window.location.origin}/tools/${tool.slug}`,
+    url: `${window.location.origin}/${tool.slug}`,
     applicationCategory: category.name,
     operatingSystem: "Web Browser",
     offers: {

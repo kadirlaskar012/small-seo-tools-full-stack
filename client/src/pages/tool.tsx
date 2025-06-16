@@ -373,7 +373,7 @@ export default function Tool() {
                 {latestExpanded && (
                   <div className="mt-3 space-y-2">
                     {allTools.slice(-6).reverse().map((latestTool) => (
-                      <Link key={latestTool.id} href={`/tools/${latestTool.slug}`} className="block">
+                      <Link key={latestTool.id} href={`/${latestTool.slug}`} className="block">
                         <div className="border border-gray-200 dark:border-gray-600 rounded p-2 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                           <div className="flex items-center gap-2">
                             <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>

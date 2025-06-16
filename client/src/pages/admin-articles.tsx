@@ -289,7 +289,7 @@ function ArticleEditor({
       },
       "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": `https://example.com/tools/${tool.slug}`
+        "@id": `https://example.com/${tool.slug}`
       },
       "articleSection": tool.category.name,
       "keywords": formData.metaKeywords,
