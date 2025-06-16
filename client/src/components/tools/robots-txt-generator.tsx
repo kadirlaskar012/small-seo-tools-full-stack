@@ -277,16 +277,7 @@ export function RobotsTxtGenerator() {
         <TabsContent value="builder" className="space-y-6">
           {/* Website Configuration */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Globe className="h-5 w-5" />
-                Website Configuration
-              </CardTitle>
-              <CardDescription>
-                Basic information about your website
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 pt-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="domain">Website Domain</Label>
@@ -325,19 +316,14 @@ export function RobotsTxtGenerator() {
 
           {/* Rules Section */}
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <span>Crawl Rules</span>
+            <CardContent className="space-y-4 pt-6">
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-lg font-semibold">Crawl Rules</span>
                 <Button onClick={addRule} size="sm">
                   <Plus className="h-4 w-4 mr-1" />
                   Add Rule
                 </Button>
-              </CardTitle>
-              <CardDescription>
-                Define which parts of your website search engines can access
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
+              </div>
               {config.rules.map((rule, index) => (
                 <div key={rule.id} className="p-4 border rounded-lg space-y-4">
                   <div className="flex items-center justify-between">
@@ -410,21 +396,15 @@ export function RobotsTxtGenerator() {
 
         <TabsContent value="templates" className="space-y-6">
           <Card>
-            <CardHeader>
-              <CardTitle>Predefined Templates</CardTitle>
-              <CardDescription>
-                Choose from common robots.txt configurations
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
+            <CardContent className="pt-6">
+              <div className="mb-4">
+                <h3 className="text-lg font-semibold">Predefined Templates</h3>
+                <p className="text-sm text-muted-foreground">Choose from common robots.txt configurations</p>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {RULE_TEMPLATES.map((template, index) => (
                   <Card key={index} className="cursor-pointer hover:shadow-md transition-shadow">
-                    <CardHeader>
-                      <CardTitle className="text-lg">{template.name}</CardTitle>
-                      <CardDescription>{template.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
+                    <CardContent className="pt-6">
                       <div className="space-y-2 mb-4">
                         {template.rules.map((rule, ruleIndex) => (
                           <div key={ruleIndex} className="text-sm text-muted-foreground">
@@ -451,13 +431,11 @@ export function RobotsTxtGenerator() {
 
         <TabsContent value="preview" className="space-y-6">
           <Card>
-            <CardHeader>
-              <CardTitle>Generated Robots.txt</CardTitle>
-              <CardDescription>
-                Preview and download your robots.txt file
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 pt-6">
+              <div className="mb-4">
+                <h3 className="text-lg font-semibold">Generated Robots.txt</h3>
+                <p className="text-sm text-muted-foreground">Preview and download your robots.txt file</p>
+              </div>
               <div className="flex flex-wrap gap-2">
                 <Button onClick={copyToClipboard} variant="outline">
                   <Copy className="h-4 w-4 mr-2" />

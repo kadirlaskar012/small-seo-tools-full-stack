@@ -186,17 +186,7 @@ Alice Brown,30,Houston,alice@example.com`;
   return (
     <div className="space-y-6">
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Database className="h-5 w-5" />
-            CSV to JSON Converter
-          </CardTitle>
-          <CardDescription>
-            Convert CSV files to JSON format with preview and formatting options. 
-            Perfect for data migration and API integration.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-6 pt-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Input Section */}
             <div className="space-y-4">
