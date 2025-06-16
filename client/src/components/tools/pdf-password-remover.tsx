@@ -45,6 +45,8 @@ export function PDFPasswordRemover() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [processingStage, setProcessingStage] = useState("");
+  const [passwordHint, setPasswordHint] = useState("");
+  const [showPasswordInput, setShowPasswordInput] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -111,6 +113,9 @@ export function PDFPasswordRemover() {
     try {
       const formData = new FormData();
       formData.append('pdf', selectedFile);
+      if (passwordHint) {
+        formData.append('password', passwordHint);
+      }
 
       // Fast progress tracking for 30-second processing
       const stages = [
@@ -156,7 +161,8 @@ export function PDFPasswordRemover() {
         });
       } else {
         // Handle specific password cracking failure
-        if (data.error === "Password cracking failed") {
+        if (data.error === "Password cracking failed" || data.error?.includes("strong password")) {
+          setShowPasswordInput(true);
           toast({
             title: "Strong Password Detected",
             description: data.message || "Please provide the exact password to unlock this PDF",
@@ -275,7 +281,25 @@ export function PDFPasswordRemover() {
                 )}
               </div>
 
-
+              {/* Password Input Field */}
+              {(showPasswordInput || selectedFile) && (
+                <div className="space-y-2">
+                  <Label htmlFor="password-hint" className="text-sm font-medium">
+                    Password (optional)
+                  </Label>
+                  <Input
+                    id="password-hint"
+                    type="password"
+                    placeholder="Enter password if known..."
+                    value={passwordHint}
+                    onChange={(e) => setPasswordHint(e.target.value)}
+                    className="w-full"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Leave empty to try automatic password cracking
+                  </p>
+                </div>
+              )}
 
               {/* Process Button */}
               {selectedFile && (
