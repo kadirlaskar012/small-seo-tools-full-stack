@@ -65,63 +65,30 @@ def ultimate_pdf_crack(pdf_data, max_time=30):
         }
 
 def try_security_bypass(pdf_path, pdf_data, remaining_time):
-    """Try to bypass PDF security using direct manipulation"""
+    """Try to bypass PDF security using direct manipulation while preserving content"""
     try:
-        # Read PDF as binary and attempt security flag manipulation
+        # First try to open the PDF directly to check if it's actually encrypted
+        import PyPDF2
         with open(pdf_path, 'rb') as f:
-            content = f.read()
-        
-        # Look for encryption dictionary and try to disable it
-        if b'/Encrypt' in content:
-            # Try to remove encryption references
-            modified_content = content.replace(b'/Encrypt', b'/Encrypt_DISABLED')
+            reader = PyPDF2.PdfReader(f)
             
-            # Also try to modify permission flags
-            permission_patterns = [
-                rb'/P\s*(-?\d+)',
-                rb'/Permissions\s*(-?\d+)',
-                rb'/UserPassword',
-                rb'/OwnerPassword'
-            ]
-            
-            for pattern in permission_patterns:
-                modified_content = re.sub(pattern, b'', modified_content)
-            
-            # Write modified PDF and test
-            modified_path = pdf_path + "_bypassed.pdf"
-            with open(modified_path, 'wb') as f:
-                f.write(modified_content)
-            
-            # Try to read with PyPDF2
-            try:
-                import PyPDF2
-                with open(modified_path, 'rb') as f:
-                    reader = PyPDF2.PdfReader(f)
-                    if not reader.is_encrypted:
-                        # Success! Create clean output
-                        writer = PyPDF2.PdfWriter()
-                        for page in reader.pages:
-                            writer.add_page(page)
-                        
-                        from io import BytesIO
-                        output_data = BytesIO()
-                        writer.write(output_data)
-                        output_bytes = output_data.getvalue()
-                        
-                        os.unlink(modified_path)
-                        return {
-                            "success": True,
-                            "output_data": base64.b64encode(output_bytes).decode('utf-8'),
-                            "message": "PDF security bypassed using direct manipulation",
-                            "pages_count": len(reader.pages)
-                        }
-            except Exception:
-                pass
-            
-            try:
-                os.unlink(modified_path)
-            except:
-                pass
+            # If not encrypted, just return clean copy
+            if not reader.is_encrypted:
+                writer = PyPDF2.PdfWriter()
+                for page in reader.pages:
+                    writer.add_page(page)
+                
+                from io import BytesIO
+                output_data = BytesIO()
+                writer.write(output_data)
+                output_bytes = output_data.getvalue()
+                
+                return {
+                    "success": True,
+                    "output_data": base64.b64encode(output_bytes).decode('utf-8'),
+                    "message": "PDF was not password protected",
+                    "pages_count": len(reader.pages)
+                }
         
         return {"success": False}
         
@@ -129,21 +96,18 @@ def try_security_bypass(pdf_path, pdf_data, remaining_time):
         return {"success": False, "error": f"Security bypass failed: {str(e)}"}
 
 def try_qoppa_method(pdf_path, pdf_data, remaining_time):
-    """Try Qoppa-style PDF processing"""
+    """Try content-preserving PDF processing with pikepdf"""
     try:
         import pikepdf
         
-        # Try to open with specific flags that bypass some restrictions
+        # Try to open without password first
         try:
-            pdf = pikepdf.open(pdf_path, allow_overwriting_input=True)
+            pdf = pikepdf.open(pdf_path)
             
-            # Remove all security settings
-            if hasattr(pdf, 'Root') and hasattr(pdf.Root, 'Encrypt'):
-                del pdf.Root.Encrypt
-            
-            # Create clean output
+            # Create clean output preserving all content
             output_path = pdf_path + "_qoppa.pdf"
-            pdf.save(output_path)
+            pdf.save(output_path, linearize=True)
+            pdf.close()
             
             with open(output_path, 'rb') as f:
                 output_bytes = f.read()
@@ -152,10 +116,13 @@ def try_qoppa_method(pdf_path, pdf_data, remaining_time):
             return {
                 "success": True,
                 "output_data": base64.b64encode(output_bytes).decode('utf-8'),
-                "message": "PDF unlocked using Qoppa-style processing",
+                "message": "PDF processed successfully with content preservation",
                 "pages_count": len(pdf.pages)
             }
             
+        except pikepdf.PasswordError:
+            # PDF is password protected, continue to other methods
+            pass
         except Exception:
             pass
         
@@ -182,9 +149,9 @@ def try_pikepdf_advanced(pdf_path, pdf_data, remaining_time):
             try:
                 pdf = pikepdf.open(pdf_path, password=pwd)
                 
-                # Success! Remove all security
+                # Success! Create clean copy without encryption
                 output_path = pdf_path + "_cracked.pdf"
-                pdf.save(output_path, encryption=pikepdf.Encryption(owner="", user="", R=0))
+                pdf.save(output_path, linearize=True)
                 
                 with open(output_path, 'rb') as f:
                     output_bytes = f.read()
@@ -246,10 +213,17 @@ def try_pypdf2_advanced(pdf_path, pdf_data, remaining_time):
                     
                 try:
                     if reader.decrypt(pwd):
-                        # Success!
+                        # Success! Create clean output with proper content preservation
                         writer = PyPDF2.PdfWriter()
-                        for page in reader.pages:
+                        
+                        # Copy all pages ensuring content preservation
+                        for page_num in range(len(reader.pages)):
+                            page = reader.pages[page_num]
                             writer.add_page(page)
+                        
+                        # Copy document metadata
+                        if hasattr(reader, 'metadata') and reader.metadata:
+                            writer.add_metadata(reader.metadata)
                         
                         output_data = BytesIO()
                         writer.write(output_data)
@@ -310,8 +284,9 @@ def try_pymupdf_advanced(pdf_path, pdf_data, remaining_time):
             try:
                 doc = fitz.open(pdf_path)
                 if doc.authenticate(pwd):
+                    # Create clean output with content preservation
                     output_path = pdf_path + "_mupdf_cracked.pdf"
-                    doc.save(output_path)
+                    doc.save(output_path, garbage=4, deflate=True, clean=True)
                     
                     with open(output_path, 'rb') as f:
                         output_bytes = f.read()
