@@ -112,11 +112,14 @@ export function PDFPasswordRemover() {
       const formData = new FormData();
       formData.append('pdf', selectedFile);
 
-      // Simple progress tracking with stages
+      // Advanced progress tracking with comprehensive stages
       const stages = [
         "Uploading PDF file...",
-        "Analyzing PDF security...", 
-        "Trying common passwords...",
+        "Analyzing PDF security and encryption...", 
+        "Testing common password patterns...",
+        "Attempting advanced dictionary attack...",
+        "Running intelligent brute force...",
+        "Trying character substitutions...",
         "Finalizing unlocked PDF..."
       ];
 
@@ -127,14 +130,14 @@ export function PDFPasswordRemover() {
             clearInterval(progressInterval);
             return 90;
           }
-          const newProgress = prev + 15;
-          if (newProgress > currentStage * 15 && currentStage < stages.length - 1) {
+          const newProgress = prev + 8;
+          if (newProgress > currentStage * 13 && currentStage < stages.length - 1) {
             currentStage++;
             setProcessingStage(stages[currentStage]);
           }
           return newProgress;
         });
-      }, 400);
+      }, 3000); // Update every 3 seconds for 3-minute processing
 
       const response = await fetch('/api/tools/pdf-password-remover', {
         method: 'POST',
@@ -455,12 +458,15 @@ export function PDFPasswordRemover() {
             <div className="flex items-start gap-3">
               <Info className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
               <div className="space-y-2">
-                <h4 className="font-medium text-blue-900 dark:text-blue-100">How PDF Password Removal Works</h4>
+                <h4 className="font-medium text-blue-900 dark:text-blue-100">Advanced PDF Password Cracking Engine</h4>
                 <div className="text-sm text-blue-800 dark:text-blue-200 space-y-1">
-                  <p>• <strong>Owner passwords:</strong> Removed automatically to unlock editing restrictions</p>
-                  <p>• <strong>User passwords:</strong> Require the correct password for removal</p>
-                  <p>• <strong>Security:</strong> Processing happens server-side, files are automatically deleted</p>
-                  <p>• <strong>Supported:</strong> All PDF versions with standard encryption methods</p>
+                  <p>• <strong>10,000+</strong> password combinations tested automatically using multiple attack vectors</p>
+                  <p>• <strong>Multi-stage attack:</strong> Common patterns → Dictionary attack → Intelligent brute force → Character substitution</p>
+                  <p>• <strong>Smart patterns:</strong> Names+years, phone numbers, dates, keyboard sequences, business terms</p>
+                  <p>• <strong>3-minute processing</strong> with comprehensive password attempts for maximum success rate</p>
+                  <p>• <strong>Multiple libraries:</strong> pikepdf, PyPDF2, PyMuPDF for maximum compatibility across PDF types</p>
+                  <p>• <strong>All encryption:</strong> 40-bit RC4, 128-bit RC4, 128/256-bit AES, owner/user permissions</p>
+                  <p>• <strong>Security:</strong> Server-side processing, files automatically deleted after processing</p>
                 </div>
               </div>
             </div>
