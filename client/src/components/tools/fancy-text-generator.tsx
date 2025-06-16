@@ -934,8 +934,8 @@ const FONT_STYLES: FontStyle[] = [
   // Death Knight
   { name: "Death Knight", category: "death-knight", transform: (text) => `꧁༒☠︎${text}☠︎༒꧂` },
 
-  // Royal Crown
-  { name: "Royal Crown", category: "royal-crown", transform: (text) => `꧁♛◊${text}◊♛꧂` },
+  // Crown Royal
+  { name: "Crown Royal", category: "crown-royal", transform: (text) => `꧁♛◊${text}◊♛꧂` },
 
   // Shadow Warrior
   { name: "Shadow Warrior", category: "shadow-warrior", transform: (text) => `꧁◈⚔${text}⚔◈꧂` },
