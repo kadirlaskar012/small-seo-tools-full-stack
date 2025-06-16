@@ -71,7 +71,6 @@ export function PDFPasswordRemover() {
 
       setSelectedFile(file);
       setResult(null);
-      setPassword("");
     }
   };
 
@@ -81,7 +80,6 @@ export function PDFPasswordRemover() {
     if (file && file.type === 'application/pdf') {
       setSelectedFile(file);
       setResult(null);
-      setPassword("");
     } else {
       toast({
         title: "Invalid File",
