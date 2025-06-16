@@ -226,7 +226,7 @@ export function SmartRedirectChainChecker() {
   }, []);
 
   return (
-    <div className={`w-full max-w-6xl mx-auto space-y-6 ${isDarkMode ? 'dark' : ''}`}>
+    <div className="w-full max-w-6xl mx-auto space-y-6">
       {/* URL Input Section */}
       <Card className="shadow-lg">
         <CardContent className="space-y-4 pt-6">
@@ -240,7 +240,7 @@ export function SmartRedirectChainChecker() {
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && !isAnalyzing && analyzeRedirects()}
-                className="text-lg"
+                className="text-lg bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
               />
             </div>
             <Button 
