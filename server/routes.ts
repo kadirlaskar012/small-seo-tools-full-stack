@@ -2975,7 +2975,7 @@ print(json.dumps(result))
   });
 
   // Profile Picture Maker
-  app.post('/api/tools/profile-picture-maker', upload.single('image'), async (req, res) => {
+  app.post('/api/tools/profile-picture-maker/process', upload.single('image'), async (req, res) => {
     try {
       if (!req.file) {
         return res.status(400).json({ 

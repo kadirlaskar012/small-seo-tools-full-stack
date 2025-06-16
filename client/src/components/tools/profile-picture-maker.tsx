@@ -321,14 +321,16 @@ export default function ProfilePictureMaker() {
               </CardHeader>
               <CardContent>
                 <Tabs defaultValue="styles" className="space-y-4">
-                  <TabsList className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 w-full text-xs sm:text-sm">
-                    <TabsTrigger value="styles" className="px-1 sm:px-2 py-1">Styles</TabsTrigger>
-                    <TabsTrigger value="canvas" className="px-1 sm:px-2 py-1">Canvas</TabsTrigger>
-                    <TabsTrigger value="transform" className="px-1 sm:px-2 py-1">Transform</TabsTrigger>
-                    <TabsTrigger value="background" className="px-1 sm:px-2 py-1">Background</TabsTrigger>
-                    <TabsTrigger value="border" className="px-1 sm:px-2 py-1">Border</TabsTrigger>
-                    <TabsTrigger value="adjust" className="px-1 sm:px-2 py-1">Adjust</TabsTrigger>
-                  </TabsList>
+                  <div className="w-full">
+                    <TabsList className="grid grid-cols-3 sm:grid-cols-6 w-full h-auto p-1">
+                      <TabsTrigger value="styles" className="text-xs px-1 py-2 h-auto">Styles</TabsTrigger>
+                      <TabsTrigger value="canvas" className="text-xs px-1 py-2 h-auto">Canvas</TabsTrigger>
+                      <TabsTrigger value="transform" className="text-xs px-1 py-2 h-auto">Transform</TabsTrigger>
+                      <TabsTrigger value="background" className="text-xs px-1 py-2 h-auto">Bg</TabsTrigger>
+                      <TabsTrigger value="border" className="text-xs px-1 py-2 h-auto">Border</TabsTrigger>
+                      <TabsTrigger value="adjust" className="text-xs px-1 py-2 h-auto">Adjust</TabsTrigger>
+                    </TabsList>
+                  </div>
 
                   {/* Profile Styles */}
                   <TabsContent value="styles" className="space-y-4">
