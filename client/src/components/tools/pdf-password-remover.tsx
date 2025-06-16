@@ -276,15 +276,15 @@ export function PDFPasswordRemover() {
 
               {/* Password Input */}
               {selectedFile && (
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <Label htmlFor="password" className="text-sm font-medium">
-                    PDF Password (if known)
+                    PDF Password (Recommended)
                   </Label>
                   <div className="relative">
                     <Input
                       id="password"
                       type={showPassword ? "text" : "password"}
-                      placeholder="Enter PDF password (optional)"
+                      placeholder="Enter the exact PDF password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       className="pr-10"
@@ -303,9 +303,21 @@ export function PDFPasswordRemover() {
                       )}
                     </Button>
                   </div>
-                  <p className="text-xs text-muted-foreground">
-                    Leave empty if you don't know the password. We'll attempt automatic removal.
-                  </p>
+                  
+                  <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+                    <div className="flex items-start gap-2">
+                      <Info className="h-4 w-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+                      <div className="text-sm text-blue-800 dark:text-blue-200">
+                        <p className="font-medium mb-1">Password Tips:</p>
+                        <ul className="space-y-0.5 text-xs">
+                          <li>• Providing the exact password ensures 100% success</li>
+                          <li>• Without password, tool attempts 50,000+ common patterns</li>
+                          <li>• Check for caps lock, spaces, or special characters</li>
+                          <li>• Common formats: name+year, company+numbers, birth dates</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
 
