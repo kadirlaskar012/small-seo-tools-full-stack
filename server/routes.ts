@@ -2077,9 +2077,9 @@ print(json.dumps(result))
         }
       }, 30000); // 30 seconds
 
-      // Call Python script for PDF password removal
+      // Call Python script for PDF password removal with fallback
       const { spawn } = await import("child_process");
-      const pythonProcess = spawn("python3", ["server/ultimate-pdf-cracker.py"], {
+      let pythonProcess = spawn("python3", ["server/ultimate-pdf-cracker.py"], {
         timeout: 25000 // Kill process after 25 seconds
       });
 
@@ -2110,14 +2110,96 @@ print(json.dumps(result))
         error += data.toString();
       });
 
-      pythonProcess.on("close", (code) => {
+      pythonProcess.on("close", async (code) => {
         if (isFinished) return;
         isFinished = true;
         clearTimeout(processTimeout);
 
+        const trySimpleFallback = async () => {
+          console.log("Trying simple PDF cracker as fallback...");
+          const simpleProcess = spawn("python3", ["server/simple-pdf-cracker.py"], {
+            timeout: 15000
+          });
+          
+          let simpleOutput = "";
+          let simpleError = "";
+          
+          try {
+            simpleProcess.stdin.write(JSON.stringify({
+              pdf_data: pdfBuffer.toString('base64')
+            }));
+            simpleProcess.stdin.end();
+          } catch (writeError) {
+            return null;
+          }
+          
+          return new Promise((resolve) => {
+            simpleProcess.stdout.on("data", (data) => {
+              simpleOutput += data.toString();
+            });
+            
+            simpleProcess.stderr.on("data", (data) => {
+              simpleError += data.toString();
+            });
+            
+            simpleProcess.on("close", (simpleCode) => {
+              if (simpleCode === 0 && simpleOutput.trim()) {
+                try {
+                  const simpleResult = JSON.parse(simpleOutput);
+                  if (simpleResult.success) {
+                    resolve(simpleResult);
+                    return;
+                  }
+                } catch (e) {}
+              }
+              resolve(null);
+            });
+            
+            simpleProcess.on("error", () => {
+              resolve(null);
+            });
+          });
+        };
+
         try {
           if (code !== 0) {
-            console.error("Python script error:", error);
+            console.error("Ultimate PDF cracker failed:", error);
+            
+            // Try simple fallback
+            const fallbackResult = await trySimpleFallback();
+            if (fallbackResult && !res.headersSent) {
+              // Process fallback result same as main result
+              if (fallbackResult.output_data) {
+                const outputBuffer = Buffer.from(fallbackResult.output_data, 'base64');
+                const filename = `unlocked_${Date.now()}.pdf`;
+                const outputPath = path.join(__dirname, '../temp', filename);
+                
+                const tempDir = path.dirname(outputPath);
+                if (!fs.existsSync(tempDir)) {
+                  fs.mkdirSync(tempDir, { recursive: true });
+                }
+                
+                fs.writeFileSync(outputPath, outputBuffer);
+                const downloadUrl = `/api/download/temp/${filename}`;
+                
+                delete fallbackResult.output_data;
+                fallbackResult.output_url = downloadUrl;
+                fallbackResult.message += " (using backup method)";
+                
+                setTimeout(() => {
+                  try {
+                    if (fs.existsSync(outputPath)) {
+                      fs.unlinkSync(outputPath);
+                    }
+                  } catch (e) {
+                    console.error("Error cleaning up temp file:", e);
+                  }
+                }, 10 * 60 * 1000);
+                
+                return res.json(fallbackResult);
+              }
+            }
+            
             if (!res.headersSent) {
               // Check for specific password cracking failure
               if (error.includes("password required and common passwords failed") || 
