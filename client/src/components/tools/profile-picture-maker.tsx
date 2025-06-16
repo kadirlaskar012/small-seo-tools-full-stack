@@ -454,13 +454,13 @@ export default function ProfilePictureMaker() {
             </CardHeader>
             <CardContent>
               <Tabs defaultValue="styles" className="space-y-4">
-                <TabsList className="grid grid-cols-6 w-full">
-                  <TabsTrigger value="styles">Styles</TabsTrigger>
-                  <TabsTrigger value="canvas">Canvas</TabsTrigger>
-                  <TabsTrigger value="transform">Transform</TabsTrigger>
-                  <TabsTrigger value="background">Background</TabsTrigger>
-                  <TabsTrigger value="border">Border</TabsTrigger>
-                  <TabsTrigger value="adjust">Adjust</TabsTrigger>
+                <TabsList className="grid grid-cols-3 md:grid-cols-6 w-full text-xs md:text-sm">
+                  <TabsTrigger value="styles" className="px-2 py-1">Styles</TabsTrigger>
+                  <TabsTrigger value="canvas" className="px-2 py-1">Canvas</TabsTrigger>
+                  <TabsTrigger value="transform" className="px-2 py-1">Transform</TabsTrigger>
+                  <TabsTrigger value="background" className="px-2 py-1">Background</TabsTrigger>
+                  <TabsTrigger value="border" className="px-2 py-1">Border</TabsTrigger>
+                  <TabsTrigger value="adjust" className="px-2 py-1">Adjust</TabsTrigger>
                 </TabsList>
 
                 {/* Profile Styles */}
