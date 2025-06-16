@@ -46,6 +46,7 @@ export function PDFPasswordRemover() {
   const [result, setResult] = useState<PDFRemovalResult | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [processingStage, setProcessingStage] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -108,6 +109,7 @@ export function PDFPasswordRemover() {
 
     setIsProcessing(true);
     setUploadProgress(0);
+    setProcessingStage("Starting PDF analysis...");
     setResult(null);
 
     try {
@@ -117,16 +119,31 @@ export function PDFPasswordRemover() {
         formData.append('password', password.trim());
       }
 
-      // Simulate upload progress
+      // Enhanced progress tracking with stages
+      const stages = [
+        "Uploading PDF file...",
+        "Analyzing PDF security...", 
+        "Attempting provided password...",
+        "Trying common passwords...",
+        "Testing numerical patterns...",
+        "Finalizing unlocked PDF..."
+      ];
+
+      let currentStage = 0;
       const progressInterval = setInterval(() => {
         setUploadProgress(prev => {
           if (prev >= 90) {
             clearInterval(progressInterval);
             return 90;
           }
-          return prev + 10;
+          const newProgress = prev + 15;
+          if (newProgress > currentStage * 15 && currentStage < stages.length - 1) {
+            currentStage++;
+            setProcessingStage(stages[currentStage]);
+          }
+          return newProgress;
         });
-      }, 200);
+      }, 400);
 
       const response = await fetch('/api/tools/pdf-password-remover', {
         method: 'POST',

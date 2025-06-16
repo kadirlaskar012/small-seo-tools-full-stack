@@ -152,28 +152,136 @@ class PDFPasswordRemover:
         
         return security_info
     
+    def try_common_passwords(self, input_path: str) -> Optional[str]:
+        """Try common passwords and patterns with advanced brute force"""
+        # Basic common passwords
+        common_passwords = [
+            "", "123456", "password", "123456789", "12345678", "12345", "1234567", "1234",
+            "admin", "qwerty", "abc123", "Password", "123", "1234567890", "000000", "111111",
+            "123123", "654321", "666666", "121212", "123321", "7777777", "101010", "999999",
+            "qwertyuiop", "asdfghjkl", "zxcvbnm", "welcome", "monkey", "dragon", "master",
+            "sunshine", "princess", "letmein", "trustno1", "starwars", "superman", "batman",
+            "freedom", "computer", "michael", "login", "test", "guest", "user", "default"
+        ]
+        
+        # Try basic passwords first
+        for pwd in common_passwords:
+            if self._test_password(input_path, pwd):
+                return pwd
+        
+        # Advanced password patterns
+        advanced_patterns = []
+        
+        # Date patterns (years, birth years, etc.)
+        current_year = 2024
+        for year in range(1950, current_year + 1):
+            advanced_patterns.extend([str(year), f"01{year}", f"{year}01"])
+        
+        # Numeric patterns
+        for i in range(1000, 10000):
+            advanced_patterns.append(str(i))
+        
+        # Simple variations of common words
+        base_words = ["password", "admin", "user", "test", "guest", "login"]
+        for word in base_words:
+            for i in range(10):
+                advanced_patterns.extend([f"{word}{i}", f"{word}0{i}", f"{i}{word}"])
+        
+        # Phone number patterns
+        for area in ["123", "555", "000", "111", "999"]:
+            for exchange in ["123", "456", "789", "000", "111"]:
+                for number in ["1234", "5678", "9999", "0000"]:
+                    advanced_patterns.append(f"{area}{exchange}{number}")
+        
+        # Birthday patterns (MMDD, DDMM)
+        for month in range(1, 13):
+            for day in range(1, 32):
+                if day <= 28 or (month in [1,3,5,7,8,10,12] and day <= 31) or (month in [4,6,9,11] and day <= 30):
+                    advanced_patterns.extend([
+                        f"{month:02d}{day:02d}",
+                        f"{day:02d}{month:02d}",
+                        f"{month:02d}{day:02d}{current_year}",
+                        f"{day:02d}{month:02d}{current_year}"
+                    ])
+        
+        # Try advanced patterns (limited to prevent timeout)
+        for i, pwd in enumerate(advanced_patterns[:5000]):  # Limit to 5000 attempts
+            if self._test_password(input_path, pwd):
+                return pwd
+        
+        return None
+    
+    def _test_password(self, input_path: str, password: str) -> bool:
+        """Test if a password works for opening the PDF"""
+        try:
+            if PIKEPDF_AVAILABLE:
+                try:
+                    pdf = pikepdf.open(input_path, password=password)
+                    pdf.close()
+                    return True
+                except:
+                    pass
+            
+            if PYPDF2_AVAILABLE:
+                try:
+                    with open(input_path, 'rb') as file:
+                        reader = PyPDF2.PdfReader(file)
+                        if reader.is_encrypted:
+                            return reader.decrypt(password)
+                        return True
+                except:
+                    pass
+            
+            if PYMUPDF_AVAILABLE:
+                try:
+                    doc = fitz.open(input_path)
+                    if doc.needs_pass:
+                        result = doc.authenticate(password)
+                        doc.close()
+                        return result
+                    doc.close()
+                    return True
+                except:
+                    pass
+            
+            return False
+        except:
+            return False
+
     def remove_password_pikepdf(self, input_path: str, output_path: str, password: Optional[str] = None) -> Dict[str, Any]:
         """Remove password using pikepdf (most reliable method)"""
         if not PIKEPDF_AVAILABLE:
             return {"success": False, "error": "pikepdf library not available"}
         
         try:
-            # Try opening with password first
             pdf = None
+            used_password = None
+            
+            # Try provided password first
             if password:
                 try:
                     pdf = pikepdf.open(input_path, password=password)
+                    used_password = password
                 except pikepdf.PasswordError:
-                    # Try without password for owner-only protection
+                    pass
+            
+            # If no password provided or provided password failed, try common passwords
+            if pdf is None:
+                found_password = self.try_common_passwords(input_path)
+                if found_password is not None:
                     try:
-                        pdf = pikepdf.open(input_path)
+                        pdf = pikepdf.open(input_path, password=found_password)
+                        used_password = found_password
                     except pikepdf.PasswordError:
-                        return {"success": False, "error": "Incorrect password provided"}
-            else:
+                        pass
+            
+            # Final attempt without password (owner-only protection)
+            if pdf is None:
                 try:
                     pdf = pikepdf.open(input_path)
+                    used_password = "owner-only"
                 except pikepdf.PasswordError:
-                    return {"success": False, "error": "PDF requires password for user access"}
+                    return {"success": False, "error": "Unable to unlock PDF - password required and common passwords failed"}
             
             # Save without encryption
             pdf.save(output_path)
@@ -182,29 +290,34 @@ class PDFPasswordRemover:
             return {
                 "success": True,
                 "method": "pikepdf",
-                "message": "Password protection removed successfully"
+                "message": f"Password protection removed successfully using {'provided password' if used_password == password else 'discovered password' if used_password and used_password != 'owner-only' else 'owner-only bypass'}",
+                "password_method": used_password
             }
             
         except Exception as e:
             return {"success": False, "error": f"pikepdf processing failed: {str(e)}"}
     
     def remove_password_pypdf2(self, input_path: str, output_path: str, password: Optional[str] = None) -> Dict[str, Any]:
-        """Remove password using PyPDF2"""
+        """Remove password using PyPDF2 with enhanced password cracking"""
         if not PYPDF2_AVAILABLE:
             return {"success": False, "error": "PyPDF2 library not available"}
         
         try:
             with open(input_path, 'rb') as input_file:
                 reader = PyPDF2.PdfReader(input_file)
+                used_password = None
                 
                 if reader.is_encrypted:
-                    if password:
-                        if not reader.decrypt(password):
-                            return {"success": False, "error": "Incorrect password provided"}
+                    # Try provided password first
+                    if password and reader.decrypt(password):
+                        used_password = password
                     else:
-                        # Try empty password for owner-only protection
-                        if not reader.decrypt(""):
-                            return {"success": False, "error": "PDF requires password for access"}
+                        # Try common passwords
+                        found_password = self.try_common_passwords(input_path)
+                        if found_password is not None and reader.decrypt(found_password):
+                            used_password = found_password
+                        else:
+                            return {"success": False, "error": "Unable to unlock PDF - password required and common passwords failed"}
                 
                 writer = PyPDF2.PdfWriter()
                 
@@ -219,32 +332,34 @@ class PDFPasswordRemover:
                 return {
                     "success": True,
                     "method": "pypdf2",
-                    "message": "Password protection removed successfully"
+                    "message": f"Password protection removed successfully using {'provided password' if used_password == password else 'discovered password' if used_password else 'no password required'}",
+                    "password_method": used_password
                 }
                 
         except Exception as e:
             return {"success": False, "error": f"PyPDF2 processing failed: {str(e)}"}
     
     def remove_password_pymupdf(self, input_path: str, output_path: str, password: Optional[str] = None) -> Dict[str, Any]:
-        """Remove password using PyMuPDF"""
+        """Remove password using PyMuPDF with enhanced password cracking"""
         if not PYMUPDF_AVAILABLE:
             return {"success": False, "error": "PyMuPDF library not available"}
         
         try:
             doc = fitz.open(input_path)
+            used_password = None
             
             if doc.needs_pass:
-                if password:
-                    auth_result = doc.authenticate(password)
-                    if not auth_result:
-                        doc.close()
-                        return {"success": False, "error": "Incorrect password provided"}
+                # Try provided password first
+                if password and doc.authenticate(password):
+                    used_password = password
                 else:
-                    # Try empty password
-                    auth_result = doc.authenticate("")
-                    if not auth_result:
+                    # Try common passwords
+                    found_password = self.try_common_passwords(input_path)
+                    if found_password is not None and doc.authenticate(found_password):
+                        used_password = found_password
+                    else:
                         doc.close()
-                        return {"success": False, "error": "PDF requires password for access"}
+                        return {"success": False, "error": "Unable to unlock PDF - password required and common passwords failed"}
             
             # Save without encryption
             doc.save(output_path, encryption=fitz.PDF_ENCRYPT_NONE)
@@ -253,7 +368,8 @@ class PDFPasswordRemover:
             return {
                 "success": True,
                 "method": "pymupdf",
-                "message": "Password protection removed successfully"
+                "message": f"Password protection removed successfully using {'provided password' if used_password == password else 'discovered password' if used_password else 'no password required'}",
+                "password_method": used_password
             }
             
         except Exception as e:
