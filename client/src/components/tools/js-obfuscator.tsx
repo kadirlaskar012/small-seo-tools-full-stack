@@ -123,17 +123,7 @@ document.getElementById("output").textContent = "Total: $" + result.finalTotal.t
   return (
     <div className="space-y-6">
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Shield className="h-5 w-5" />
-            JavaScript Code Obfuscator
-          </CardTitle>
-          <CardDescription>
-            Protect your JavaScript code by obfuscating variable names, function names, and strings. 
-            Choose from multiple obfuscation levels for different security needs.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 pt-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="obfuscation-level">Obfuscation Level</Label>

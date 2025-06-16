@@ -129,17 +129,7 @@ export function SafeBrowsingChecker() {
   return (
     <div className="space-y-6">
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Shield className="h-5 w-5" />
-            Safe Browsing Checker
-          </CardTitle>
-          <CardDescription>
-            Check websites for potential security threats, malware, phishing attempts, and other risks.
-            Get instant safety reports with detailed threat analysis.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 pt-6">
           <div className="space-y-2">
             <Label htmlFor="url-input" className="text-sm font-medium">
               Website URL

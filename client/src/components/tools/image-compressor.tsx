@@ -137,13 +137,7 @@ export default function ImageCompressor() {
     <div className="max-w-4xl mx-auto space-y-6">
       {/* File Upload */}
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Upload className="h-5 w-5" />
-            Upload Image
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+        <CardContent className="pt-6">
           <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
             <input
               type="file"

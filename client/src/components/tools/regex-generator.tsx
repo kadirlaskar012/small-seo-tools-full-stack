@@ -112,17 +112,7 @@ export function RegexGenerator() {
   return (
     <div className="space-y-6">
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Wand2 className="h-5 w-5" />
-            Regex Pattern Generator
-          </CardTitle>
-          <CardDescription>
-            Generate regular expression patterns for common use cases with real-time testing. 
-            Perfect for email validation, phone numbers, URLs, and custom patterns.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 pt-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="pattern-type">Pattern Type</Label>

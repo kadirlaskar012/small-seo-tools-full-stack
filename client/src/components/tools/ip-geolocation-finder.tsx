@@ -157,17 +157,7 @@ export function IPGeolocationFinder() {
   return (
     <div className="space-y-6">
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <MapPin className="h-5 w-5" />
-            IP Geolocation Finder
-          </CardTitle>
-          <CardDescription>
-            Find geographic location, ISP details, and network information for any IP address or domain name.
-            Get detailed location data with coordinates and timezone information.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 pt-6">
           <div className="space-y-2">
             <Label htmlFor="ip-input" className="text-sm font-medium">
               IP Address or Domain
